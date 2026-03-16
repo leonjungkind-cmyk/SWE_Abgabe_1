@@ -1,0 +1,50 @@
+info:
+  name: Login als admin
+  type: graphql
+  seq: 1
+
+graphql:
+  method: POST
+  url: "{{graphqlUrl}}"
+  headers:
+    - name: ""
+      value: ""
+      disabled: true
+  body:
+    query: |-
+      mutation {
+        login(username: "admin", password: "p") {
+          token
+          expiresIn
+          roles
+        }
+      }
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.headers['content-type']
+      operator: eq
+      value: application/json
+    - expression: res.body.data.login.token
+      operator: matches
+      value: .+\..+\..+
+    - expression: res.body.data.login.expiresIn
+      operator: eq
+      value: 1d
+    - expression: res.body.data.login.roles
+      operator: isArray
+    - expression: res.body.data.login.roles
+      operator: length
+      value: "1"
+    - expression: res.body.data.login.roles[0]
+      operator: eq
+      value: ADMIN
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,28 @@
+info:
+  name: Nicht-vorhandene Property
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: "{{restUrl}}?foo=true"
+  headers:
+    - name: Accept
+      value: application/json
+  params:
+    - name: foo
+      value: "true"
+      type: query
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "404"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

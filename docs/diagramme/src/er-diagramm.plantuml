@@ -1,0 +1,74 @@
+' Copyright (C) 2023 - present Juergen Zimmermann, Hochschule Karlsruhe
+'
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+' Preview durch <Alt>d
+
+@startuml ER Diagramm
+
+' hide the spot
+hide circle
+
+' evtl. Prbleme mit Kraehenfuessen vermeiden
+skinparam linetype ortho
+
+entity "Patient" {
+  * id : integer <<generated>>
+  --
+  * version: integer
+  * nachname : text
+  * email : text <<unique>>
+  * kategorie: integer
+  * has_newsletter: boolean
+    geburtsdatum: date
+    geschlecht: Geschlecht
+    familienstand: Familienstand
+    fachaerzte: JSON
+    homepage: text
+  * **username**: text <<FK>>
+  * erzeugt: timestamp
+  * aktualisiert: timestamp
+}
+
+entity "Adresse" {
+  * id : integer <<generated>>
+  --
+  * plz : text
+  * ort : text
+  * **patient_id**: integer <<FK>>
+}
+
+entity "Rechnung" {
+  * id : integer <<generated>>
+  --
+  * betrag : decimal
+  * waehrung : text
+  * **patient_id**: integer <<FK>>
+}
+
+entity "UserAccount" {
+  * id : integer <<generated>>
+  --
+  * username : text <<unique>>
+  * password : text
+    roles: JSON
+}
+
+Patient ||.left.|| Adresse
+Patient ||..o{ Rechnung
+Patient ||..|| UserAccount
+
+footer (c) Juergen Zimmermann
+
+@enduml

@@ -1,0 +1,67 @@
+# Copyright (C) 2023 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# TOML = Tom's Obvious, Minimal Language
+# Tom Preston-Werner https://tom.preston-werner.com, Mitgruender von GitHub
+# Erstes Release im Maerz 2013
+
+# Leere Datei flaskapp-docker.toml fuer das Docker-Image
+# Werte koennen durch Umgebungsvariable in z.B. docker-compose.env ueberschrieben werden
+
+[server]
+host-binding = "0.0.0.0"
+# port = 8000
+
+[tls]
+# private-key = "private-key.pem"
+# cert = "cert.pem"
+
+[db]
+# dialect = "postgresql"
+# username = "patient"
+# name = "patient"
+password = "p"
+password-admin = "p"
+# host = "postgres"
+# Locust: auskommentieren
+log-statements = true
+
+[mail]
+# enabled = false
+# host = "mail"
+port = 1025
+# timeout = 1.0
+
+[excel]
+enabled = true
+
+[keycloak]
+# schema = "https"
+# host = "keycloak"
+# port = 8443
+# realm = "python"
+# client-id = "python-client"
+client-secret = "8rbDQJ4xtAtPLlni26fu7kyJGOjpOPEl"
+# admin = "admin"
+admin-password = "p"
+#csv = "/csv/patient.csv"
+
+[graphql]
+# Locust: auskommentieren
+graphiql-enabled = true
+
+[dev]
+db-populate = true
+keycloak-populate = true

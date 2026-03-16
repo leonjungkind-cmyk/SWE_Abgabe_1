@@ -1,0 +1,37 @@
+info:
+  name: Suche mit ID Bearer Token
+  type: folder
+  seq: 5
+
+request:
+  auth:
+    type: bearer
+    token: "{{TOKEN}}"
+  scripts:
+    - type: before-request
+      code: |-
+        // "Developer Mode" statt "Safe" erforderlich
+        const https = require('node:https');
+
+        const httpsAgent = new https.Agent({
+         rejectUnauthorized: false,
+        });
+
+        const tokenUrl = bru.getCollectionVar('tokenUrl');
+        const username = bru.getEnvVar('username');
+        const password = bru.getEnvVar('password');
+
+        const response = await bru.sendRequest({
+          method: 'POST',
+          url: tokenUrl,
+          data: { username, password },
+          httpsAgent,
+        });
+
+        const { token } = response.data;
+        console.log(`token=${token}`)
+        bru.setVar('TOKEN', token);
+
+docs:
+  content: Suche nach Patienten über die REST-Schnittstellen anhand der ID.
+  type: text/markdown

@@ -1,0 +1,88 @@
+info:
+  name: Suche nachname, email, ... vom Patienten mit ID 20
+  type: graphql
+  seq: 1
+
+graphql:
+  method: POST
+  url: "{{graphqlUrl}}"
+  headers:
+    - name: ""
+      value: ""
+      disabled: true
+  body:
+    query: |-
+      query ($patientId: ID! = "20") {
+        patient(patientId: $patientId) {
+          id
+          version
+          nachname
+          email
+          kategorie
+          hasNewsletter
+          geburtsdatum
+          homepage
+          geschlecht
+          familienstand
+          adresse {
+            plz
+            ort
+          }
+          fachaerzte
+          username
+        }
+      }
+    variables: |-
+      {
+        "patientId": "20"
+      }
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.headers['content-type']
+      operator: eq
+      value: application/json
+    - expression: res.body.data.patient
+      operator: isJson
+    - expression: res.body.data.patient.version
+      operator: gte
+      value: "0"
+    - expression: res.body.data.patient.nachname
+      operator: isString
+    - expression: res.body.data.patient.nachname
+      operator: isNotEmpty
+    - expression: res.body.data.patient.email
+      operator: isString
+    - expression: res.body.data.patient.email
+      operator: isNotEmpty
+    - expression: res.body.data.patient.kategorie
+      operator: gt
+      value: "0"
+    - expression: res.body.data.patient.hasNewsletter
+      operator: isBoolean
+    - expression: res.body.data.patient.geburtsdatum
+      operator: isString
+    - expression: res.body.data.patient.homepage
+      operator: isString
+    - expression: res.body.data.patient.geschlecht
+      operator: isString
+    - expression: res.body.data.patient.familienstand
+      operator: isString
+    - expression: res.body.data.patient.adresse
+      operator: isJson
+    - expression: res.body.data.patient.fachaerzte
+      operator: isArray
+    - expression: res.body.data.patient.username
+      operator: isString
+    - expression: res.body.data.patient.username
+      operator: isNotEmpty
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

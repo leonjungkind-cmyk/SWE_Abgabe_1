@@ -1,0 +1,28 @@
+info:
+  name: Query
+  type: folder
+  seq: 2
+
+request:
+  auth:
+    type: oauth2
+    flow: resource_owner_password_credentials
+    accessTokenUrl: "{{oidcTokenUrl}}"
+    credentials:
+      clientId: "{{clientId}}"
+      clientSecret: "{{clientSecret}}"
+      placement: body
+    resourceOwner:
+      username: "{{username}}"
+      password: "{{password}}"
+    tokenConfig:
+      id: credentials
+      placement:
+        header: Bearer
+    settings:
+      autoFetchToken: true
+      autoRefreshToken: false
+
+docs:
+  content: Mit der GraphQL-Schnittstelle werden Patientendaten gelesen.
+  type: text/markdown

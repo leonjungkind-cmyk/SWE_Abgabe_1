@@ -1,0 +1,27 @@
+info:
+  name: Vorhandene ID 1 ohne Token
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{restUrl}}/:id"
+  headers:
+    - name: Accept
+      value: application/json
+  params:
+    - name: id
+      value: "1"
+      type: path
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "401"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

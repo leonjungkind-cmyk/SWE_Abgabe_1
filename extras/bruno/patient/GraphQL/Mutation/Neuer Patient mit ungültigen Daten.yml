@@ -1,0 +1,84 @@
+info:
+  name: Neuer Patient mit ungültigen Daten
+  type: graphql
+  seq: 2
+
+graphql:
+  method: POST
+  url: "{{graphqlUrl}}"
+  headers:
+    - name: ""
+      value: ""
+      disabled: true
+  body:
+    query: |-
+      mutation {
+        create(
+          patientInput: {
+            nachname: "falscher_nachname"
+            email: "falsche_email@"
+            kategorie: 1
+            hasNewsletter: true
+            geburtsdatum: "2022-01-31"
+            homepage: "https://?!"
+            geschlecht: WEIBLICH
+            familienstand: LEDIG
+            fachaerzte: [CHIRURGIE]
+            adresse: {
+              plz: "1234"
+              ort: "Testort"
+            }
+            rechnungen: [{
+              betrag: "1"
+              waehrung: "EU"
+            }]
+            username: "testgraphql"
+          }
+        ) {
+          id
+        }
+      }
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.headers['content-type']
+      operator: eq
+      value: application/json
+    - expression: res.body.errors
+      operator: isArray
+    - expression: res.body.errors
+      operator: length
+      value: "1"
+    - expression: res.body.errors[0].message
+      operator: contains
+      value: nachname
+    - expression: res.body.errors[0].message
+      operator: contains
+      value: email
+    - expression: res.body.errors[0].message
+      operator: contains
+      value: homepage
+    - expression: res.body.errors[0].message
+      operator: contains
+      value: adresse
+    - expression: res.body.errors[0].message
+      operator: contains
+      value: rechnungen
+    - expression: res.body.errors[0].path
+      operator: isArray
+    - expression: res.body.errors[0].path
+      operator: length
+      value: "1"
+    - expression: res.body.errors[0].path[0]
+      operator: eq
+      value: create
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

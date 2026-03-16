@@ -1,0 +1,39 @@
+info:
+  name: Nicht-vorhandener Patient 999999 ändern
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: "{{restUrl}}/:id"
+  headers:
+    - name: If-Match
+      value: '"0"'
+  params:
+    - name: id
+      value: "999999"
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+          "nachname": "Alphaput",
+          "email": "alpha@acme.de.put",
+          "kategorie": 9,
+          "has_newsletter": false,
+          "geburtsdatum": "2022-01-09",
+          "homepage": "https://www.acme.ch.put"
+      }
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "404"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

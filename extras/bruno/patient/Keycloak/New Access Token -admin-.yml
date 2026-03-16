@@ -1,0 +1,40 @@
+info:
+  name: New Access Token "admin"
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{oidcTokenUrl}}"
+  body:
+    type: form-urlencoded
+    data:
+      - name: grant_type
+        value: password
+      - name: username
+        value: admin
+      - name: password
+        value: p
+      - name: client_id
+        value: "{{clientId}}"
+      - name: client_secret
+        value: "{{clientSecret}}"
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body.access_token
+      operator: matches
+      value: .\..+\..+
+    - expression: res.body.expires_in
+      operator: eq
+      value: "1800"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

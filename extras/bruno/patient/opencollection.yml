@@ -1,0 +1,44 @@
+opencollection: 1.0.0
+
+info:
+  name: patient
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  variables:
+    - name: baseUrl
+      value: https://127.0.0.1:8000
+    - name: keycloakUrl
+      value: https://localhost:8843
+    - name: realm
+      value: python
+    - name: realmUrl
+      value: "{{keycloakUrl}}/realms/{{realm}}"
+    - name: oidcUrl
+      value: "{{realmUrl}}/protocol/openid-connect"
+    - name: oidcAuthUrl
+      value: "{{oidcUrl}}/auth"
+    - name: oidcTokenUrl
+      value: "{{oidcUrl}}/token"
+    - name: authUrl
+      value: "{{baseUrl}}/auth"
+    - name: tokenUrl
+      value: "{{authUrl}}/token"
+    - name: baseUrl
+      value: https://localhost:8000
+      disabled: true
+    - name: baseUrl
+      value: http://localhost:5000
+      disabled: true
+bundled: false
+extensions: {}

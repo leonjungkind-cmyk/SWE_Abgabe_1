@@ -1,0 +1,94 @@
+# Copyright (C) 2023 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Aufruf:   docker compose up
+#           docker compose exec patient bash   # "ash" bei Alpine
+#             id
+#             env
+#             pwd
+#             ls -l
+#             hostname
+#             cat /etc/os-release
+#             ps                                  # NUR Alpine
+#           docker compose down
+
+# ash = Almquist shell
+# https://en.wikipedia.org/wiki/Almquist_shell
+
+# Alpine mit busybox: "one binary to rule them all"
+# https://www.busybox.net
+
+# https://docs.docker.com/compose/compose-file
+# https://github.com/compose-spec/compose-spec/blob/master/schema/compose-spec.json
+
+# https://docs.docker.com/reference/compose-file/include
+# Der "service" fuer das DB-System muss fuer "depends_on" bekannt sein
+include:
+  - path: ../backend/compose.yml
+
+# https://docs.docker.com/reference/compose-file/services
+services:
+  patient:
+    image: juergenzimmermann/patient:2026.4.1-hardened
+    #image: juergenzimmermann/patient:2026.4.1-trixie
+    #image: juergenzimmermann/patient:2026.4.1-alpine
+    #entrypoint: ["/bin/bash", "-c", "echo 'Container als bash gestartet.' && sleep infinity"]
+    # (d)ash = (Debian) Almquist Shell
+    #entrypoint: ["/bin/ash", "-c", "echo 'Container als ash gestartet.' && sleep infinity"]
+    depends_on:
+      db:
+        condition: service_healthy
+      mail:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+
+    stop_signal: SIGINT
+    ports:
+      - published: 8000
+        target: 8000
+    volumes:
+      - type: bind
+        source: app.toml
+        target: /opt/app/.venv/lib/python3.14/site-packages/patient/config/resources/app.toml
+        read_only: true
+      - type: bind
+        source: ../../../log
+        target: /opt/app/log
+      - type: bind
+        source: patient.csv
+        target: /csv/patient.csv
+        read_only: true
+      - type: bind
+        source: ../../../src/patient/config/resources/tls/key.pem
+        target: /opt/app/.venv/lib/python3.14/site-packages/patient/config/resources/tls/key.pem
+        read_only: true
+    env_file: .env
+    networks: [acme-network]
+    hostname: patient
+    # https://docs.docker.com/reference/compose-file/services/#cap_drop
+    cap_drop: [ALL]
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2G
+        reservations:
+          cpus: "1.0"
+          memory: 1G
+
+networks:
+  acme-network:
+    name: acme-network

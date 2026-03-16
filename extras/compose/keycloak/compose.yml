@@ -1,0 +1,114 @@
+# Copyright (C) 2022 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Aufruf:   docker compose up
+#
+#           docker run --rm -it -v kc_data:/opt/keycloak/data:ro oscarfonts/h2:2.3.232 bash
+#               java -cp /opt/h2/bin/h2*.jar org.h2.tools.Shell \
+#                 -url jdbc:h2:file:/opt/keycloak/data/h2/keycloakdb -user "" -password ""
+#                     SHOW TABLES;
+#                     EXIT
+
+# https://github.com/keycloak/keycloak/blob/main/quarkus/runtime/src/main/resources/application.properties
+# https://www.keycloak.org/server/db
+# https://www.keycloak.org/docs/latest/upgrading/index.html
+# /opt/keycloak/conf/keycloak.conf
+# https://github.com/keycloak/keycloak/blob/main/pom.xml#L97
+# https://github.com/keycloak/keycloak/blob/main/quarkus/runtime/src/main/java/org/keycloak/quarkus/runtime/configuration/mappers/DatabasePropertyMappers.java#L110
+
+services:
+  keycloak:
+    image: dhi.io/keycloak:26.5.5-debian13
+    # /opt/keycloak/bin/kc.sh
+    # https://www.keycloak.org/server/all-config
+    # https://www.keycloak.org/server/containers#_trying_keycloak_in_development_mode
+    # https://www.keycloak.org/server/all-config#category-hostname_v2
+    # --features=token-exchange
+    # --verbose
+    # --help
+    command: ["start", "--hostname-strict=false"]
+    #entrypoint: ["/bin/bash", "-c", "echo 'Container mit keycloak ist gestartet.' && sleep infinity"]
+    #entrypoint: ["/opt/keycloak/bin/kc.sh show-config > /dev/null 2>&1 || exit 1"]
+    ports:
+      - published: 8880
+        target: 8080
+      - published: 8843
+        target: 8443
+      # 9000 ist der Default-Port von SonarQube, 9090 ist der Default-Port von Prometheus
+      - published: 9990
+        target: 9000
+    volumes:
+      - kc_data:/opt/keycloak/data
+      - kc_tls:/opt/keycloak/tls:ro
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: tmp
+      KC_BOOTSTRAP_ADMIN_PASSWORD: p
+      # https://www.keycloak.org/server/all-config#category-http
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/tls/kc_cert
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/tls/kc_key
+      KC_HTTPS_PROTOCOLS: "TLSv1.3"
+      KC_HTTP_ENABLED: true
+      # https://www.keycloak.org/server/all-config#category-logging
+      # https://www.keycloak.org/server/logging#_colors
+      KC_LOG_CONSOLE_COLOR: true
+      # https://localhost:9990/health/ready
+      # https://localhost:9990/health/live
+      # https://www.keycloak.org/server/all-config#category-health
+      # Rebuild bei jedem Server- bzw. Container-Start
+      KC_HEALTH_ENABLED: true
+      # https://www.keycloak.org/server/all-config#category-http_access_log
+      #KC_HTTP_ACCESS_LOG_ENABLED: true
+    networks: [acme-network]
+    hostname: keycloak
+    container_name: keycloak
+    user: nonroot:nonroot
+    #user: 0:0
+    # https://docs.docker.com/reference/compose-file/services/#cap_drop
+    # https://man7.org/linux/man-pages/man7/capabilities.7.html
+    cap_drop: [ALL]
+    healthcheck:
+      # https://www.keycloak.org/server/health
+      # https://gist.github.com/sarath-soman/5d9aec06953bbd0990c648605d4dba07
+      # https://www.reddit.com/r/KeyCloak/comments/14a5a1y/how_to_enable_healthcheck_on_keycloak_on
+      test:
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/127.0.0.1/9000;echo -e 'GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n' >&3;if [ $? -eq 0 ]; then echo 'Healthcheck Successful';exit 0;else echo 'Healthcheck Failed';exit 1;fi;",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 2
+      start_period: 30s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 4G
+        reservations:
+          cpus: "2.0"
+          memory: 2G
+
+volumes:
+  kc_data:
+    name: kc_data
+    external: true
+  kc_tls:
+    name: kc_tls
+    external: true
+
+networks:
+  acme-network:
+    name: acme-network

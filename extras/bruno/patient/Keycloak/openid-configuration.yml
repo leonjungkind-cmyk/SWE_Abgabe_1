@@ -1,0 +1,27 @@
+info:
+  name: openid-configuration
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{realmUrl}}/.well-known/openid-configuration"
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body.issuer
+      operator: eq
+      value: "{{realmUrl}}"
+    - expression: res.body.token_endpoint
+      operator: eq
+      value: "{{oidcTokenUrl}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

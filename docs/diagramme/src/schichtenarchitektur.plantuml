@@ -1,0 +1,82 @@
+' Copyright (C) 2023 - present Juergen Zimmermann, Hochschule Karlsruhe
+'
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+' Preview durch <Alt>d
+
+@startuml Schichtenarchitektur
+
+package patient #DDDDDD {
+    package rest #FFFFFF {
+        [@router.get()\nget_by_id()\n\n@router.get()\nget()\n\n@router.get()\nget_nachnamen()] as PatientGetController
+        [@router.post()\npost()\n\n@router.put()\nput()\n\n@router.delete()\ndelete_by_id()] as PatientWriteController
+        [@router.get()\nliveness()\n\n@router.get()\nreadiness()] as HealthController
+
+        [PatientGetController] -right[hidden]-> [PatientWriteController]
+    }
+
+    package service #FFFFFF {
+        [find_by_id()\nfind()\nfind_nachnamen()] as PatientReadService
+        [create()\nupdate()\ndelete()] as PatientWriteService
+    }
+
+    [PatientGetController] --> [PatientReadService]
+    [PatientWriteController] --> [PatientWriteService]
+
+    package repository #FFFFFF {
+        [find_by_id()\nfind()\nexists_email()\nfind_nachnamen()\ncreate()\nupdate()\ndelete_by_id()\ncheck_db_connection()] as PatientRepository
+    }
+
+    [PatientReadService] --> [PatientRepository]
+    [PatientWriteService] --> [PatientRepository]
+    [HealthController] --> [PatientRepository]
+
+    package entity #FFFFFF {
+        [Patient]
+        [Adresse]
+        [Rechnung]
+
+        [Patient] -right[hidden]-> [Adresse]
+        [Adresse] -down[hidden]-> [Rechnung]
+    }
+
+    [PatientGetController] ..> [Patient]
+    [PatientWriteController] ..> [Patient]
+    [PatientReadService] .left.> [Patient]
+    [PatientWriteService] ..> [Patient]
+    [PatientRepository] ..> [Patient]
+}
+
+RESTClient ~~> [PatientGetController]
+RESTClient ~~> [PatientWriteController]
+RESTClient ~~> [HealthController]
+
+cloud {
+    [SQLAlchemy\n(OR-Mapping)] as SQLAlchemy
+}
+
+[PatientRepository] ~down~> [SQLAlchemy]
+entity ~~> [SQLAlchemy]
+
+database "DB patient" as db {
+    [Tabelle patient]
+    [Tabelle adresse]
+    [Tabelle rechnung]
+}
+
+[SQLAlchemy] ~down~> db
+
+footer (c) Juergen Zimmermann
+
+@enduml

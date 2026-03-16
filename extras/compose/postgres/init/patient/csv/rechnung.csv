@@ -1,0 +1,11 @@
+id;betrag;waehrung;patient_id
+1;1;EUR;1
+20;20;EUR;20
+30;30;USD;30
+31;31;USD;30
+40;40;CHF;40
+41;41;CHF;40
+42;42;CHF;40
+50;50;GBP;50
+60;60;GBP;60
+61;61;GBP;60

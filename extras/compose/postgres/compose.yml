@@ -1,0 +1,98 @@
+# Copyright (C) 2023 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Aufruf:   docker compose up
+#           docker compose exec db bash -c "cp /init/tls/* /var/lib/postgresql/18/data"
+#           docker compose down
+
+# https://github.com/compose-spec/compose-spec/blob/master/schema/compose-spec.json
+
+services:
+  db:
+    # https://github.com/docker-library/postgres/blob/master/18/trixie/Dockerfile
+    image: dhi.io/postgres:18.3-debian13
+    ports:
+      - published: 5432
+        target: 5432
+
+    # https://dev.to/danvixent/how-to-setup-postgresql-with-ssl-inside-a-docker-container-5f3
+    # https://gist.github.com/mrw34/c97bb03ea1054afb551886ffc8b63c3b
+    # https://stackoverflow.com/questions/55072221/deploying-postgresql-docker-with-ssl-certificate-and-key-with-volumes
+    # ggf. "-c shared_buffers=64MB" statt 128 MB (default bei PostgreSQL 18)
+    # ggf. "-c timezone='Europe/Berlin'" (default bei PostgreSQL 18)
+    # ggf. "-c max_connections=10" statt 100
+    command: ["-c", "ssl=on"]
+    volumes:
+      - pg_data:/var/lib/postgresql/18/data
+      - pg_tablespace:/tablespace
+      - pg_init:/init:ro
+      # UNIX-Socket .s.PGSQL.5432.lock
+      #- pg_run:/tmp
+    # https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables
+    environment:
+      TZ: Europe/Berlin
+      # https://www.postgresql.org/docs/current/libpq-envars.html
+      # default bei PostgreSQL 18
+      #PGTZ: Europe/Berlin
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      # https://www.postgresql.org/docs/current/auth-pg-hba-conf.html
+      # siehe /var/lib/postgresql/18/data/pg_hba.conf
+      POSTGRES_HOST_AUTH_METHOD: scram-sha-256
+      POSTGRES_INITDB_ARGS: "--auth-local=scram-sha-256 --auth-host=scram-sha-256"
+    secrets: [db_password]
+    networks: [acme-network]
+    user: "postgres:postgres"
+    hostname: postgres
+    container_name: postgres
+    # https://docs.docker.com/reference/compose-file/services/#cap_drop
+    # https://man7.org/linux/man-pages/man7/capabilities.7.html
+    cap_drop: [ALL]
+    healthcheck:
+      test: [CMD, pg_isready, --dbname=postgres, --username=postgres]
+      interval: 5s
+      timeout: 2s
+      retries: 2
+      start_period: 5s
+    restart: unless-stopped
+    # https://docs.docker.com/compose/compose-file/deploy
+    deploy:
+      # https://docs.docker.com/compose/compose-file/deploy/#resources
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 768M
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+
+# /run/secrets/*
+secrets:
+  db_password:
+    file: ./password.txt
+
+volumes:
+  pg_data:
+    name: pg_data
+    external: true
+  pg_tablespace:
+    name: pg_tablespace
+    external: true
+  pg_init:
+    name: pg_init
+    external: true
+
+networks:
+  acme-network:
+    name: acme-network

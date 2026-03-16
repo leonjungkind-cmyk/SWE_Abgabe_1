@@ -1,0 +1,11 @@
+info:
+  name: Mutation
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit
+
+docs:
+  content: Mit der GraphQL-Schnittstelle werden Patienten neu angelegt, geändert und gelöscht.
+  type: text/markdown

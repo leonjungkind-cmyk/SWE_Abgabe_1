@@ -1,0 +1,75 @@
+# Copyright (C) 2021 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Voraussetzung:   docker volume create mailpit
+
+# https://mailpit.axllent.org/docs/install/docker
+# https://mailpit.axllent.org/docs/configuration/runtime-options
+
+services:
+  mail:
+    # https://hub.docker.com/r/axllent/mailpit
+    # mit Alpine und ash als Shell
+    image: axllent/mailpit:v1.29.3
+    ports:
+      # https://mailpit.axllent.org/docs/install
+      # https://mailpit.axllent.org/docs/configuration
+      # SMTP
+      - published: 1025
+        target: 1025
+        protocol: tcp
+      # Web UI und REST-API
+      - published: 8025
+        target: 8025
+        protocol: tcp
+    volumes:
+      # https://mailpit.axllent.org/docs/configuration/email-storage
+      - mailpit:/data
+    environment:
+      TZ: Europe/Berlin
+      MP_DATABASE: /data/database.db
+      # default: 500
+      MP_MAX_MESSAGES: 50
+    networks: [acme-network]
+    hostname: mail
+    container_name: mail
+    cap_drop: [ALL]
+    healthcheck:
+      # nc = netcat
+      test: ["CMD", "nc", "-z", "localhost", "1025"]
+      #test: ["CMD", "wget", "--spider", "-q", "http://localhost:8025/readyz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 5s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+
+volumes:
+  mailpit:
+    name: mailpit
+    external: true
+
+networks:
+  acme-network:
+    name: acme-network

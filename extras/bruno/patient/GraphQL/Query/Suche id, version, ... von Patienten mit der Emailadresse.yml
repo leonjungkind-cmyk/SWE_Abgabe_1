@@ -1,0 +1,91 @@
+info:
+  name: Suche id, version, ... von Patienten mit der Emailadresse
+  type: graphql
+  seq: 4
+
+graphql:
+  method: POST
+  url: "{{graphqlUrl}}"
+  headers:
+    - name: ""
+      value: ""
+      disabled: true
+  body:
+    query: |-
+      query ($email: String = "alice@acme.com") {
+        patienten(suchparameter: {email: $email}) {
+          id
+          version
+          nachname
+          kategorie
+          hasNewsletter
+          geburtsdatum
+          homepage
+          geschlecht
+          familienstand
+          adresse {
+            plz
+            ort
+          }
+          fachaerzte
+          username
+        }
+      }
+    variables: |-
+      {
+        "email": "admin@acme.com"
+      }
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.headers['content-type']
+      operator: eq
+      value: application/json
+    - expression: res.body.data.patienten
+      operator: isArray
+    - expression: res.body.data.patienten
+      operator: length
+      value: "1"
+    - expression: res.body.data.patienten[0]
+      operator: isJson
+    - expression: res.body.data.patienten[0].id
+      operator: gte
+      value: "0"
+    - expression: res.body.data.patienten[0].version
+      operator: gte
+      value: "0"
+    - expression: res.body.data.patienten[0].nachname
+      operator: isString
+    - expression: res.body.data.patienten[0].nachname
+      operator: isNotEmpty
+    - expression: res.body.data.patienten[0].kategorie
+      operator: gte
+      value: "0"
+    - expression: res.body.data.patienten[0].hasNewsletter
+      operator: isBoolean
+    - expression: res.body.data.patienten[0].geschlecht
+      operator: isString
+    - expression: res.body.data.patienten[0].homepage
+      operator: isString
+    - expression: res.body.data.patienten[0].geschlecht
+      operator: isString
+    - expression: res.body.data.patienten[0].familienstand
+      operator: isString
+    - expression: res.body.data.patienten[0].adresse
+      operator: isJson
+    - expression: res.body.data.patienten[0].fachaerzte
+      operator: isArray
+    - expression: res.body.data.patienten[0].username
+      operator: isString
+    - expression: res.body.data.patienten[0].username
+      operator: isNotEmpty
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

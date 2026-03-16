@@ -1,0 +1,11 @@
+info:
+  name: Neu anlegen
+  type: folder
+  seq: 7
+
+request:
+  auth: inherit
+
+docs:
+  content: Patienten über die REST-Schnittstelle neu anlegen.
+  type: text/markdown

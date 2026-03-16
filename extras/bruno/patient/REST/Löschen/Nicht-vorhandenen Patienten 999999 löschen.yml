@@ -1,0 +1,31 @@
+info:
+  name: Nicht-vorhandenen Patienten 999999 löschen
+  type: http
+  seq: 2
+
+http:
+  method: DELETE
+  url: "{{restUrl}}/:id"
+  headers:
+    - name: If-Match
+      value: '"0"'
+  params:
+    - name: id
+      value: "999999"
+      type: path
+  body:
+    type: json
+    data: ""
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "204"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

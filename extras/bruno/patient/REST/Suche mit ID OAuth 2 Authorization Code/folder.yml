@@ -1,0 +1,25 @@
+info:
+  name: Suche mit ID OAuth 2 Authorization Code
+  type: folder
+  seq: 4
+
+request:
+  auth:
+    type: oauth2
+    flow: authorization_code
+    authorizationUrl: "{{oidcAuthUrl}}"
+    accessTokenUrl: "{{oidcTokenUrl}}"
+    callbackUrl: "{{baseUrl}}"
+    credentials:
+      clientId: "{{clientId}}"
+      clientSecret: "{{clientSecret}}"
+      placement: body
+    pkce:
+      disabled: true
+    tokenConfig:
+      id: credentials
+      placement:
+        header: Bearer
+    settings:
+      autoFetchToken: true
+      autoRefreshToken: false

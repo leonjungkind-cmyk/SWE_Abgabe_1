@@ -1,0 +1,11 @@
+info:
+  name: Token
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: Login über die REST-Schnittstelle.
+  type: text/markdown

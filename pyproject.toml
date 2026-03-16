@@ -1,0 +1,371 @@
+# Copyright (C) 2023 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# https://peps.python.org/pep-0518
+# https://peps.python.org/pep-0621/#example
+# https://packaging.python.org/en/latest/specifications/pyproject-toml
+
+# TOML (= Tom's Obvious Minimal Language) https://toml.io
+
+# Aufruf:   uv sync --all-groups
+#
+#           uv run patient
+#               uv run python -m patient
+#               uv run fastapi dev src/patient
+#               uv run uvicorn src.patient:app --ssl-certfile=src\patient\config\resources\tls\certificate.crt --ssl-keyfile=src\patient\config\resources\tls\key.pem
+#               uv, uvx, ruff, ty aus $env:USERPROFILE\.local\bin
+#
+#           uv run pytest
+#           uv run pytest -m rest
+#           uv run pytest -k test_post_invalid_json
+#
+#           uvx ruff check [--fix] src tests
+#           uvx ruff format src tests [--diff] [--check]
+#           uvx ty check src tests
+#           uv run mkdocs serve
+#           uvx locust -f .\extras\locustfile.py
+#
+#           uv tree --outdated --all-groups --depth=1
+#           uv tree --outdated --all-groups
+#           uv tree --invert --package pydantic
+#           uv tree
+#
+#           uv python list
+#           uv pip list --outdated
+#
+#           uvx pysentry-rs
+#           uv pip compile pyproject.toml > requirements.txt
+#           uvx pip-audit -r requirements.txt
+#
+#           uv export -o pylock.toml        https://peps.python.org/pep-0751
+#           uv pip install                  mit pylock.toml
+#
+#           .\.venv\Scripts\activate.ps1
+#               pyright src
+#
+#           uv build
+#           uv publish --token <UV_PUBLISH_TOKEN>
+
+[project]
+name = "patient"
+version = "2026.4.1"
+description = "Beispiel mit FastAPI, PostgreSQL, Keycloak und uv"
+readme = "README.md"
+authors = [
+    { name = "Juergen Zimmermann", email = "Juergen.Zimmermann@h-ka.de" },
+]
+maintainers = [
+    { name = "Jürgen Zimmermann", email = "Juergen.Zimmermann@h-ka.de" },
+]
+requires-python = ">=3.14.3"
+keywords = [
+    "Python",
+    "FastAPI",
+    "ASGI",
+    "REST",
+    "GraphQL",
+    "TLS",
+    "Validierung",
+    "OR-Mapping",
+    "PostgreSQL",
+    "OAuth2",
+    "Keycloak",
+    "Excel",
+    "Logging",
+    "TOML",
+    "Test",
+    "Codeanalyse",
+    "Formatierung",
+    "Dokumentation",
+    "Buildsystem",
+]
+# https://pypi.org/classifiers
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Framework :: FastAPI",
+    "Framework :: Pytest",
+    "Framework :: MkDocs",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Database",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Testing :: Traffic Generation",
+]
+# https://spdx.org/licenses/GPL-3.0-or-later.html
+# https://packaging.python.org/en/latest/specifications/license-expression
+# https://packaging.python.org/en/latest/specifications/pyproject-toml/#license
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+
+dependencies = [
+    # https://github.com/agronholm/anyio fuer Starlette
+    "anyio>=4.12.1",
+    # https://github.com/python-cffi/cffi
+    # Foreign Function Interface for Python calling C code, z.B. in cryptography
+    "cffi>=2.0.0",
+    # https://cryptography.io fuer python-keycloak bzw. jwcrypto
+    "cryptography>=46.0.5",
+    # Fuer Pydantic zur Validierung https://github.com/JoshData/python-email-validator
+    "email-validator>=2.3.0",
+    # https://fastapi.tiangolo.com einschl. starlette, pydantic, uvicorn
+    "fastapi>=0.135.1",
+    # httpx fuer den asynchronen TestClient von FastAPI (auch fuer eigene Tests)
+    # https://github.com/encode/httpx
+    "httpx[http2]>=0.28.1",
+    # https://github.com/latchset/jwcrypto genutzt von python-keycloak
+    # TODO https://github.com/marcospereirampj/python-keycloak/issues/674
+    "jwcrypto>=1.5.6",
+    # https://github.c om/Delgan/loguru
+    "loguru>=0.7.3",
+    # https://openpyxl.readthedocs.io
+    "openpyxl>=3.1.5",
+    # Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy
+    "orjson>=3.11.7",
+    # https://github.com/prometheus/client_python
+    "prometheus-client >= 0.24.1",
+    # https://github.com/trallnag/prometheus-fastapi-instrumentator
+    "prometheus-fastapi-instrumentator>=7.1.0",
+    # https://www.psycopg.org/psycopg3 https://github.com/psycopg/psycopg3
+    "psycopg[binary,pool]>=3.3.3",
+    "psycopg-binary>=3.3.3",
+    "psycopg-pool>=3.3.0",
+    # Validierung https://github.com/pydantic/pydantic https://github.com/pydantic/pydantic/blob/main/pyproject.toml#L51
+    "pydantic[email]>=2.12.5",
+    # "Core" fuer Pydantic, implementiert in Rust https://github.com/pydantic/pydantic-core
+    "pydantic_core>=2.41.5",
+    # https://github.com/pwaller/pyfiglet
+    "pyfiglet>=1.0.4",
+    # https://pyjwt.readthedocs.io; genutzt im Handbuch von FastAPI
+    # https://jwt.io/libraries?language=Python
+    # python-keycloak nutzt jwcrypto
+    #"PyJWT>=2.10.1",
+    # .env durch https://github.com/theskumar/python-dotenv
+    "python-dotenv>=1.2.2",
+    # https://python-keycloak.readthedocs.io
+    # Keycloak verschluesselt Passwoerter mit Argon2 (Sieger "Password Hashing Competition", 2013)
+    # TODO https://github.com/marcospereirampj/python-keycloak/issues/677
+    "python-keycloak>=7.1.1",
+    # https://github.com/Kludex/python-multipart fuer fastapi
+    "python-multipart>=v0.0.22",
+    # fuer OpenAPI
+    "PyYAML>=6.0.3",
+    # https://requests.readthedocs.io
+    # fuer python-keycloak
+    "requests==2.32.5",
+    # https://www.sqlalchemy.org
+    # nutzt greenlet: unterstuetzt NICHT free-threaded CPython
+    "SQLAlchemy>=2.0.48",
+    # https://www.starlette.dev
+    # https://github.com/fastapi/fastapi/blob/master/pyproject.toml#L46
+    "starlette>=0.52.1",
+    # https://strawberry.rocks https://github.com/strawberry-graphql/strawberry
+    "strawberry-graphql>=0.311.1",
+    # https://github.com/astanin/python-tabulate
+    "tabulate>=0.10.0",
+    # https://urllib3.readthedocs.io
+    # fuer requests
+    "urllib3>=2.6.3",
+    # https://www.uvicorn.dev
+    "uvicorn>=0.41.0",
+]
+
+[project.scripts]
+patient = "patient:main"
+
+[build-system]
+requires = ["uv_build==0.10.10"]
+build-backend = "uv_build"
+
+[project.urls]
+homepage = "https://www.h-ka.de"
+documentation = "https://readthedocs.org"
+repository = "https://github.com"
+changelog = "https://github.com/juergenzimmermann/patient/blob/master/CHANGELOG.md"
+
+# https://packaging.python.org/en/latest/specifications/dependency-groups
+# https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-groups
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#dependencies-and-requirements
+# https://pip.pypa.io/en/stable/user_guide/#dependency-groups
+# project.optional-dependencies ist laut https://peps.python.org/pep-0508 fuer optionale "extras"
+# https://docs.astral.sh/uv/concepts/projects/dependencies/#optional-dependencies
+[dependency-groups]
+dev = [
+    # FastAPI CLI
+    "fastapi[standard]>=0.135.1",
+    # http://www.gevent.org genutzt von locust
+    "gevent>=v25.9.1",
+    # https://github.com/MagicStack/httptools genutzt von uvicorn[standard] fuer fastapi[standard]
+    "httptools>=0.7.1",
+    # Safely pass data to untrusted environments and back
+    # Locust > Flask > itsdangerous
+    "itsdangerous>=2.2.0",
+    # https://locust.io
+    "locust>=2.43.3",
+    # https://pytest.org
+    "pytest>=9.0.2",
+    # https://pytest-cov.readthedocs.io
+    "pytest-cov>=7.0.0",
+    # https://github.com/pytest-dev/pytest-env
+    "pytest-env>=1.6.0",
+    # https://github.com/pytest-dev/pytest-html
+    "pytest-html>=4.2.0",
+    # https://github.com/pytest-dev/pytest-mock
+    "pytest-mock>=3.15.1",
+    # Locust > Flask > Werkzeug
+    "Werkzeug>=3.1.6",
+]
+doc = [
+    # https://github.com/mkdocstrings/griffe
+    # mkdocstrings-python > griffe
+    "griffe>=2.0.0",
+    # https://github.com/Python-Markdown/markdown
+    "Markdown>=3.10.2",
+    # https://mistune.lepture.com
+    "mistune>=3.2.0",
+    # https://github.com/christo-ph/mkdocs_build_plantuml
+    "mkdocs-build-plantuml-plugin>=2.1.0",
+    # https://squidfunk.github.io/mkdocs-material
+    "mkdocs-material>=9.7.5",
+    # https://github.com/facelessuser/mkdocs-material-extensions
+    "mkdocs-material-extensions>=1.3.1",
+    # https://www.mkdocs.org
+    "mkdocs>=1.6.1",
+    # https://mkdocstrings.github.io https://mkdocstrings.github.io/python
+    "mkdocstrings[python]>=1.0.3",
+    "mkdocstrings-python>=2.0.3",
+]
+lint = [
+    # https://github.com/pypa/pip-audit
+    "pip-audit>=2.10.0",
+    # https://docs.pysentry.com
+    "pysentry-rs>=0.4.3",
+    # http://pyrefly.org
+    #"pyrefly>=0.18.0",
+    # https://docs.astral.sh/ruff
+    "ruff>=0.15.6",
+    # https://github.com/astral-sh/ty
+    "ty>=0.0.23",
+    "types-openpyxl>=3.1.5.20250919",
+    "types-tabulate>=0.10.0.20260308",
+    # https://github.com/jendrikseipp/vulture
+    # "vulture>=2.7",
+]
+
+# https://coverage.readthedocs.io/en/latest/source.html
+[tool.coverage.run]
+include = ["src/patient/service/*"]
+
+# https://docs.pytest.org/en/stable/reference/customize.html
+[tool.pytest.ini_options]
+minversion = "8.4.1"
+# fuer Unit-Tests
+pythonpath = ["src"]
+testpaths = ["tests/integration", "tests/unit"]
+# -m: nur Tests mit dem spezifizierten _Marker_ ausführen
+# -r A: zusaetzliche Zusammenfassung anzeigen (A = All)
+# --html erfordert pytest-html
+# --cov erfordert pytest-cov
+addopts = "--html=report.html --cov --cov-report=html"
+markers = [
+    "rest: REST-Schnittstelle",
+    "get_request: GET-Requests",
+    "post_request: POST-Requests",
+    "put_request: PUT-Requests",
+    "delete_request: DELETE-Requests",
+    "login: Login mit der REST-Schnittstelle",
+    "health: Health des Servers ueberpruefen",
+    "graphql: GraphQL-Schnittstelle",
+    "query: Queries bei GraphQL",
+    "mutation: Mutations bei GraphQL",
+    "simple: Einfache Tests mit True und False",
+    "unit",
+    "unit_find_by_id",
+    "unit_find",
+    "unit_create",
+]
+
+[tool.pytest_env]
+# Zur Fehlersuche in Unit-Tests ggf. auskommentieren
+# LOGURU_LEVEL = "INFO"
+
+[tool.ruff]
+preview = true
+
+[tool.ruff.lint]
+# https://docs.astral.sh/ruff/rules
+select = [
+    "FAST",   # FastAPI
+    "B",      # flake8-bugbear https://github.com/PyCQA/flake8-bugbear
+    "ASYNC",  # flake8-async https://github.com/python-trio/flake8-async
+    "S",      # flake8-bandit https://github.com/tylerwince/flake8-bandit Bandit>=1.7.1
+    "BLE",    # flake8-blind-except https://github.com/elijahandrews/flake8-blind-except
+    "FBT",    # flake8-boolean-trap https://github.com/pwoolvett/flake8_boolean_trap
+    "A",      # flake8-builtins https://github.com/gforcada/flake8-builtins
+    "COM",    # flake8-commas https://github.com/PyCQA/flake8-commas
+    "C4",     # flake8-comprehensions https://github.com/adamchainz/flake8-comprehensions
+    "ISC001", # flake8-implicit-str-concat https://github.com/flake8-implicit-str-concat/flake8-implicit-str-concat
+    "PIE",    # flake8-pie https://github.com/sbdchd/flake8-pie
+    "RSE",    # flake8-raise https://github.com/jdufresne/flake8-raise
+    "RET",    # flake8-return https://github.com/afonasev/flake8-return
+    "SLF",    # flake8-self
+    "SIM",    # flake8-simplify https://github.com/MartinThoma/flake8-simplify
+    "TID",    # flake8-tidy-imports https://github.com/adamchainz/flake8-tidy-imports
+    "TC",     # flake8-type-checking https://github.com/snok/flake8-type-checking
+    "ARG",    # flake8-unused-arguments https://github.com/nhoad/flake8-unused-arguments
+    "PTH",    # flake8-use-pathlib https://gitlab.com/RoPP/flake8-use-pathlib
+    "I",      # isort https://github.com/PyCQA/isort
+    "N",      # pep8-naming https://github.com/PyCQA/pep8-naming
+    "PERF",   # Perflint https://github.com/tonybaloney/perflint
+    "E",      # pycodestyle https://github.com/pycqa/pycodestyle
+    "W",      # pycodestyle (warning)
+    "D",      # pydoclint https://github.com/jsh9/pydoclint
+    "F",      # Pyflakes https://github.com/PyCQA/pyflakes
+    "PL",     # Pylint https://pypi.org/project/pylint
+    "UP",     # pyupgrade https://github.com/asottile/pyupgrade
+    "FURB",   # refurb https://github.com/dosisod/refurb
+    "RUF",    # Ruff-specific rules https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
+]
+ignore = [
+    # D212 https://docs.astral.sh/ruff/rules/multi-line-summary-first-line als Alternative zu D203 und D213
+    "D203",   # https://docs.astral.sh/ruff/rules/incorrect-blank-line-before-class
+    "D213",   # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line
+    "RUF012", # https://docs.astral.sh/ruff/rules/mutable-class-default
+    # https://github.com/astral-sh/ruff/issues/9216
+    "COM812",  # https://docs.astral.sh/ruff/rules/missing-trailing-comma
+    "PLR6301", # https://docs.astral.sh/ruff/rules/no-self-use
+    "TC001",   # https://docs.astral.sh/ruff/rules/typing-only-first-party-import
+    "TC002",   # https://docs.astral.sh/ruff/rules/typing-only-third-party-import
+    "TC003",   # https://docs.astral.sh/ruff/rules/typing-only-standard-library-import
+    # "S501",    # https://docs.astral.sh/ruff/rules/request-with-no-cert-validation
+]
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+
+# https://docs.astral.sh/ty/reference/configuration
+[tool.ty.environment]
+# https://docs.astral.sh/ty/reference/configuration/#python
+python = "./.venv"
+# https://docs.astral.sh/ty/modules
+root = ["./src", "./tests/integration", "./tests/unit"]
+
+# VORSICHT: in Dockerfile "--no-default-groups" bei "uv sync"
+[tool.uv]
+default-groups = "all"

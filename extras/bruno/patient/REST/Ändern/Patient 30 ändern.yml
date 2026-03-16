@@ -1,0 +1,43 @@
+info:
+  name: Patient 30 ändern
+  type: http
+  seq: 1
+
+http:
+  method: PUT
+  url: "{{restUrl}}/:id"
+  headers:
+    - name: If-Match
+      value: '"0"'
+  params:
+    - name: id
+      value: "30"
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+          "nachname": "Alphaput",
+          "email": "alpha@acme.de.put",
+          "kategorie": 9,
+          "has_newsletter": false,
+          "geburtsdatum": "2022-01-09",
+          "homepage": "https://www.acme.ch.put"
+      }
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "204"
+    - expression: res.body
+      operator: isString
+    - expression: res.body
+      operator: isEmpty
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

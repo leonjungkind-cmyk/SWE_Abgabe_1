@@ -1,0 +1,23 @@
+info:
+  name: Token ohne Benutzerkennung
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{tokenUrl}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "401"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

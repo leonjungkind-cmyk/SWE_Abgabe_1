@@ -1,0 +1,111 @@
+# Copyright (C) 2023 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Aufruf:   uv run mkdocs serve
+
+# https://www.mkdocs.org/user-guide
+# https://realpython.com/python-project-documentation-with-mkdocs
+
+site_name: patient
+
+nav:
+  - Start: index.md
+  - Use Cases: use-cases.md
+  - Komponentendiagramm: komponentendiagramm.md
+  - Schichtenarchitektur: schichtenarchitektur.md
+  - ER-Diagramm: er-diagramm.md
+  - API-Dokumentation:
+      # https://chrieke.medium.com/documenting-a-python-package-with-code-reference-via-mkdocs-material-b4a45197f95b
+      - __init__: modules/__init__.md
+      - REST-Schnittstelle: modules/rest.md
+      - GraphQL-Schnittstelle: modules/graphql.md
+      - Geschäftslogik: modules/service.md
+      - Datenbankzugriffsschicht: modules/repository.md
+      - Geschäftsobjekte: modules/entity.md
+      - Authentifizierung und Autorisierung: modules/security.md
+
+theme:
+  name: material
+  favicon: img/favicon.ico
+  logo: img/logo.webp
+  # https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.path
+    - navigation.top
+    - toc.follow
+  palette:
+    # https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/?h=switch#automatic-light-dark-mode
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  # https://squidfunk.github.io/mkdocs-material/setup/changing-the-language
+  language: de
+
+# site_dir: site
+
+markdown_extensions:
+  - toc:
+      permalink: true
+
+watch: [docs, mkdocs.yml, src/patient]
+strict: true
+copyright: Copyright &copy; 2023 - present Jürgen Zimmermann, Hochschule Karlsruhe
+
+plugins:
+  # https://squidfunk.github.io/mkdocs-material/setup/setting-up-site-search
+  - search
+  # https://mkdocstrings.github.io/usage
+  # https://mkdocstrings.github.io/python/usage
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          src: src/patient
+          options:
+            # default: google
+            docstring_style: sphinx
+            show_source: false
+            show_docstring_modules: true
+            show_docstring_classes: true
+            show_docstring_functions: true
+
+  - build_plantuml:
+      render: "server"
+      server: "http://www.plantuml.com/plantuml" # official plantuml server # DevSkim: ignore DS137138
+      disable_ssl_certificate_validation: true # for self-signed and invalid certs
+      output_format: "svg"
+      diagram_root: "docs/diagramme"
+      output_folder: "out"
+      input_folder: "src"
+      input_extensions: "plantuml"
+
+    # https://squidfunk.github.io/mkdocs-material/setup/building-for-offline-usage
+    #- offline

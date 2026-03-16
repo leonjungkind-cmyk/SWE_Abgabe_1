@@ -1,0 +1,48 @@
+info:
+  name: Token als admin
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{tokenUrl}}"
+  headers:
+    - name: ""
+      value: ""
+      disabled: true
+  body:
+    type: json
+    data: |-
+      {
+          "username": "admin",
+          "password": "p"
+      }
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.headers['content-type']
+      operator: eq
+      value: application/json
+    - expression: res.body.token
+      operator: matches
+      value: .\..+\..+
+    - expression: res.body.expires_in
+      operator: eq
+      value: "1800"
+    - expression: res.body.rollen
+      operator: isArray
+    - expression: res.body.rollen
+      operator: length
+      value: "1"
+    - expression: res.body.rollen[0]
+      operator: eq
+      value: ADMIN
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

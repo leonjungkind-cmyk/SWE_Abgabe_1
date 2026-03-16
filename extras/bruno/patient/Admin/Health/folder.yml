@@ -1,0 +1,14 @@
+info:
+  name: Health
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+  variables:
+    - name: healthUrl
+      value: "{{baseUrl}}/health"
+
+docs:
+  content: Abfragen zu Liveness und Readiness für z.B. Kubernetes.
+  type: text/markdown

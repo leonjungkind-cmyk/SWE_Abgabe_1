@@ -1,0 +1,80 @@
+info:
+  name: Suche id, version, ... von Patienten mit Nachnamen
+  type: graphql
+  seq: 6
+
+graphql:
+  method: POST
+  url: "{{graphqlUrl}}"
+  headers:
+    - name: ""
+      value: ""
+      disabled: true
+  body:
+    query: |-
+      query ($nachname: String = "Alice") {
+        patienten(suchparameter: {nachname: $nachname}) {
+          id
+          version
+          email
+          kategorie
+          hasNewsletter
+          geburtsdatum
+          homepage
+          geschlecht
+          familienstand
+          adresse {
+            plz
+            ort
+          }
+          fachaerzte
+          username
+        }
+      }
+    variables: |-
+      {
+        "nachname": "Alice"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test('Body mit den Properties', () => {
+          res.getBody()
+            .data
+            .patienten
+            .forEach(patient => {
+              const { id, version, email, kategorie, hasNewsletter, geburtsdatum, homepage, geschlecht, familienstand, adresse, fachaerzte, username } = patient;
+              expect(id).to.be.gte(0);
+              expect(version).to.be.gte(0);
+              expect(email).to.be.a('string');
+              expect(kategorie).to.be.gte(0);
+              expect(hasNewsletter).to.be.a('boolean');
+              expect(geburtsdatum).to.be.a('string');
+              expect(homepage).to.be.a('string');
+              expect(geschlecht).to.be.a('string');
+              expect(familienstand).to.be.a('string');
+              expect(adresse).to.be.an('object');
+              expect(fachaerzte).to.be.an('array');
+              expect(username).to.be.a('string');
+            });
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.headers['content-type']
+      operator: eq
+      value: application/json
+    - expression: res.body.data.patienten
+      operator: isArray
+    - expression: res.body.data.patienten
+      operator: isNotEmpty
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

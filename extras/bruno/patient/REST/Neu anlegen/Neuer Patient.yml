@@ -1,0 +1,59 @@
+info:
+  name: Neuer Patient
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{restUrl}}"
+  headers:
+    - name: ""
+      value: ""
+      disabled: true
+  body:
+    type: json
+    data: |-
+      {
+          "nachname": "Nachnamerest",
+          "email": "testrest@test.rest",
+          "kategorie": 1,
+          "has_newsletter": true,
+          "geburtsdatum": "2022-02-01",
+          "homepage": "https://test.rest",
+          "geschlecht": "W",
+          "familienstand": "L",
+          "adresse": {
+              "plz": "99999",
+              "ort": "Restort"
+          },
+          "rechnungen": [
+              {
+                  "betrag": "999.99",
+                  "waehrung": "EUR"
+              }
+          ],
+          "fachaerzte": [
+              "N"
+          ],
+          "username": "testrest"
+      }
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "201"
+    - expression: res.headers.location
+      operator: matches
+      value: \/rest\/[1-9]\d*$
+    - expression: res.body
+      operator: isString
+    - expression: res.body
+      operator: isEmpty
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,10 @@
+info:
+  name: Dev
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
+  variables:
+    - name: devUrl
+      value: "{{baseUrl}}/dev"

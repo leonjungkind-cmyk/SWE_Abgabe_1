@@ -1,0 +1,42 @@
+info:
+  name: Patient 30 mit bereits existierender Emailadresse ändern
+  type: http
+  seq: 7
+
+http:
+  method: PUT
+  url: "{{restUrl}}/:id"
+  headers:
+    - name: If-Match
+      value: '"1"'
+  params:
+    - name: id
+      value: "30"
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+          "nachname": "Aliceput",
+          "email": "alice@acme.de",
+          "kategorie": 9,
+          "has_newsletter": false,
+          "geburtsdatum": "2022-01-09",
+          "homepage": "https://www.acme.ch.put"
+      }
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "422"
+    - expression: res.body.detail
+      operator: contains
+      value: Email
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

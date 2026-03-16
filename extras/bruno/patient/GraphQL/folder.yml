@@ -1,0 +1,10 @@
+info:
+  name: GraphQL
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit
+  variables:
+    - name: graphqlUrl
+      value: "{{baseUrl}}/graphql"

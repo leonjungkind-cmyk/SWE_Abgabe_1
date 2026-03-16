@@ -1,0 +1,40 @@
+info:
+  name: Alle
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{restUrl}}"
+  headers:
+    - name: Accept
+      value: application/json
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test('Body: id > 0', () => {
+          res.getBody()
+            .content
+            .map(patient => patient.id)
+            .forEach(id => expect(id).to.be.above(0));
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.headers['content-type']
+      operator: eq
+      value: application/json
+    - expression: res.body.content
+      operator: isArray
+    - expression: res.body.content
+      operator: isNotEmpty
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,64 @@
+info:
+  name: Patient 30 mit ungültigen Daten ändern
+  type: http
+  seq: 6
+
+http:
+  method: PUT
+  url: "{{restUrl}}/:id"
+  headers:
+    - name: If-Match
+      value: '"0"'
+  params:
+    - name: id
+      value: "30"
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+          "nachname": "falscher_nachname_put",
+          "email": "falsche_email_put@",
+          "kategorie": 11,
+          "has_newsletter": false,
+          "geburtsdatum": "2022-03-03",
+          "homepage": "https://?!"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test('Fehlermeldungen im Response Body', () => {
+          const body = res.getBody();
+          const props = ['nachname', 'email', 'kategorie', 'homepage'];
+
+          // FastAPI
+          if (Object.keys(body).length == 1 && body.detail !== undefined) {
+            const detailProps = body.detail.map(elem => elem.loc[1]);
+            expect(detailProps).to.have.length(props.length);
+            detailProps.forEach(prop => expect(props).to.include(prop));
+          }
+
+          // Flask
+          //expect(Object.keys(body)).to.be.an('array').that.has.a.lengthOf(props.length);
+          //props.forEach(prop => expect(body[prop]).to.be.an('array').that.is.not.empty);
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "422"
+    - expression: res.headers['content-type']
+      operator: eq
+      value: application/json
+    - expression: res.body.detail
+      operator: isArray
+    - expression: res.body.detail
+      operator: isNotEmpty
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
