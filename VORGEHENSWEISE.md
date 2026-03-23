@@ -38,6 +38,7 @@
 - SonarQube als Docker Container
 - uv tree --outdated --all-groups --depth=1
 - uv pip list --outdated
+- uv audit --all-extras
 - pysentry und pip-audit
 - OWASP Dependency Check
 
