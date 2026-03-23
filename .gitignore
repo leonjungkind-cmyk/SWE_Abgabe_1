@@ -25,5 +25,7 @@ dependency-check-report.html
 
 # Sensible Daten
 .env
+sonar-project.properties
 extras/compose/db/postgres/db_password.txt
 src/patient/config/resources/tls/private-key.pem
+
