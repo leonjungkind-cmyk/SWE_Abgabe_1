@@ -176,21 +176,21 @@ dependencies = [
     # https://github.com/fastapi/fastapi/blob/master/pyproject.toml#L46
     "starlette>=0.52.1",
     # https://strawberry.rocks https://github.com/strawberry-graphql/strawberry
-    "strawberry-graphql>=0.311.1",
+    "strawberry-graphql>=0.311.3",
     # https://github.com/astanin/python-tabulate
     "tabulate>=0.10.0",
     # https://urllib3.readthedocs.io
     # fuer requests
     "urllib3>=2.6.3",
     # https://www.uvicorn.dev
-    "uvicorn>=0.41.0",
+    "uvicorn>=0.42.0",
 ]
 
 [project.scripts]
 patient = "patient:main"
 
 [build-system]
-requires = ["uv_build==0.10.10"]
+requires = ["uv_build==0.10.11"]
 build-backend = "uv_build"
 
 [project.urls]
@@ -262,7 +262,7 @@ lint = [
     "ruff>=0.15.6",
     # https://github.com/astral-sh/ty
     "ty>=0.0.23",
-    "types-openpyxl>=3.1.5.20250919",
+    "types-openpyxl>=3.1.5.20260316",
     "types-tabulate>=0.10.0.20260308",
     # https://github.com/jendrikseipp/vulture
     # "vulture>=2.7",

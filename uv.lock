@@ -1311,10 +1311,10 @@ requires-dist = [
     { name = "requests", specifier = "==2.32.5" },
     { name = "sqlalchemy", specifier = ">=2.0.48" },
     { name = "starlette", specifier = ">=0.52.1" },
-    { name = "strawberry-graphql", specifier = ">=0.311.1" },
+    { name = "strawberry-graphql", specifier = ">=0.311.3" },
     { name = "tabulate", specifier = ">=0.10.0" },
     { name = "urllib3", specifier = ">=2.6.3" },
-    { name = "uvicorn", specifier = ">=0.41.0" },
+    { name = "uvicorn", specifier = ">=0.42.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -1347,7 +1347,7 @@ lint = [
     { name = "pysentry-rs", specifier = ">=0.4.3" },
     { name = "ruff", specifier = ">=0.15.6" },
     { name = "ty", specifier = ">=0.0.23" },
-    { name = "types-openpyxl", specifier = ">=3.1.5.20250919" },
+    { name = "types-openpyxl", specifier = ">=3.1.5.20260316" },
     { name = "types-tabulate", specifier = ">=0.10.0.20260308" },
 ]
 

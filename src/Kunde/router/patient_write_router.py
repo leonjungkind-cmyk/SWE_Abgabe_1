@@ -14,6 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """PatientWriteRouter."""
+
 from typing import Annotated, Final
 
 from fastapi import APIRouter, Depends, Request, Response, status

@@ -23,12 +23,17 @@
 #           macOS:     cat Dockerfile | docker run --rm --interactive hadolint/hadolint:v2.14.0-debian
 #
 #           docker debug juergenzimmermann/patient:2026.4.1-hardened
+#           docker scout sbom juergenzimmermann/patient:2026.4.1-hardened
+#           docker scout cves juergenzimmermann/patient:2026.4.1-hardened
 #           docker save juergenzimmermann/patient:2026.4.1-hardened > patient.tar
+#           docker scout attest get dhi.io/python:3.14.3-debian13 --predicate-type https://slsa.dev/provenance/v0.2 --verify
+#               https://docs.docker.com/dhi/core-concepts/slsa
 
 # https://docs.docker.com/engine/reference/builder/#syntax
 # https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md
 # https://hub.docker.com/r/docker/dockerfile
 # https://docs.docker.com/build/building/multi-stage
+# https://docs.docker.com/dhi
 # https://testdriven.io/blog/docker-best-practices
 # https://containers.gitbook.io/build-containers-the-hard-way
 # https://wiki.debian.org/DebianReleases
@@ -40,7 +45,7 @@
 # ENV: "build-time" und "runtime" Variable
 ARG PYTHON_MAIN_VERSION=3.14
 ARG PYTHON_VERSION=${PYTHON_MAIN_VERSION}.3
-ARG UV_VERSION=0.10.10
+ARG UV_VERSION=0.10.11
 
 # ------------------------------------------------------------------------------
 # S t a g e   b u i l d e r
@@ -89,8 +94,8 @@ FROM dhi.io/python:${PYTHON_VERSION}-debian13 AS final
 # https://spdx.org/licenses
 # MAINTAINER ist deprecated https://docs.docker.com/engine/reference/builder/#maintainer-deprecated
 LABEL org.opencontainers.image.title="patient" \
-    org.opencontainers.image.description="Appserver patient mit Basis-Image Bookworm" \
-    org.opencontainers.image.version="2026.4.1-bookworm" \
+    org.opencontainers.image.description="Appserver patient mit Basis-Image Trixie hardened" \
+    org.opencontainers.image.version="2026.4.1-hardened" \
     org.opencontainers.image.licenses="GPL-3.0-or-later" \
     org.opencontainers.image.authors="Juergen.Zimmermann@h-ka.de"
 

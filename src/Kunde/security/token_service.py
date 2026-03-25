@@ -14,6 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """Anwendungskern für Benutzerdaten."""
+
 from collections.abc import Mapping
 from dataclasses import asdict
 from typing import Any, Final
@@ -100,7 +101,7 @@ class TokenService:
         """
         try:
             token_decoded: Final = self.keycloak.decode_token(token=token)
-        except (JWException) as err:
+        except JWException as err:
             # Oberklasse von InvalidJWSObject, InvalidJWSSignature, JWKeyNotFound
             # Ungueltiger Token, der nicht decodiert werden kann
             raise AuthorizationError from err

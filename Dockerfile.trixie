@@ -40,7 +40,7 @@
 # ENV: "build-time" und "runtime" Variable
 ARG PYTHON_MAIN_VERSION=3.14
 ARG PYTHON_VERSION=${PYTHON_MAIN_VERSION}.3
-ARG UV_VERSION=0.10.10
+ARG UV_VERSION=0.10.11
 
 # ------------------------------------------------------------------------------
 # S t a g e   b u i l d e r
@@ -96,8 +96,8 @@ FROM python:${PYTHON_VERSION}-slim-trixie AS final
 # https://spdx.org/licenses
 # MAINTAINER ist deprecated https://docs.docker.com/engine/reference/builder/#maintainer-deprecated
 LABEL org.opencontainers.image.title="patient" \
-    org.opencontainers.image.description="Appserver patient mit Basis-Image Bookworm" \
-    org.opencontainers.image.version="2026.4.1-bookworm" \
+    org.opencontainers.image.description="Appserver patient mit Basis-Image Slim Trixie" \
+    org.opencontainers.image.version="2026.4.1-trixie" \
     org.opencontainers.image.licenses="GPL-3.0-or-later" \
     org.opencontainers.image.authors="Juergen.Zimmermann@h-ka.de"
 
