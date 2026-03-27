@@ -20,7 +20,7 @@ from typing import Final
 
 from loguru import logger
 
-from patient.config.config import app_config
+from kunde.config.config import app_config
 
 __all__ = [
     "csv_config",

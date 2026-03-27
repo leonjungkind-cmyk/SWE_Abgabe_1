@@ -21,8 +21,8 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 from loguru import logger
 
-from patient.config.dev.db_populate import DbPopulateService, get_db_populate_service
-from patient.security import Role, RolesRequired, User
+from kunde.config.dev.db_populate import DbPopulateService, get_db_populate_service
+from kunde.security import Role, RolesRequired, User
 
 __all__ = ["router"]
 

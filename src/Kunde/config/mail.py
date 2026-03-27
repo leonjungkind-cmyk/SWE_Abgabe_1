@@ -17,7 +17,7 @@
 
 from typing import Final
 
-from patient.config.config import app_config
+from kunde.config.config import app_config
 
 __all__ = ["mail_enabled", "mail_host", "mail_port", "mail_timeout"]
 

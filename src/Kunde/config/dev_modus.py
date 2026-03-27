@@ -17,7 +17,7 @@
 
 from typing import Final
 
-from patient.config.config import app_config
+from kunde.config.config import app_config
 
 __all__ = ["dev_db_populate", "dev_keycloak_populate"]
 

@@ -21,7 +21,7 @@ from typing import TYPE_CHECKING, Final, Literal
 from loguru import logger
 from sqlalchemy.engine import URL
 
-from patient.config.config import app_config, resources_path
+from kunde.config.config import app_config, resources_path
 
 if TYPE_CHECKING:
     from importlib.resources.abc import Traversable
