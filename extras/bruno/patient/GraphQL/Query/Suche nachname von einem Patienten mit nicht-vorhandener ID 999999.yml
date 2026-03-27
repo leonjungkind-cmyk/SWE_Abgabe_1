@@ -1,5 +1,5 @@
 info:
-  name: Suche nachname von einem Patienten mit nicht-vorhandener ID 999999
+  name: Suche nachname von einem Kundeen mit nicht-vorhandener ID 999999
   type: graphql
   seq: 2
 
@@ -13,7 +13,7 @@ graphql:
   body:
     query: |-
       {
-        patient(patientId: "999999") {
+        kunde(kundeId: "999999") {
           nachname
         }
       }
@@ -27,7 +27,7 @@ runtime:
     - expression: res.headers['content-type']
       operator: eq
       value: application/json
-    - expression: res.body.data.patient
+    - expression: res.body.data.kunde
       operator: isNull
 
 settings:

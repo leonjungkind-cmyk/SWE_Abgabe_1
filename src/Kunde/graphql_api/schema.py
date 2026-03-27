@@ -27,21 +27,21 @@ from loguru import logger
 from strawberry.fastapi import GraphQLRouter
 from strawberry.types import Info
 
-from patient.config.graphql import graphql_ide
-from patient.graphql_api.graphql_types import (
+from kunde.config.graphql import graphql_ide
+from kunde.graphql_api.graphql_types import (
     CreatePayload,
     LoginResult,
-    PatientInput,
+    KundeInput,
     Suchparameter,
 )
-from patient.repository import Pageable, PatientRepository
-from patient.router.patient_model import PatientModel
-from patient.security import Role, TokenService, UserService
-from patient.service import (
+from kunde.repository import Pageable, KundeRepository
+from kunde.router.kunde_model import KundeModel
+from kunde.security import Role, TokenService, UserService
+from kunde.service import (
     NotFoundError,
-    PatientDTO,
-    PatientService,
-    PatientWriteService,
+    KundeDTO,
+    KundeService,
+    KundeWriteService,
 )
 
 __all__ = ["graphql_router"]
@@ -51,20 +51,20 @@ __all__ = ["graphql_router"]
 # - keine Schema-Datei in SDL (schema definition language) notwendig
 # - das Schema wird aus Klassen generiert, die mit z.B. @type oder @input dekoriert sind
 
-# type Patient {
+# type kunde {
 #     nachname: String!
 # }
 # input Suchparameter {...}
 # type Query {
-#     patient(patient_id: ID!): Patient!
-#     patienten(suchparameter: Suchparameter): list[Patient!]!
+#     kunde(kunde_id: ID!): kunde!
+#     kundeen(suchparameter: Suchparameter): list[kunde!]!
 # }
 
 
-_repo: Final = PatientRepository()
-_service: PatientService = PatientService(repo=_repo)
+_repo: Final = KundeRepository()
+_service: KundeService = KundeService(repo=_repo)
 _user_service: UserService = UserService()
-_write_service: PatientWriteService = PatientWriteService(
+_write_service: KundeWriteService = KundeWriteService(
     repo=_repo, user_service=_user_service
 )
 _token_service: Final = TokenService()
@@ -72,18 +72,18 @@ _token_service: Final = TokenService()
 
 @strawberry.type  # vgl. @dataclass
 class Query:
-    """Queries, um Patientendaten zu lesen."""
+    """Queries, um Kundeendaten zu lesen."""
 
     @strawberry.field
-    def patient(self, patient_id: strawberry.ID, info: Info) -> PatientDTO | None:
-        """Daten zu einem Patienten lesen.
+    def kunde(self, kunde_id: strawberry.ID, info: Info) -> KundeDTO | None:
+        """Daten zu einem Kundeen lesen.
 
-        :param patient_id: ID des gesuchten Patienten
-        :return: Gesuchter Patient
-        :rtype: Patient
-        :raises NotFoundError: Falls kein Patient gefunden wurde, wird zu GraphQLError
+        :param kunde_id: ID des gesuchten Kundeen
+        :return: Gesuchter kunde
+        :rtype: kunde
+        :raises NotFoundError: Falls kein kunde gefunden wurde, wird zu GraphQLError
         """
-        logger.debug("patient_id={}", patient_id)
+        logger.debug("kunde_id={}", kunde_id)
 
         request: Final[Request] = info.context.get("request")
         user: Final = _token_service.get_user_from_request(request=request)
@@ -91,25 +91,25 @@ class Query:
             return None
 
         try:
-            patient_dto: Final = _service.find_by_id(
-                patient_id=int(patient_id),
+            kunde_dto: Final = _service.find_by_id(
+                kunde_id=int(kunde_id),
                 user=user,
             )
         except NotFoundError:
             return None
-        logger.debug("{}", patient_dto)
-        return patient_dto
+        logger.debug("{}", kunde_dto)
+        return kunde_dto
 
     @strawberry.field
-    def patienten(
+    def kundeen(
         self, suchparameter: Suchparameter, info: Info
-    ) -> Sequence[PatientDTO]:
-        """Patienten anhand von Suchparameter suchen.
+    ) -> Sequence[KundeDTO]:
+        """Kundeen anhand von Suchparameter suchen.
 
         :param suchparameter: nachname, email usw.
-        :return: Die gefundenen Patienten
-        :rtype: list[Patient]
-        :raises NotFoundError: Falls kein Patient gefunden wurde, wird zu GraphQLError
+        :return: Die gefundenen Kundeen
+        :rtype: list[kunde]
+        :raises NotFoundError: Falls kein kunde gefunden wurde, wird zu GraphQLError
         """
         logger.debug("suchparameter={}", suchparameter)
 
@@ -133,43 +133,43 @@ class Query:
 
         pageable: Final = Pageable.create(size=str(0))
         try:
-            patienten_dto: Final = _service.find(
+            kundeen_dto: Final = _service.find(
                 suchparameter=suchparameter_filtered, pageable=pageable
             )
         except NotFoundError:
             return []
-        logger.debug("{}", patienten_dto)
-        return patienten_dto.content
+        logger.debug("{}", kundeen_dto)
+        return kundeen_dto.content
 
 
 @strawberry.type
 class Mutation:
-    """Mutations, um Patientendaten anzulegen, zu ändern oder zu löschen."""
+    """Mutations, um Kundeendaten anzulegen, zu ändern oder zu löschen."""
 
     @strawberry.mutation
-    def create(self, patient_input: PatientInput) -> CreatePayload:
-        """Einen neuen Patienten anlegen.
+    def create(self, kunde_input: KundeInput) -> CreatePayload:
+        """Einen neuen Kundeen anlegen.
 
-        :param patient_input: Daten des neuen Patienten
-        :return: ID des neuen Patienten
+        :param kunde_input: Daten des neuen Kundeen
+        :return: ID des neuen Kundeen
         :rtype: CreatePayload
         :raises EmailExistsError: Falls die Emailadresse bereits existiert
         :raises UsernameExistsError: Falls der Benutzername bereits existiert
         """
-        logger.debug("patient_input={}", patient_input)
+        logger.debug("kunde_input={}", kunde_input)
 
-        patient_dict = patient_input.__dict__
-        patient_dict["adresse"] = patient_input.adresse.__dict__
+        kunde_dict = kunde_input.__dict__
+        kunde_dict["adresse"] = kunde_input.adresse.__dict__
         # List Comprehension ab Python 2.0 (2000) https://peps.python.org/pep-0202
-        patient_dict["rechnungen"] = [
-            rechnung.__dict__ for rechnung in patient_input.rechnungen
+        kunde_dict["rechnungen"] = [
+            rechnung.__dict__ for rechnung in kunde_input.rechnungen
         ]
 
         # Dictonary mit Pydantic validieren
-        patient_model: Final = PatientModel.model_validate(patient_dict)
+        kunde_model: Final = KundeModel.model_validate(kunde_dict)
 
-        patient_dto: Final = _write_service.create(patient=patient_model.to_patient())
-        payload: Final = CreatePayload(id=patient_dto.id)  # pyright: ignore[reportArgumentType ]
+        kunde_dto: Final = _write_service.create(kunde=kunde_model.to_kunde())
+        payload: Final = CreatePayload(id=kunde_dto.id)  # pyright: ignore[reportArgumentType ]
 
         logger.debug("{}", payload)
         return payload

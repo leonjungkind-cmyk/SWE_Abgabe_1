@@ -16,14 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# Aufruf:   docker build --tag juergenzimmermann/patient:2026.4.1-trixie -f Dockerfile.trixie .
+# Aufruf:   docker build --tag juergenzimmermann/kunde:2026.4.1-trixie -f Dockerfile.trixie .
 #               ggf. --no-cache
 #
 #           Windows:   Get-Content Dockerfile.trixie | docker run --rm --interactive hadolint/hadolint:v2.14.0-debian
 #           macOS:     cat Dockerfile.trixie | docker run --rm --interactive hadolint/hadolint:v2.14.0-debian
 #
-#           docker debug juergenzimmermann/patient:2026.4.1-trixie
-#           docker save juergenzimmermann/patient:2026.4.1-trixie > patient.tar
+#           docker debug juergenzimmermann/kunde:2026.4.1-trixie
+#           docker save juergenzimmermann/kunde:2026.4.1-trixie > kunde.tar
 
 # https://docs.docker.com/engine/reference/builder/#syntax
 # https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md
@@ -95,8 +95,8 @@ FROM python:${PYTHON_VERSION}-slim-trixie AS final
 # https://specs.opencontainers.org/image-spec/annotations
 # https://spdx.org/licenses
 # MAINTAINER ist deprecated https://docs.docker.com/engine/reference/builder/#maintainer-deprecated
-LABEL org.opencontainers.image.title="patient" \
-    org.opencontainers.image.description="Appserver patient mit Basis-Image Slim Trixie" \
+LABEL org.opencontainers.image.title="kunde" \
+    org.opencontainers.image.description="Appserver kunde mit Basis-Image Slim Trixie" \
     org.opencontainers.image.version="2026.4.1-trixie" \
     org.opencontainers.image.licenses="GPL-3.0-or-later" \
     org.opencontainers.image.authors="Juergen.Zimmermann@h-ka.de"
@@ -142,4 +142,4 @@ EXPOSE 8000
 
 STOPSIGNAL SIGINT
 
-ENTRYPOINT ["python", "-m", "patient"]
+ENTRYPOINT ["python", "-m", "kunde"]

@@ -22,15 +22,15 @@ left to right direction
 actor RESTClient
 actor GraphQLClient
 
-node "patient" {
-  [patient_get_controller]
-  [patient_write_controller]
+node "kunde" {
+  [kunde_get_controller]
+  [kunde_write_controller]
   [schema]
 
-  [patient_read_service]
-  [patient_write_service]
+  [kunde_read_service]
+  [kunde_write_service]
 
-  [patient_repository]
+  [kunde_repository]
 
   [mailer]
 }
@@ -44,8 +44,8 @@ cloud {
     [smtp]
 }
 
-database "DB patient" {
-    [Tabelle patient]
+database "DB kunde" {
+    [Tabelle kunde]
     [Tabelle adresse]
     [Tabelle rechnung]
 }
@@ -54,23 +54,23 @@ node {
     [Mailserver]
 }
 
-RESTClient ~~> [patient_get_controller]
-RESTClient ~~> [patient_write_controller]
+RESTClient ~~> [kunde_get_controller]
+RESTClient ~~> [kunde_write_controller]
 GraphQLClient ~~> [schema]
 
-[patient_get_controller] ..> [patient_read_service]
-[patient_write_controller] ..> [patient_write_service]
-[schema] ..> [patient_read_service]
-[schema] ..> [patient_write_service]
-[patient_read_service] ..> [patient_repository]
-[patient_write_service] ..> [patient_repository]
+[kunde_get_controller] ..> [kunde_read_service]
+[kunde_write_controller] ..> [kunde_write_service]
+[schema] ..> [kunde_read_service]
+[schema] ..> [kunde_write_service]
+[kunde_read_service] ..> [kunde_repository]
+[kunde_write_service] ..> [kunde_repository]
 
-[patient_repository] ~~> [SQLAlchemy]
-[SQLAlchemy] ~~> [Tabelle patient]
+[kunde_repository] ~~> [SQLAlchemy]
+[SQLAlchemy] ~~> [Tabelle kunde]
 [SQLAlchemy] ~~> [Tabelle adresse]
 [SQLAlchemy] ~~> [Tabelle rechnung]
 
-[patient_write_service] ..> [mailer]
+[kunde_write_service] ..> [mailer]
 [mailer] ~~> [smtp]
 [smtp] ~~> [Mailserver]
 

@@ -31,7 +31,7 @@ token: str | None
 @mark.post_request
 def test_post() -> None:
     # arrange
-    neuer_patient: Final = {
+    neuer_kunde: Final = {
         "nachname": "Nachnamerest",
         "email": "testrest@rest.de",
         "kategorie": 1,
@@ -50,7 +50,7 @@ def test_post() -> None:
     # act
     response: Final = post(
         rest_url,
-        json=neuer_patient,
+        json=neuer_kunde,
         headers=headers,
         verify=ctx,
     )
@@ -68,7 +68,7 @@ def test_post() -> None:
 @mark.post_request
 def test_post_invalid() -> None:
     # arrange
-    neuer_patient_invalid: Final = {
+    neuer_kunde_invalid: Final = {
         "nachname": "falscher_nachname",
         "email": "falsche_email@",
         "kategorie": 11,
@@ -87,7 +87,7 @@ def test_post_invalid() -> None:
     # act
     response: Final = post(
         rest_url,
-        json=neuer_patient_invalid,
+        json=neuer_kunde_invalid,
         headers=headers,
         verify=ctx,
     )
@@ -107,7 +107,7 @@ def test_post_invalid() -> None:
 def test_post_email_exists() -> None:
     # arrange
     email_exists: Final = "alice@acme.de"
-    neuer_patient: Final = {
+    neuer_kunde: Final = {
         "nachname": "Nachnamerest",
         "email": email_exists,
         "kategorie": 1,
@@ -126,7 +126,7 @@ def test_post_email_exists() -> None:
     # act
     response: Final = post(
         rest_url,
-        json=neuer_patient,
+        json=neuer_kunde,
         headers=headers,
         verify=ctx,
     )

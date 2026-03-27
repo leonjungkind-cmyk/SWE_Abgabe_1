@@ -13,15 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""Fixture für pytest: Repository, Patient(Write)Service, KeycloakAdmin, UserService."""
+"""Fixture für pytest: Repository, kunde(Write)Service, KeycloakAdmin, UserService."""
 
 from keycloak import KeycloakAdmin
 from pytest import fixture
 from pytest_mock import MockerFixture
 
-from patient.repository import PatientRepository
-from patient.security import UserService
-from patient.service import PatientService, PatientWriteService
+from kunde.repository import KundeRepository
+from kunde.security import UserService
+from kunde.service import KundeService, KundeWriteService
 
 # "Fixtures" sind Funktionen, die vor den Test-Funktionen ausgefuehrt werden, um z.B.
 # wiederholt benoetigte Daten bereitzustellen (URLs, DB-Verbindungen usw.).
@@ -42,22 +42,22 @@ from patient.service import PatientService, PatientWriteService
 
 
 @fixture()
-def patient_repository() -> PatientRepository:
-    """Fixture für PatientRepository."""
-    return PatientRepository()
+def kunde_repository() -> KundeRepository:
+    """Fixture für KundeRepository."""
+    return KundeRepository()
 
 
 @fixture
-def patient_service(patient_repository: PatientRepository) -> PatientService:
-    """Fixture für PatientService."""
-    return PatientService(patient_repository)
+def kunde_service(kunde_repository: KundeRepository) -> KundeService:
+    """Fixture für KundeService."""
+    return KundeService(kunde_repository)
 
 
 @fixture
 def keycloak_admin_mock(mocker: MockerFixture) -> KeycloakAdmin:
     """Patching von KeycloakAdmin() innerhalb von UserService."""
     keycloak_admin_cls_mock = mocker.patch(
-        "patient.security.user_service.KeycloakAdmin"
+        "kunde.security.user_service.KeycloakAdmin"
     )
     return keycloak_admin_cls_mock.return_value
 
@@ -68,21 +68,21 @@ def user_service(keycloak_admin_mock) -> UserService:
     uuid_mock = "12345678-1234-1234-1234-123456789012"
     keycloak_admin_mock.get_client_id.return_value = uuid_mock
     # Patching von keycloak_admin.get_client_roles()
-    patient_rolle_mock = {
+    kunde_rolle_mock = {
         "id": uuid_mock,
-        "name": "patient",
+        "name": "kunde",
         "description": "",
         "composite": False,
         "clientRole": True,
         "containerId": uuid_mock,
     }
-    keycloak_admin_mock.get_client_roles.return_value = [patient_rolle_mock]
+    keycloak_admin_mock.get_client_roles.return_value = [kunde_rolle_mock]
     return UserService()
 
 
 @fixture
-def patient_write_service(
-    patient_repository: PatientRepository, user_service: UserService
-) -> PatientWriteService:
-    """Fixture für PatientWriteService."""
-    return PatientWriteService(patient_repository, user_service)
+def kunde_write_service(
+    kunde_repository: KundeRepository, user_service: UserService
+) -> KundeWriteService:
+    """Fixture für KundeWriteService."""
+    return KundeWriteService(kunde_repository, user_service)

@@ -36,7 +36,7 @@ Mit _Docker Compose_ werden die diversen Backend-Server gestartet:
 - Zipkin für Tracing
 - Prometheus für Monitoring und Grafana für Visualisierung
 
-Danach startet man den Appserver "patient": `uv run patient`.
+Danach startet man den Appserver "kunde": `uv run kunde`.
 
 Nun produziert man Requests, z.B. mit dem Skript `generate-load.ps1` im
 Verzeichnis `extras`.

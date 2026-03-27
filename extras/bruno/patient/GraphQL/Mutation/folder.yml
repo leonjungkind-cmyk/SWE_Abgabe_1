@@ -7,5 +7,5 @@ request:
   auth: inherit
 
 docs:
-  content: Mit der GraphQL-Schnittstelle werden Patienten neu angelegt, geändert und gelöscht.
+  content: Mit der GraphQL-Schnittstelle werden Kundeen neu angelegt, geändert und gelöscht.
   type: text/markdown

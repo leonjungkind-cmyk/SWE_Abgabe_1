@@ -31,9 +31,9 @@ HOMEPAGE_UPDATE: Final = "https://www.acme.ch.put"
 @mark.put_request
 def test_put() -> None:
     # arrange
-    patient_id: Final = 40
+    kunde_id: Final = 40
     if_match: Final = '"0"'
-    geaenderter_patient: Final = {
+    geaenderter_kunde: Final = {
         "nachname": "Aliceput",
         "email": EMAIL_UPDATE,
         "kategorie": 9,
@@ -50,8 +50,8 @@ def test_put() -> None:
 
     # act
     response: Final = put(
-        f"{rest_url}/{patient_id}",
-        json=geaenderter_patient,
+        f"{rest_url}/{kunde_id}",
+        json=geaenderter_kunde,
         headers=headers,
         verify=ctx,
     )
@@ -65,8 +65,8 @@ def test_put() -> None:
 @mark.put_request
 def test_put_invalid() -> None:
     # arrange
-    patient_id: Final = 40
-    geaenderter_patient_invalid: Final = {
+    kunde_id: Final = 40
+    geaenderter_kunde_invalid: Final = {
         "nachname": "falscher_nachname_put",
         "email": "falsche_email_put@",
         "kategorie": 11,
@@ -83,8 +83,8 @@ def test_put_invalid() -> None:
 
     # act
     response: Final = put(
-        f"{rest_url}/{patient_id}",
-        json=geaenderter_patient_invalid,
+        f"{rest_url}/{kunde_id}",
+        json=geaenderter_kunde_invalid,
         headers=headers,
         verify=ctx,
     )
@@ -101,9 +101,9 @@ def test_put_invalid() -> None:
 @mark.put_request
 def test_put_nicht_vorhanden() -> None:
     # arrange
-    patient_id: Final = 999999
+    kunde_id: Final = 999999
     if_match: Final = '"0"'
-    geaenderter_patient: Final = {
+    geaenderter_kunde: Final = {
         "nachname": "Aliceput",
         "email": EMAIL_UPDATE,
         "kategorie": 9,
@@ -120,8 +120,8 @@ def test_put_nicht_vorhanden() -> None:
 
     # act
     response: Final = put(
-        f"{rest_url}/{patient_id}",
-        json=geaenderter_patient,
+        f"{rest_url}/{kunde_id}",
+        json=geaenderter_kunde,
         headers=headers,
         verify=ctx,
     )
@@ -134,10 +134,10 @@ def test_put_nicht_vorhanden() -> None:
 @mark.put_request
 def test_put_email_exists() -> None:
     # arrange
-    patient_id: Final = 40
+    kunde_id: Final = 40
     if_match: Final = '"1"'
     email_exists: Final = "alice@acme.de"
-    geaenderter_patient: Final = {
+    geaenderter_kunde: Final = {
         "nachname": "Aliceput",
         "email": email_exists,
         "kategorie": 9,
@@ -154,8 +154,8 @@ def test_put_email_exists() -> None:
 
     # act
     response: Final = put(
-        f"{rest_url}/{patient_id}",
-        json=geaenderter_patient,
+        f"{rest_url}/{kunde_id}",
+        json=geaenderter_kunde,
         headers=headers,
         verify=ctx,
     )
@@ -169,8 +169,8 @@ def test_put_email_exists() -> None:
 @mark.put_request
 def test_put_ohne_versionsnr() -> None:
     # arrange
-    patient_id: Final = 40
-    geaenderter_patient: Final = {
+    kunde_id: Final = 40
+    geaenderter_kunde: Final = {
         "nachname": "Aliceput",
         "email": EMAIL_UPDATE,
         "kategorie": 9,
@@ -186,8 +186,8 @@ def test_put_ohne_versionsnr() -> None:
 
     # act
     response: Final = put(
-        f"{rest_url}/{patient_id}",
-        json=geaenderter_patient,
+        f"{rest_url}/{kunde_id}",
+        json=geaenderter_kunde,
         headers=headers,
         verify=ctx,
     )
@@ -200,9 +200,9 @@ def test_put_ohne_versionsnr() -> None:
 @mark.put_request
 def test_put_alte_versionsnr() -> None:
     # arrange
-    patient_id: Final = 40
+    kunde_id: Final = 40
     if_match: Final = '"-1"'
-    geaenderter_patient: Final = {
+    geaenderter_kunde: Final = {
         "nachname": "Aliceput",
         "email": EMAIL_UPDATE,
         "kategorie": 9,
@@ -219,8 +219,8 @@ def test_put_alte_versionsnr() -> None:
 
     # act
     response: Final = put(
-        f"{rest_url}/{patient_id}",
-        json=geaenderter_patient,
+        f"{rest_url}/{kunde_id}",
+        json=geaenderter_kunde,
         headers=headers,
         verify=ctx,
     )
@@ -233,9 +233,9 @@ def test_put_alte_versionsnr() -> None:
 @mark.put_request
 def test_put_ungueltige_versionsnr() -> None:
     # arrange
-    patient_id: Final = 40
+    kunde_id: Final = 40
     if_match: Final = '"xy"'
-    geaenderter_patient: Final = {
+    geaenderter_kunde: Final = {
         "nachname": "Aliceput",
         "email": EMAIL_UPDATE,
         "kategorie": 9,
@@ -252,8 +252,8 @@ def test_put_ungueltige_versionsnr() -> None:
 
     # act
     response: Final = put(
-        f"{rest_url}/{patient_id}",
-        json=geaenderter_patient,
+        f"{rest_url}/{kunde_id}",
+        json=geaenderter_kunde,
         headers=headers,
         verify=ctx,
     )
@@ -267,9 +267,9 @@ def test_put_ungueltige_versionsnr() -> None:
 @mark.put_request
 def test_put_versionsnr_ohne_quotes() -> None:
     # arrange
-    patient_id: Final = 40
+    kunde_id: Final = 40
     if_match: Final = "0"
-    geaenderter_patient: Final = {
+    geaenderter_kunde: Final = {
         "nachname": "Aliceput",
         "email": EMAIL_UPDATE,
         "kategorie": 9,
@@ -286,8 +286,8 @@ def test_put_versionsnr_ohne_quotes() -> None:
 
     # act
     response: Final = put(
-        f"{rest_url}/{patient_id}",
-        json=geaenderter_patient,
+        f"{rest_url}/{kunde_id}",
+        json=geaenderter_kunde,
         headers=headers,
         verify=ctx,
     )

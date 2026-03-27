@@ -40,11 +40,11 @@ services:
         source: ./prometheus-data
         target: /prometheus
       - type: bind
-        source: ../../../src/patient/config/resources/tls/certificate.crt
+        source: ../../../src/kunde/config/resources/tls/certificate.crt
         target: /etc/prometheus/certificate.crt
         read_only: true
       - type: bind
-        source: ../../../src/patient/config/resources/tls/private-key.pem
+        source: ../../../src/kunde/config/resources/tls/private-key.pem
         target: /etc/prometheus/private-key.pem
         read_only: true
     networks: [acme-network]

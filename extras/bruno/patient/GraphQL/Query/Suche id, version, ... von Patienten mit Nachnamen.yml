@@ -1,5 +1,5 @@
 info:
-  name: Suche id, version, ... von Patienten mit Nachnamen
+  name: Suche id, version, ... von Kundeen mit Nachnamen
   type: graphql
   seq: 6
 
@@ -13,7 +13,7 @@ graphql:
   body:
     query: |-
       query ($nachname: String = "Alice") {
-        patienten(suchparameter: {nachname: $nachname}) {
+        kundeen(suchparameter: {nachname: $nachname}) {
           id
           version
           email
@@ -44,9 +44,9 @@ runtime:
         test('Body mit den Properties', () => {
           res.getBody()
             .data
-            .patienten
-            .forEach(patient => {
-              const { id, version, email, kategorie, hasNewsletter, geburtsdatum, homepage, geschlecht, familienstand, adresse, fachaerzte, username } = patient;
+            .kundeen
+            .forEach(kunde => {
+              const { id, version, email, kategorie, hasNewsletter, geburtsdatum, homepage, geschlecht, familienstand, adresse, fachaerzte, username } = kunde;
               expect(id).to.be.gte(0);
               expect(version).to.be.gte(0);
               expect(email).to.be.a('string');
@@ -68,9 +68,9 @@ runtime:
     - expression: res.headers['content-type']
       operator: eq
       value: application/json
-    - expression: res.body.data.patienten
+    - expression: res.body.data.kundeen
       operator: isArray
-    - expression: res.body.data.patienten
+    - expression: res.body.data.kundeen
       operator: isNotEmpty
 
 settings:

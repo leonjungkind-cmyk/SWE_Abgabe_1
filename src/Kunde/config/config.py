@@ -26,7 +26,7 @@ from loguru import logger
 __all__ = ["app_config", "resources_path"]
 
 
-resources_path: Final[str] = "patient.config.resources"
+resources_path: Final[str] = "kunde.config.resources"
 
 _resources_traversable: Final[Traversable] = files(resources_path)
 _config_file: Final[Traversable] = _resources_traversable / "app.toml"

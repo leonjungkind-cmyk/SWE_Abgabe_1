@@ -22,8 +22,8 @@ runtime:
         test('Body: Nachname "Alpha" und ID > 0', () => {
           res.getBody()
             .content
-            .forEach(patient => {
-              const { nachname, id } = patient;
+            .forEach(kunde => {
+              const { nachname, id } = kunde;
               expect(nachname).to.be.equal('Alice');
               expect(id).to.be.above(0);
             });

@@ -22,9 +22,9 @@ from fastapi import APIRouter, Depends, Request, Response, status
 from fastapi.responses import JSONResponse
 from loguru import logger
 
-from patient.security.dependencies import get_token_service
-from patient.security.login_data import LoginData
-from patient.security.token_service import TokenService
+from kunde.security.dependencies import get_token_service
+from kunde.security.login_data import LoginData
+from kunde.security.token_service import TokenService
 
 __all__ = ["router"]
 

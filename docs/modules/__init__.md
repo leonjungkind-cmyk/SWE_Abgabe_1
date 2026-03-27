@@ -1,3 +1,3 @@
 # \_\_init__.py
 
-::: patient
+::: kunde

@@ -18,7 +18,7 @@ runtime:
         test('Body: id > 0', () => {
           res.getBody()
             .content
-            .map(patient => patient.id)
+            .map(kunde => kunde.id)
             .forEach(id => expect(id).to.be.above(0));
         });
   assertions:

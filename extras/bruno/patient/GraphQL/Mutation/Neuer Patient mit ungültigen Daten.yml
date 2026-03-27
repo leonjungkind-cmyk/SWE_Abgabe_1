@@ -1,5 +1,5 @@
 info:
-  name: Neuer Patient mit ungültigen Daten
+  name: Neuer kunde mit ungültigen Daten
   type: graphql
   seq: 2
 
@@ -14,7 +14,7 @@ graphql:
     query: |-
       mutation {
         create(
-          patientInput: {
+          kundeInput: {
             nachname: "falscher_nachname"
             email: "falsche_email@"
             kategorie: 1

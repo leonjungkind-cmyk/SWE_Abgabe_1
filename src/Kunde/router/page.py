@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from math import ceil
 from typing import Any, Final
 
-from patient.repository import Pageable
+from kunde.repository import Pageable
 
 __all__ = ["Page"]
 

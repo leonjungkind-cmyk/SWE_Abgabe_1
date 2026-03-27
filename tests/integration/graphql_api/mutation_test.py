@@ -32,7 +32,7 @@ def test_create() -> None:
         "query": """
             mutation {
                 create(
-                    patientInput: {
+                    kundeInput: {
                         nachname: "Nachnamegraphql"
                         email: "testgraphql@graphql.de"
                         kategorie: 1
@@ -81,7 +81,7 @@ def test_create_invalid() -> None:
         "query": """
             mutation {
                 create(
-                    patientInput: {
+                    kundeInput: {
                         nachname: "falscher_nachname"
                         email: "falsche_email@"
                         kategorie: 1

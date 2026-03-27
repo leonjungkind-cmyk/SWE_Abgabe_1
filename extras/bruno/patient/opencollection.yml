@@ -1,7 +1,7 @@
 opencollection: 1.0.0
 
 info:
-  name: patient
+  name: kunde
 config:
   proxy:
     inherit: true

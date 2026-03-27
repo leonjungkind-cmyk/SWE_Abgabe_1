@@ -38,8 +38,8 @@ from pyfiglet import Figlet
 from starlette.routing import BaseRoute, Route
 from tabulate import tabulate
 
-from patient.config import db_url
-from patient.repository import engine
+from kunde.config import db_url
+from kunde.repository import engine
 
 # tabulate() hat ein Argument vom Typ "Tuple" und nicht dataclass
 TableEntry = namedtuple("TableEntry", "pfad http_methoden funktion")
@@ -76,7 +76,7 @@ def banner(routes: list[BaseRoute]) -> None:
     """Banner für den Start des Servers."""
     figlet: Final = Figlet()
     print()
-    print(figlet.renderText("patient"))
+    print(figlet.renderText("kunde"))
 
     rechnername: Final = gethostname()
     # Default Isolation Level "read committed": Schreibsperren und keine Lesesperren

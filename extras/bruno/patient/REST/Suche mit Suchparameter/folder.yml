@@ -24,5 +24,5 @@ request:
       autoRefreshToken: false
 
 docs:
-  content: Suche nach Patienten über die REST-Schnittstellen mit flexiblen Suchparameter.
+  content: Suche nach Kundeen über die REST-Schnittstellen mit flexiblen Suchparameter.
   type: text/markdown

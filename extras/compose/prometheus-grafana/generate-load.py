@@ -32,7 +32,7 @@ project_root = Path(__file__).resolve().parents[3]
 cafile = (
     project_root
     / "src"
-    / "patient"
+    / "kunde"
     / "config"
     / "resources"
     / "tls"
@@ -56,20 +56,20 @@ with urlopen(token_request, context=ssl_context) as response:  # noqa: S310
 
 index = 1
 while index >= 1:
-    patient_id: int
+    kunde_id: int
     if index % 2 == 0:
-        patient_id = 20
+        kunde_id = 20
     elif index % 3 == 0:
-        patient_id = 30
+        kunde_id = 30
     elif index % 5 == 0:
-        patient_id = 40
+        kunde_id = 40
     elif index % 7 == 0:
-        patient_id = 50
+        kunde_id = 50
     else:
-        patient_id = 1
-    print(f"id={patient_id}")
+        kunde_id = 1
+    print(f"id={kunde_id}")
 
-    url = f"https://localhost:8000/rest/{patient_id}"
+    url = f"https://localhost:8000/rest/{kunde_id}"
     # https://docs.python.org/3/library/urllib.request.html#request-objects
     request = Request(
         url,
@@ -84,7 +84,7 @@ while index >= 1:
     try:
         response = urlopen(request, context=ssl_context)  # noqa: S310
     except HTTPError as e:
-        print(f"Fehler bei id={patient_id}: code={e.code}")
+        print(f"Fehler bei id={kunde_id}: code={e.code}")
         continue
 
     sleep(SLEEP_IN_SECONDS)

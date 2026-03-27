@@ -21,10 +21,10 @@
 
 # Aufruf:   uv sync --all-groups
 #
-#           uv run patient
-#               uv run python -m patient
-#               uv run fastapi dev src/patient
-#               uv run uvicorn src.patient:app --ssl-certfile=src\patient\config\resources\tls\certificate.crt --ssl-keyfile=src\patient\config\resources\tls\key.pem
+#           uv run kunde
+#               uv run python -m kunde
+#               uv run fastapi dev src/kunde
+#               uv run uvicorn src.kunde:app --ssl-certfile=src\kunde\config\resources\tls\certificate.crt --ssl-keyfile=src\kunde\config\resources\tls\key.pem
 #               uv, uvx, ruff, ty aus $env:USERPROFILE\.local\bin
 #
 #           uv run pytest
@@ -59,7 +59,7 @@
 #           uv publish --token <UV_PUBLISH_TOKEN>
 
 [project]
-name = "patient"
+name = "kunde"
 version = "2026.4.1"
 description = "Beispiel mit FastAPI, PostgreSQL, Keycloak und uv"
 readme = "README.md"
@@ -187,7 +187,7 @@ dependencies = [
 ]
 
 [project.scripts]
-patient = "patient:main"
+kunde = "kunde:main"
 
 [build-system]
 requires = ["uv_build==0.10.11"]
@@ -197,7 +197,7 @@ build-backend = "uv_build"
 homepage = "https://www.h-ka.de"
 documentation = "https://readthedocs.org"
 repository = "https://github.com"
-changelog = "https://github.com/juergenzimmermann/patient/blob/master/CHANGELOG.md"
+changelog = "https://github.com/juergenzimmermann/kunde/blob/master/CHANGELOG.md"
 
 # https://packaging.python.org/en/latest/specifications/dependency-groups
 # https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-groups
@@ -270,7 +270,7 @@ lint = [
 
 # https://coverage.readthedocs.io/en/latest/source.html
 [tool.coverage.run]
-include = ["src/patient/service/*"]
+include = ["src/kunde/service/*"]
 
 # https://docs.pytest.org/en/stable/reference/customize.html
 [tool.pytest.ini_options]

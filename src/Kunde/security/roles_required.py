@@ -20,12 +20,12 @@ from typing import TYPE_CHECKING, Annotated, Final
 from fastapi import Depends, HTTPException, Request, status
 from loguru import logger
 
-from patient.security.dependencies import get_token_service
-from patient.security.role import Role
-from patient.security.token_service import TokenService
+from kunde.security.dependencies import get_token_service
+from kunde.security.role import Role
+from kunde.security.token_service import TokenService
 
 if TYPE_CHECKING:
-    from patient.security.user import User
+    from kunde.security.user import User
 
 __all__ = ["RolesRequired"]
 

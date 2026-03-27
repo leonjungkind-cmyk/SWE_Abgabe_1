@@ -44,9 +44,9 @@ db_dialect: Final[Literal["postgresql"]] = _db_toml.get(
 logger.debug("db: db_dialect={}", db_dialect)
 
 _drivername = "postgresql+psycopg"
-_dbname: Final[str] = _db_toml.get("name", "patient")
+_dbname: Final[str] = _db_toml.get("name", "kunde")
 _host: Final[str] = _db_toml.get("host", "postgres")
-_username: Final[str] = _db_toml.get("username", "patient")
+_username: Final[str] = _db_toml.get("username", "kunde")
 _password: Final[str] = _db_toml.get("password", "Change Me!")
 _password_admin: Final[str] = _db_toml.get("password-admin", "Change Me!")
 

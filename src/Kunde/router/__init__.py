@@ -16,17 +16,17 @@
 
 from collections.abc import Sequence
 
-from patient.router.health_router import liveness, readiness
-from patient.router.health_router import router as health_router
-from patient.router.patient_router import get, get_by_id, get_nachnamen, patient_router
-from patient.router.patient_write_router import (
+from kunde.router.health_router import liveness, readiness
+from kunde.router.health_router import router as health_router
+from kunde.router.kunde_router import get, get_by_id, get_nachnamen, kunde_router
+from kunde.router.kunde_write_router import (
     delete_by_id,
-    patient_write_router,
+    kunde_write_router,
     post,
     put,
 )
-from patient.router.shutdown_router import router as shutdown_router
-from patient.router.shutdown_router import shutdown
+from kunde.router.shutdown_router import router as shutdown_router
+from kunde.router.shutdown_router import shutdown
 
 __all__: Sequence[str] = [
     "delete_by_id",
@@ -35,8 +35,8 @@ __all__: Sequence[str] = [
     "get_nachnamen",
     "health_router",
     "liveness",
-    "patient_router",
-    "patient_write_router",
+    "kunde_router",
+    "kunde_write_router",
     "post",
     "put",
     "readiness",

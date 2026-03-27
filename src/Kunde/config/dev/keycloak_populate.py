@@ -43,7 +43,7 @@ class KeycloakPopulateService:
     """Service für das Neuladen von Keycloak im Modus DEV."""
 
     def __init__(self, user_service: UserService) -> None:
-        """Konstruktor mit abhängigem PatientRepository."""
+        """Konstruktor mit abhängigem KundeRepository."""
         self.user_service: UserService = user_service
 
     def populate(self) -> None:
@@ -90,11 +90,11 @@ class KeycloakPopulateService:
                     email=email,
                     nachname=nachname,
                     vorname=nachname,
-                    roles=[Role.PATIENT],
+                    roles=[Role.kunde],
                     password="p",  # noqa: S106 # NOSONAR
                 )
                 self.user_service.create_user(user=user)
-        logger.debug("Alle User zu 'patient.csv' neu angelegt")
+        logger.debug("Alle User zu 'kunde.csv' neu angelegt")
 
 
 def get_keycloak_populate_service(

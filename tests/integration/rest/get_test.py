@@ -43,10 +43,10 @@ def test_get_by_email(email: str) -> None:
     content: Final = response_body["content"]
     assert isinstance(content, list)
     assert len(content) == 1
-    patient = content[0]
-    assert patient is not None
-    assert patient.get("email") == email
-    assert patient.get("id") is not None
+    kunde = content[0]
+    assert kunde is not None
+    assert kunde.get("email") == email
+    assert kunde.get("id") is not None
 
 
 @mark.rest

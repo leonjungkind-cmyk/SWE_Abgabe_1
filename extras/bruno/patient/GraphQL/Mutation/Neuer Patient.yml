@@ -1,5 +1,5 @@
 info:
-  name: Neuer Patient
+  name: Neuer kunde
   type: graphql
   seq: 1
 
@@ -14,7 +14,7 @@ graphql:
     query: |-
       mutation {
         create(
-          patientInput: {
+          kundeInput: {
             nachname: "Nachnamegraphql"
             email: "testgraphql@test.graphql"
             kategorie: 9

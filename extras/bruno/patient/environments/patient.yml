@@ -1,4 +1,4 @@
-name: patient
+name: kunde
 variables:
   - name: clientId
     value: python-client

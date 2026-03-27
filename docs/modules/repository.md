@@ -1,3 +1,3 @@
 # Modul für die Datenbankzugriffsschicht
 
-::: patient.repository
+::: kunde.repository

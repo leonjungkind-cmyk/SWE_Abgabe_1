@@ -19,7 +19,7 @@
 -- ggf. CHECK(char_length(nachname) <= 255)
 
 -- https://www.postgresql.org/docs/current/manage-ag-tablespaces.html
-SET default_tablespace = patientspace;
+SET default_tablespace = kundespace;
 
 -- https://www.postgresql.org/docs/current/sql-createtable.html
 -- https://www.postgresql.org/docs/current/datatype.html
@@ -29,7 +29,7 @@ CREATE TYPE geschlecht AS ENUM ('MAENNLICH', 'WEIBLICH', 'DIVERS');
 CREATE TYPE familienstand AS ENUM ('LEDIG', 'VERHEIRATET', 'GESCHIEDEN', 'VERWITWET');
 CREATE TYPE facharzt AS ENUM ('CHIRURGIE', 'HALS_NASEN_OHREN', 'KARDIOLOGIE', 'NEUROLOGIE');
 
-CREATE TABLE IF NOT EXISTS patient (
+CREATE TABLE IF NOT EXISTS kunde (
     id            INTEGER GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY,
     version       INTEGER NOT NULL DEFAULT 0,
     nachname      TEXT NOT NULL,
@@ -56,16 +56,16 @@ CREATE TABLE IF NOT EXISTS patient (
 );
 
 -- default: btree
-CREATE INDEX IF NOT EXISTS patient_nachname_idx ON patient(nachname);
+CREATE INDEX IF NOT EXISTS kunde_nachname_idx ON kunde(nachname);
 
 CREATE TABLE IF NOT EXISTS adresse (
     id          INTEGER GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY,
     plz         TEXT NOT NULL CHECK (plz ~ '\d{5}'),
     ort         TEXT NOT NULL,
-    patient_id  INTEGER NOT NULL REFERENCES patient ON DELETE CASCADE
+    kunde_id  INTEGER NOT NULL REFERENCES kunde ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS adresse_patient_id_idx ON adresse(patient_id);
+CREATE INDEX IF NOT EXISTS adresse_kunde_id_idx ON adresse(kunde_id);
 CREATE INDEX IF NOT EXISTS adresse_plz_idx ON adresse(plz);
 
 CREATE TABLE IF NOT EXISTS rechnung (
@@ -75,6 +75,6 @@ CREATE TABLE IF NOT EXISTS rechnung (
                 -- 10 Stellen, davon 2 Nachkommastellen
     betrag      NUMERIC(10,2) NOT NULL,
     waehrung    TEXT NOT NULL CHECK (waehrung ~ '[A-Z]{3}'),
-    patient_id  INTEGER NOT NULL REFERENCES patient ON DELETE CASCADE
+    kunde_id  INTEGER NOT NULL REFERENCES kunde ON DELETE CASCADE
 );
-CREATE INDEX IF NOT EXISTS rechnung_patient_id_idx ON rechnung(patient_id);
+CREATE INDEX IF NOT EXISTS rechnung_kunde_id_idx ON rechnung(kunde_id);

@@ -27,8 +27,8 @@
 
 [db]
 # dialect = "postgresql"
-# username = "patient"
-# name = "patient"
+# username = "kunde"
+# name = "kunde"
 password = "p"
 password-admin = "p"
 host = "localhost"
@@ -55,7 +55,7 @@ port = 8843
 client-secret = "xMeRWUHflcXVOn4E0xtcRcupyKttEvmR"
 # admin = "admin"
 admin-password = "p"
-csv = "extras/compose/postgres/init/patient/csv/patient.csv"
+csv = "extras/compose/postgres/init/kunde/csv/kunde.csv"
 
 [graphql]
 # locust: auskommentieren

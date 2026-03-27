@@ -1,5 +1,5 @@
 info:
-  name: Neuer Patient mit bereits existierender Email
+  name: Neuer kunde mit bereits existierender Email
   type: http
   seq: 2
 

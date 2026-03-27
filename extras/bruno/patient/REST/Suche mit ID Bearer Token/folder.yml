@@ -33,5 +33,5 @@ request:
         bru.setVar('TOKEN', token);
 
 docs:
-  content: Suche nach Patienten über die REST-Schnittstellen anhand der ID.
+  content: Suche nach Kundeen über die REST-Schnittstellen anhand der ID.
   type: text/markdown

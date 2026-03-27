@@ -19,13 +19,13 @@ from ssl import PROTOCOL_TLS_SERVER
 
 import uvicorn
 
-from patient.config import (
+from kunde.config import (
     host_binding,
     port,
     tls_certfile,
     tls_keyfile,
 )
-from patient.fastapi_app import app  # noqa: F401
+from kunde.fastapi_app import app  # noqa: F401
 
 __all__ = ["run"]
 
@@ -39,7 +39,7 @@ def run() -> None:
     # http="auto" (default), "h11", "httptools" Python Binding fuer HTTP Parser von Node
     # interface="auto" (default), "asgi2", "asgi3", "wsgi"
     uvicorn.run(
-        "patient:app",
+        "kunde:app",
         loop="asyncio",
         http="h11",
         interface="asgi3",

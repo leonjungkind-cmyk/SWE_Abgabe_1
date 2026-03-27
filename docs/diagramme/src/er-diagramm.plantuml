@@ -23,7 +23,7 @@ hide circle
 ' evtl. Prbleme mit Kraehenfuessen vermeiden
 skinparam linetype ortho
 
-entity "Patient" {
+entity "kunde" {
   * id : integer <<generated>>
   --
   * version: integer
@@ -46,7 +46,7 @@ entity "Adresse" {
   --
   * plz : text
   * ort : text
-  * **patient_id**: integer <<FK>>
+  * **kunde_id**: integer <<FK>>
 }
 
 entity "Rechnung" {
@@ -54,7 +54,7 @@ entity "Rechnung" {
   --
   * betrag : decimal
   * waehrung : text
-  * **patient_id**: integer <<FK>>
+  * **kunde_id**: integer <<FK>>
 }
 
 entity "UserAccount" {
@@ -65,9 +65,9 @@ entity "UserAccount" {
     roles: JSON
 }
 
-Patient ||.left.|| Adresse
-Patient ||..o{ Rechnung
-Patient ||..|| UserAccount
+kunde ||.left.|| Adresse
+kunde ||..o{ Rechnung
+kunde ||..|| UserAccount
 
 footer (c) Juergen Zimmermann
 

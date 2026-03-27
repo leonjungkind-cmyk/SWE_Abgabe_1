@@ -304,7 +304,7 @@ Der eigentliche Python-Code für die Auslieferung wird vom Code für die Tests
 getrennt, indem die beiden Unterverzeichnisse `src` und `tests` verwendet werden,
 wie es in den meisten Python-Projekten seit ca. 2015 üblich ist. Unterhalb
 von src gibt es ein weiteres Unterverzeichnis mit dem _Namen des eigenen
-Python-Packages_ (hier: patient).
+Python-Packages_ (hier: kunde).
 
 Wenn man mit [uv](#uv) als "Package und Projectmanager" durch `uv init` ein neues Projekt
 anlegt, erhält man das "src layout". Ebenso wenn man Hatch als [Buildsystem](#buildsysteme)
@@ -428,7 +428,7 @@ verwendet und ein Projekt mit `hatch new` aufsetzt.
 
 Ein Python-Package enthält mindestens ein Modul, d.h. es gibt `src/<package_name>`
 mit mindestens einem Unterverzeichnis, das eine Datei `__init__.py` enthält, z.B.
-`src\patient\router`. _import_ eines Moduls entspricht quasi dem Importieren der Datei
+`src\kunde\router`. _import_ eines Moduls entspricht quasi dem Importieren der Datei
 `__init__.py` und all dessen, was dort in `__all__` aufgelistet ist.
 
 ### Die Methoden \_\_init\_\_ und \_\_new\_\_
@@ -807,13 +807,13 @@ _setuptools_  | setuptools
 ### uv_build
 
 `uv build` erstellt im Verzeichnis `dist` ein Wheel für _PyPI_ (Python Package Index)
-und  eine "Source-Distribution" z.B. `patient-<VERSION>.tar.gz`.
+und  eine "Source-Distribution" z.B. `kunde-<VERSION>.tar.gz`.
 
-Das Wheel `patient-<VERSION>-py3-none-any.whl` wird dabei gemäß
+Das Wheel `kunde-<VERSION>-py3-none-any.whl` wird dabei gemäß
 https://packaging.python.org/en/latest/specifications/binary-distribution-format
 erstellt. Die einzelnen Teile des Dateinamens bedeuten:
 
-- Package-Name (hier: patient)
+- Package-Name (hier: kunde)
 - Versionsnummer
 - `py3`: das Package ist für Python 3 und nicht auch für Python 2
 - `none`: es wird kein bestimmtes ABI ("application binary interface") vorausgesetzt für
@@ -953,7 +953,7 @@ Implementierungen von ASGI sind vor allem:
   - Referenzimplementierung für ASGI
   - Teil von _Django Channels_
   - Nur in der Kommandozeile nutzbar und deshalb nicht programmatisch integrierbar
-    mit _FastAPI_, um einfach `python -m patient` aufrufen zu können
+    mit _FastAPI_, um einfach `python -m kunde` aufrufen zu können
   - HTTP/2, WebSockets, uvm.
   - ca. 2.600 Stars bei GitHub
   - http://github.com/django/daphne
@@ -1156,11 +1156,11 @@ GraphQL-Schnittstelle zu implementieren.
 
 ## DB-Server und DB-Browser
 
-> Vor dem 1. Start von PostgreSQL muss man die Skripte `create-db-patient.sql`
-> und `create-schema-patient.sql` aus dem Verzeichnis `extras\postgres\sql` nach
+> Vor dem 1. Start von PostgreSQL muss man die Skripte `create-db-kunde.sql`
+> und `create-schema-kunde.sql` aus dem Verzeichnis `extras\postgres\sql` nach
 > `C:\Zimmermann\volumes\postgres\sql` kopieren und die Anleitung ausführen.
 > Danach kopiert man die CSV-Dateien aus dem Verzeichnis `extras\postgres\csv`
-> nach `C:\Zimmermann\volumes\postgres\csv\patient`.
+> nach `C:\Zimmermann\volumes\postgres\csv\kunde`.
 
 Vor dem Start des Appservers muss man den DB-Server und ggf. den DB-Browser starten.
 
@@ -1204,19 +1204,19 @@ verwenden.
 
 ### Serverstart
 
-Durch das Kommando `uv run patient` kann man den Server starten: siehe `project.scripts`
+Durch das Kommando `uv run kunde` kann man den Server starten: siehe `project.scripts`
 in `pyproject.toml`.
 
 Defaultmäßig wird beim Serverstart _uvicorn_ als ASGI-Server verwendet.
-Stattdessen kann auch _hypercorn_ verwendet werden, indem man in `patient.toml`
-bei `[patient.asgi]` das Tag `server` auf den Wert `hypercorn` setzt. Der Server
+Stattdessen kann auch _hypercorn_ verwendet werden, indem man in `kunde.toml`
+bei `[kunde.asgi]` das Tag `server` auf den Wert `hypercorn` setzt. Der Server
 hat dann die Basis-URL `https://localhost:8000`.
 
 Die von _SQLAlchemy_ generierten SQL-Anweisungen werden mit _logging_ aus der
 Python-Standardbibliothek protokolliert. Dadurch haben sie ein anderes Log-Format
 als _loguru_ und fallen auch dementsprechend auf. Wenn man das Log-Format von
 loguru auch bei SQLAlchemy haben möchte, so muss man den auskommentierten Code
-in `src\patient\repository\session.py` aktivieren.
+in `src\kunde\repository\session.py` aktivieren.
 
 ## Docker Images, Container und Docker Compose
 
@@ -1263,11 +1263,11 @@ oder manuell:
 
 ```shell
     # Docker Hardened Image
-    docker build --tag juergenzimmermann/patient:2026.4.1-hardened .
+    docker build --tag juergenzimmermann/kunde:2026.4.1-hardened .
     # Debian Trixie slim
-    docker build --tag juergenzimmermann/patient:2026.4.1-trixie --file Dockerfile.trixie .
+    docker build --tag juergenzimmermann/kunde:2026.4.1-trixie --file Dockerfile.trixie .
     # Alpine
-    docker build --tag juergenzimmermann/patient:2026.4.1-alpine --file Dockerfile.alpine .
+    docker build --tag juergenzimmermann/kunde:2026.4.1-alpine --file Dockerfile.alpine .
 ```
 
 ### Image inspizieren
@@ -1278,9 +1278,9 @@ Mit dem Unterkommando `history` kann man ein Docker-Image und die einzelnen Laye
 inspizieren:
 
 ```shell
-    docker history juergenzimmermann/patient:2026.4.1-hardened
-    docker history juergenzimmermann/patient:2026.4.1-trixie
-    docker history juergenzimmermann/patient:2026.4.1-alpine
+    docker history juergenzimmermann/kunde:2026.4.1-hardened
+    docker history juergenzimmermann/kunde:2026.4.1-trixie
+    docker history juergenzimmermann/kunde:2026.4.1-alpine
 ```
 
 #### docker inspect
@@ -1289,9 +1289,9 @@ Mit dem Unterkommando `inspect` kann man die Metadaten, z.B. Labels, zu einem
 Image inspizieren:
 
 ```shell
-    docker inspect juergenzimmermann/patient:2026.4.1-hardened
-    docker inspect juergenzimmermann/patient:2026.4.1-trixie
-    docker inspect juergenzimmermann/patient:2026.4.1-alpine
+    docker inspect juergenzimmermann/kunde:2026.4.1-hardened
+    docker inspect juergenzimmermann/kunde:2026.4.1-trixie
+    docker inspect juergenzimmermann/kunde:2026.4.1-alpine
 ```
 
 #### docker sbom
@@ -1301,42 +1301,42 @@ inspizieren, welche Bestandteile in einem Docker-Images enthalten sind, z.B.
 Python-Wheels (.whl) oder Debian-Packages.
 
 ```shell
-    docker sbom juergenzimmermann/patient:2026.4.1-hardened
-    docker sbom juergenzimmermann/patient:2026.4.1-trixie
-    docker sbom juergenzimmermann/patient:2026.4.1-alpine
+    docker sbom juergenzimmermann/kunde:2026.4.1-hardened
+    docker sbom juergenzimmermann/kunde:2026.4.1-trixie
+    docker sbom juergenzimmermann/kunde:2026.4.1-alpine
 ```
 
 ### Docker Compose
 
-Mit _Docker Compose_ kann man die Anwendung patient z.B. zusammen mit PostgreSQL
-starten. Dazu ist der _Service_ `patient` in der Datei `compose.yml` im Verzeichnis.
-`extras\compose\patient` unter Verwendung des Images so konfiguriert, dass er erst dann
+Mit _Docker Compose_ kann man die Anwendung kunde z.B. zusammen mit PostgreSQL
+starten. Dazu ist der _Service_ `kunde` in der Datei `compose.yml` im Verzeichnis.
+`extras\compose\kunde` unter Verwendung des Images so konfiguriert, dass er erst dann
 gestartet wird, wenn der "healthcheck" des DB-Servers "ready" meldet. Als Image wird
 das Image auf Basis von _Debian Bookworm_ (Debian 12) verwendet. Alternativ kann das
 Image auf Basis von _Alpine_ verwendet werden (siehe Kommentar in compose.yml).
 
 Der Appserver ist defaultmäßig mit dem ASGI-Produkt _uvicorn_ konfiguriert. Wenn man
-stattdessen _hypercorn_ für ASGI verwenden möchte, so setzt man in `extras\compose\patient\patient.toml`
-im Block `patient.asgi` beim Schüssel `server` den Wert `hypercorn`.
+stattdessen _hypercorn_ für ASGI verwenden möchte, so setzt man in `extras\compose\kunde\kunde.toml`
+im Block `kunde.asgi` beim Schüssel `server` den Wert `hypercorn`.
 
 ```shell
     # Windows
-    cd extras\compose\patient
+    cd extras\compose\kunde
     # macOS / Linux
-    cd extras/compose/patient
+    cd extras/compose/kunde
 
     # Voraussetzung: Keycloak als Container ist separat gestartet
-    # Shell fuer patient zzgl. DB-Server und Mailserver
-    # patient mit Basis-Image Debian Trixie (Hardened Image ohne Shell, Alpine mit ash siehe Kommentar)
+    # Shell fuer kunde zzgl. DB-Server und Mailserver
+    # kunde mit Basis-Image Debian Trixie (Hardened Image ohne Shell, Alpine mit ash siehe Kommentar)
     docker compose up
 
     # Nur zur Fehlersuche: weitere Shell für bash
     # Windows
-    cd extras\compose\patient
+    cd extras\compose\kunde
     # macOS / Linux
-    cd extras/compose/patient
+    cd extras/compose/kunde
 
-    docker compose exec patient bash
+    docker compose exec kunde bash
         id
         env
         exit
@@ -1348,7 +1348,7 @@ im Block `patient.asgi` beim Schüssel `server` den Wert `hypercorn`.
         exit
 
     # 2. Powershell: Server herunterfahren einschl. DB-Server und Mailserver
-    cd extras\compose\patient
+    cd extras\compose\kunde
     docker compose down
 ```
 
@@ -1554,9 +1554,9 @@ groben Überblick verschaffen, wieviele Sicherheitslücken in den Bibliotheken i
 Image enthalten sind:
 
 ```shell
-    docker scout quickview juergenzimmermann/patient:2026.4.1-hardened
-    docker scout quickview juergenzimmermann/patient:2026.4.1-trixie
-    docker scout quickview juergenzimmermann/patient:2026.4.1-alpine
+    docker scout quickview juergenzimmermann/kunde:2026.4.1-hardened
+    docker scout quickview juergenzimmermann/kunde:2026.4.1-trixie
+    docker scout quickview juergenzimmermann/kunde:2026.4.1-alpine
 ```
 
 Dabei bedeutet:
@@ -1572,8 +1572,8 @@ Die Details zu den CVE-Records im Image kann man durch das Unterkommando `cves`
 von _Scout_ auflisten:
 
 ```shell
-    docker scout cves juergenzimmermann/patient:2026.4.1-hardened
-    docker scout cves --format only-packages juergenzimmermann/patient:2026.4.1-hardened
+    docker scout cves juergenzimmermann/kunde:2026.4.1-hardened
+    docker scout cves --format only-packages juergenzimmermann/kunde:2026.4.1-hardened
 ```
 
 Statt der Kommandozeile kann man auch den Menüpunkt "Docker Scout" im

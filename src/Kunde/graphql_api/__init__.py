@@ -1,19 +1,19 @@
 """Modul für die GraphQL-Schnittstelle."""
 
-from patient.graphql_api.graphql_types import (
+from kunde.graphql_api.graphql_types import (
     AdresseInput,
     CreatePayload,
-    PatientInput,
+    KundeInput,
     RechnungInput,
     Suchparameter,
 )
-from patient.graphql_api.schema import Mutation, Query, graphql_router
+from kunde.graphql_api.schema import Mutation, Query, graphql_router
 
 __all__ = [
     "AdresseInput",
     "CreatePayload",
     "Mutation",
-    "PatientInput",
+    "KundeInput",
     "Query",
     "RechnungInput",
     "Suchparameter",

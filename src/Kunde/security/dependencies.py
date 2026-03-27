@@ -15,8 +15,8 @@
 
 """Factory-Funktionen für Dependency Injection."""
 
-from patient.security.token_service import TokenService
-from patient.security.user_service import UserService
+from kunde.security.token_service import TokenService
+from kunde.security.user_service import UserService
 
 _token_service = TokenService()  # Singleton-Objekt
 

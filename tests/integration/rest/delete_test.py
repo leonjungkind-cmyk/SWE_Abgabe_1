@@ -27,14 +27,14 @@ from pytest import mark
 @mark.delete_request
 def test_delete() -> None:
     # arrange
-    patient_id: Final = 60
+    kunde_id: Final = 60
     token: Final = login()
     assert token is not None
     headers: Final = {"Authorization": f"Bearer {token}"}
 
     # act
     response: Final = delete(
-        f"{rest_url}/{patient_id}",
+        f"{rest_url}/{kunde_id}",
         headers=headers,
         verify=ctx,
     )
@@ -47,14 +47,14 @@ def test_delete() -> None:
 @mark.delete_request
 def test_delete_not_found() -> None:
     # arrange
-    patient_id: Final = 999999
+    kunde_id: Final = 999999
     token: Final = login()
     assert token is not None
     headers = {"Authorization": f"Bearer {token}"}
 
     # act
     response: Final = delete(
-        f"{rest_url}/{patient_id}",
+        f"{rest_url}/{kunde_id}",
         headers=headers,
         verify=ctx,
     )

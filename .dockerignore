@@ -6,12 +6,12 @@
 build
 docs
 extras
-patient.egg-info
+kunde.egg-info
 htmlcov
 log
 site
-src/patient/**/__pycache__
-src/patient/config/resources/tls/key.pem
+src/kunde/**/__pycache__
+src/kunde/config/resources/tls/key.pem
 tests
 .coverage
 .editorconfig
@@ -22,6 +22,6 @@ Dockerfile
 Dockerfile.alpine
 mkdocs.yml
 openapi.json
-patienten-*.xlsx
+kundeen-*.xlsx
 report.html
 sonar-*

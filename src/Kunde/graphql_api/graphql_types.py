@@ -20,32 +20,32 @@ from decimal import Decimal
 
 import strawberry
 
-from patient.entity import Facharzt, Familienstand, Geschlecht
+from kunde.entity import Facharzt, Familienstand, Geschlecht
 
 __all__ = [
     "AdresseInput",
     "CreatePayload",
-    "PatientInput",
+    "KundeInput",
     "RechnungInput",
     "Suchparameter",
 ]
 
 # SDL (schema definition language):
-# type Patient {
+# type kunde {
 #     nachname: String!
 # }
 # type Query {
-#     patient(patient_id: ID!): Patient!
-#     patienten(input: Suchparameter): [Patient!]
+#     kunde(kunde_id: ID!): kunde!
+#     kundeen(input: Suchparameter): [kunde!]
 # }
 # type Mutation {
-#     create(patient_input: PatientInput!): CreatePayload!
+#     create(kunde_input: KundeInput!): CreatePayload!
 # }
 
 
 @strawberry.input
 class Suchparameter:
-    """Suchparameter für die Suche nach Patienten."""
+    """Suchparameter für die Suche nach Kundeen."""
 
     nachname: str | None = None
     """Nachname als Suchkriterium."""
@@ -56,18 +56,18 @@ class Suchparameter:
 
 @strawberry.input
 class AdresseInput:
-    """Adresse eines neuen Patienten."""
+    """Adresse eines neuen Kundeen."""
 
     plz: str
-    """Postleitzahl eines neuen Patienten."""
+    """Postleitzahl eines neuen Kundeen."""
 
     ort: str
-    """Ort eines neuen Patienten."""
+    """Ort eines neuen Kundeen."""
 
 
 @strawberry.input
 class RechnungInput:
-    """Rechnung zu einem neuen Patienten."""
+    """Rechnung zu einem neuen Kundeen."""
 
     betrag: Decimal
     """Betrag."""
@@ -77,8 +77,8 @@ class RechnungInput:
 
 
 @strawberry.input
-class PatientInput:
-    """Daten für einen neuen Patienten."""
+class KundeInput:
+    """Daten für einen neuen Kundeen."""
 
     nachname: str
     """Nachname."""
@@ -119,10 +119,10 @@ class PatientInput:
 
 @strawberry.type
 class CreatePayload:
-    """Resultat-Typ, wenn ein neuer Patient angelegt wurde."""
+    """Resultat-Typ, wenn ein neuer kunde angelegt wurde."""
 
     id: int
-    """ID des neu angelegten Patienten"""
+    """ID des neu angelegten Kundeen"""
 
 
 @strawberry.type

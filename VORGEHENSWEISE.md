@@ -44,7 +44,7 @@
 
 ## Infrastruktur
 
-- Verzeichnisstruktur, Schichtenarchitektur und DDD: Service auslagern, Hello -> Patient, DI
+- Verzeichnisstruktur, Schichtenarchitektur und DDD: Service auslagern, Hello -> kunde, DI
 - Gruppierung und Aufteilung von Router
 - Request- und Response-Body komprimieren durch fastapi.middleware.gzip
 - Security-Header: z.B. STS, nosniff, ..., CORS

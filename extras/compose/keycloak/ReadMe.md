@@ -168,7 +168,7 @@ Das Mapping von Port `8443` auf `8843` und von `8080` auf `8880` ist in
             Breadcrumb "Client details" anklicken
             Tab "Roles"
                 <Create Role> anklicken
-                Role name       patient
+                Role name       kunde
                 <Save> anklicken
 
     # https://www.keycloak.org/docs/latest/server_admin/index.html#assigning-permissions-using-roles-and-groups
@@ -216,18 +216,18 @@ Mit der URL `https://localhost:8843/realms/python/.well-known/openid-configurati
 kann man in einem Webbrowser die Konfiguration als JSON-Datensatz erhalten.
 
 Die Bestandteile der Basis-URL `https://localhost:8443/realms/python` sind in der
-Konfigurationsdatei `src\patient\config\resources\app.toml` in der _Table_ `[keycloak]`
+Konfigurationsdatei `src\kunde\config\resources\app.toml` in der _Table_ `[keycloak]`
 eingetragen:
 
 - `schema`: Defaultwert ist `https`
 - `host`: Defaultwert ist `keycloak`
 - `port`: Defaultwert ist `8443`
 
-Die Defaultwerte sind in `src\patient\config\keycloak.py` definiert.
+Die Defaultwerte sind in `src\kunde\config\keycloak.py` definiert.
 
 ## Client Secret
 
-In der Datei `src\patient\config\resources\app.toml` muss man `client-secret` auf
+In der Datei `src\kunde\config\resources\app.toml` muss man `client-secret` auf
 folgenden Wert aus _Keycloak_ setzen:
 
 - Menüpunkt `Clients`
@@ -235,7 +235,7 @@ folgenden Wert aus _Keycloak_ setzen:
 - Tab `Credentials` anklicken
 - Die Zeichenkette beim Label `Client Secret` kopieren.
 
-Diese Zeichenkette wird auch für _Bruno_ und `extras\compose\patient\app.toml`
+Diese Zeichenkette wird auch für _Bruno_ und `extras\compose\kunde\app.toml`
 benötigt.
 
 ## Ergänzung des eigenen Server-Projekts

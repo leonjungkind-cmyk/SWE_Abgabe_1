@@ -24,5 +24,5 @@ request:
       autoRefreshToken: false
 
 docs:
-  content: Mit der GraphQL-Schnittstelle werden Patientendaten gelesen.
+  content: Mit der GraphQL-Schnittstelle werden Kundeendaten gelesen.
   type: text/markdown

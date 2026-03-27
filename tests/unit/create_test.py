@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""Unit-Tests für find_by_id() von PatientService."""
+"""Unit-Tests für find_by_id() von KundeService."""
 
 from copy import deepcopy
 from datetime import date
@@ -22,8 +22,8 @@ from typing import TYPE_CHECKING
 
 from pytest import fixture, mark, raises
 
-from patient.entity import Adresse, Familienstand, Geschlecht, Patient
-from patient.service import EmailExistsError, UsernameExistsError
+from kunde.entity import Adresse, Familienstand, Geschlecht, kunde
+from kunde.service import EmailExistsError, UsernameExistsError
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -32,9 +32,9 @@ if TYPE_CHECKING:
 @fixture
 def session_mock(mocker: MockerFixture):
     session = mocker.Mock()
-    # Patching von "with Session() as session:" in patient_write_service.py
+    # Patching von "with Session() as session:" in kunde_write_service.py
     mocker.patch(
-        "patient.service.patient_write_service.Session",
+        "kunde.service.kunde_write_service.Session",
         return_value=mocker.MagicMock(
             __enter__=lambda self: session,
             __exit__=lambda self, exc_type, exc, tb: None,
@@ -46,7 +46,7 @@ def session_mock(mocker: MockerFixture):
 @mark.unit
 @mark.unit_create
 def test_create(
-    patient_write_service, session_mock, keycloak_admin_mock, mocker
+    kunde_write_service, session_mock, keycloak_admin_mock, mocker
 ) -> None:
     # Arrange
     email = "mock@email.test"
@@ -54,10 +54,10 @@ def test_create(
         id=999,
         plz="11111",
         ort="Mockort",
-        patient_id=None,
-        patient=None,
+        kunde_id=None,
+        kunde=None,
     )
-    patient = Patient(
+    kunde = kunde(
         id=None,
         email=email,
         nachname="Mocktest",
@@ -72,17 +72,17 @@ def test_create(
         fachaerzte=[],
         rechnungen=[],
     )
-    adresse.patient = patient
-    patient_db_mock = deepcopy(patient)
+    adresse.kunde = kunde
+    kunde_db_mock = deepcopy(kunde)
     generierte_id = 1
-    patient_db_mock.id = generierte_id
-    patient_db_mock.adresse.id = generierte_id
+    kunde_db_mock.id = generierte_id
+    kunde_db_mock.adresse.id = generierte_id
 
     # Patch fuer KeycloakAdmin.get_user_id() und KeycloakAdmin.get_users()
     keycloak_admin_mock.get_user_id.return_value = None
     keycloak_admin_mock.get_users.return_value = []
 
-    # session.scalar(select(func.count()).where(Patient.email == email)
+    # session.scalar(select(func.count()).where(kunde.email == email)
     session_mock.scalar.return_value = 0
     session_mock.add.return_value = None
 
@@ -93,27 +93,27 @@ def test_create(
     session_mock.flush.side_effect = flush_side_effect
 
     # Patch fuer die Funktion send_mail
-    mocker.patch("patient.service.patient_write_service.send_mail", return_value=None)
+    mocker.patch("kunde.service.kunde_write_service.send_mail", return_value=None)
 
     # Act
-    patient_dto = patient_write_service.create(patient=patient)
+    kunde_dto = kunde_write_service.create(kunde=kunde)
 
     # Assert
-    assert patient_dto.id == generierte_id
+    assert kunde_dto.id == generierte_id
 
 
 @mark.unit
 @mark.unit_create
-def test_create_username_none(patient_write_service) -> None:
+def test_create_username_none(kunde_write_service) -> None:
     # Arrange
     adresse = Adresse(
         id=999,
         plz="11111",
         ort="Mockort",
-        patient_id=None,
-        patient=None,
+        kunde_id=None,
+        kunde=None,
     )
-    patient = Patient(
+    kunde = kunde(
         id=None,
         email="mock@email.test",
         nachname="Mocktest",
@@ -128,11 +128,11 @@ def test_create_username_none(patient_write_service) -> None:
         fachaerzte=[],
         rechnungen=[],
     )
-    adresse.patient = patient
+    adresse.kunde = kunde
 
     # Act
     with raises(ValueError) as err:
-        patient_write_service.create(patient=patient)
+        kunde_write_service.create(kunde=kunde)
 
     # Assert
     assert err.type is ValueError
@@ -140,17 +140,17 @@ def test_create_username_none(patient_write_service) -> None:
 
 @mark.unit
 @mark.unit_create
-def test_create_username_exists(patient_write_service, keycloak_admin_mock) -> None:
+def test_create_username_exists(kunde_write_service, keycloak_admin_mock) -> None:
     # Arrange
     email = "mock@email.test"
     adresse = Adresse(
         id=999,
         plz="11111",
         ort="Mockort",
-        patient_id=None,
-        patient=None,
+        kunde_id=None,
+        kunde=None,
     )
-    patient = Patient(
+    kunde = kunde(
         id=None,
         email=email,
         nachname="Mocktest",
@@ -165,7 +165,7 @@ def test_create_username_exists(patient_write_service, keycloak_admin_mock) -> N
         fachaerzte=[],
         rechnungen=[],
     )
-    adresse.patient = patient
+    adresse.kunde = kunde
 
     # Patch fuer KeycloakAdmin.get_user_id()
     user_id = "12345678-1234-1234-1234-123456789012"
@@ -174,7 +174,7 @@ def test_create_username_exists(patient_write_service, keycloak_admin_mock) -> N
 
     # Act
     with raises(UsernameExistsError) as err:
-        patient_write_service.create(patient=patient)
+        kunde_write_service.create(kunde=kunde)
 
     # Assert
     assert err.type is UsernameExistsError
@@ -182,17 +182,17 @@ def test_create_username_exists(patient_write_service, keycloak_admin_mock) -> N
 
 @mark.unit
 @mark.unit_create
-def test_create_email_exists(patient_write_service, keycloak_admin_mock) -> None:
+def test_create_email_exists(kunde_write_service, keycloak_admin_mock) -> None:
     # Arrange
     email = "mock@email.test"
     adresse = Adresse(
         id=999,
         plz="11111",
         ort="Mockort",
-        patient_id=None,
-        patient=None,
+        kunde_id=None,
+        kunde=None,
     )
-    patient = Patient(
+    kunde = kunde(
         id=None,
         email=email,
         nachname="Mocktest",
@@ -207,7 +207,7 @@ def test_create_email_exists(patient_write_service, keycloak_admin_mock) -> None
         fachaerzte=[],
         rechnungen=[],
     )
-    adresse.patient = patient
+    adresse.kunde = kunde
 
     # Patch fuer KeycloakAdmin.get_users()
     keycloak_admin_mock.get_user_id.return_value = None  # sonst UsernameExistsError
@@ -217,7 +217,7 @@ def test_create_email_exists(patient_write_service, keycloak_admin_mock) -> None
 
     # Act
     with raises(EmailExistsError) as err:
-        patient_write_service.create(patient=patient)
+        kunde_write_service.create(kunde=kunde)
 
     # Assert
     assert err.type is EmailExistsError

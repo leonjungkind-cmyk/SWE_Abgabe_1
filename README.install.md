@@ -82,7 +82,7 @@ Zuerst müssen die Backend-Server (PostgreSQL, Mailpit und Keycloak) gestartet w
 Danach kann man den Applikationsserver auf Basis von _Python_ und _FastAPI_ starten:
 
 ```shell
-    uv run patient
+    uv run kunde
 ```
 
 ## Codeanalyse und Formatierung mit ruff
@@ -115,7 +115,7 @@ gestartet ist:
 
 ## Bruno
 
-Mit _Bruno_ und der Collections in `extras\bruno\patient` kann nun die REST- und
+Mit _Bruno_ und der Collections in `extras\bruno\kunde` kann nun die REST- und
 GraphQL-Schnittstelle des Applikationsservers benutzt werden.
 
 ## Docker Image
@@ -133,10 +133,10 @@ natürlich noch nicht gestartet sein dürfen, setzt man folgende Kommandos ab:
 
 ```shell
     # Windows:
-    cd extras\compose\patient
+    cd extras\compose\kunde
 
     # macOS/Linux:
-    cd extras/compose/patient
+    cd extras/compose/kunde
 
     docker compose up
 ```

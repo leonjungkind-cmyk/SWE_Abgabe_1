@@ -1,3 +1,3 @@
 # Modul für die Geschäftslogik
 
-::: patient.service
+::: kunde.service

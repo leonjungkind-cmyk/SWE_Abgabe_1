@@ -13,19 +13,19 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
--- Aufruf:   psql --dbname=postgres --username=postgres --file=/init/patient/sql/create-db.sql
+-- Aufruf:   psql --dbname=postgres --username=postgres --file=/init/kunde/sql/create-db.sql
 
 -- https://www.postgresql.org/docs/current/sql-createuser.html
 -- https://www.postgresql.org/docs/current/sql-createrole.html
-CREATE USER patient PASSWORD 'p';
+CREATE USER kunde PASSWORD 'p';
 
 -- https://www.postgresql.org/docs/current/sql-createdatabase.html
-CREATE DATABASE patient;
+CREATE DATABASE kunde;
 
 -- https://www.postgresql.org/docs/current/role-attributes.html
 -- https://www.postgresql.org/docs/current/ddl-priv.html
 -- https://www.postgresql.org/docs/current/sql-grant.html
-GRANT ALL ON DATABASE patient TO patient;
+GRANT ALL ON DATABASE kunde TO kunde;
 
 -- https://www.postgresql.org/docs/current/sql-createtablespace.html
-CREATE TABLESPACE patientspace OWNER patient LOCATION '/tablespace/patient';
+CREATE TABLESPACE kundespace OWNER kunde LOCATION '/tablespace/kunde';

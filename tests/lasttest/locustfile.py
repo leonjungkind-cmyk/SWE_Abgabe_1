@@ -66,8 +66,8 @@ class GetUser(HttpUser):
     @task(100)
     def get_id(self) -> None:
         """GET-Requests mit einer ID als Pfadparameter."""
-        for patient_id in [1, 20, 30, 40, 50, 60]:
-            response = self.client.get(f"/rest/{patient_id}")
+        for kunde_id in [1, 20, 30, 40, 50, 60]:
+            response = self.client.get(f"/rest/{kunde_id}")
             print(f"{response.json()['id']}")
 
     @task(200)

@@ -17,7 +17,7 @@
 
 from dataclasses import dataclass
 
-from patient.security.role import Role
+from kunde.security.role import Role
 
 
 @dataclass()

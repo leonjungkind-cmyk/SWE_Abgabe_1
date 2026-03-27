@@ -1,4 +1,4 @@
-# Beispielprojekt patient
+# Beispielprojekt kunde
 
 ## Überblick
 

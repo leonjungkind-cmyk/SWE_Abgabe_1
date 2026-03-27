@@ -13,7 +13,7 @@ graphql:
   body:
     query: |-
       {
-        patienten(suchparameter: {email: "Nicht.Vorhanden@acme.com"}) {
+        kundeen(suchparameter: {email: "Nicht.Vorhanden@acme.com"}) {
           id
         }
       }
@@ -27,9 +27,9 @@ runtime:
     - expression: res.headers['content-type']
       operator: eq
       value: application/json
-    - expression: res.body.data.patienten
+    - expression: res.body.data.kundeen
       operator: isArray
-    - expression: res.body.data.patienten
+    - expression: res.body.data.kundeen
       operator: isEmpty
 
 settings:

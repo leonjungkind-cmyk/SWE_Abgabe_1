@@ -25,13 +25,13 @@ from uuid import uuid4
 
 from loguru import logger
 
-from patient.config import (
+from kunde.config import (
     mail_enabled,
     mail_host,
     mail_port,
     mail_timeout,
 )
-from patient.service.patient_dto import PatientDTO
+from kunde.service.kunde_dto import KundeDTO
 
 __all__ = ["send_mail"]
 
@@ -46,22 +46,22 @@ RECEIVERS: Final = ["Buchhaltung <buchhaltung@acme.com>"]
 TIMEOUT: Final = mail_timeout
 
 
-def send_mail(patient_dto: PatientDTO) -> None:
+def send_mail(kunde_dto: KundeDTO) -> None:
     """Funktion, um eine E-Mail zu senden.
 
-    :param patient_dto: Patienten-Daten
+    :param kunde_dto: Kundeen-Daten
     """
     # Alternativen zu smtplib:
     # - Marrow Mailer https://github.com/marrow/mailer
     # - EZGmail https://github.com/asweigart/ezgmail
-    logger.debug("{}", patient_dto)
+    logger.debug("{}", kunde_dto)
     if not mail_enabled:
         logger.warning("send_mail: Der Mailserver ist deaktiviert")
         return
 
     # Body und Subject
-    msg: Final = MIMEText(f"Neuer Patient: <b>{patient_dto.nachname}</b>")
-    msg["Subject"] = f"Neuer Patient: ID={patient_dto.id}"
+    msg: Final = MIMEText(f"Neuer kunde: <b>{kunde_dto.nachname}</b>")
+    msg["Subject"] = f"Neuer kunde: ID={kunde_dto.id}"
     # https://docs.python.org/3/library/email.utils.html#email.utils.make_msgid
     msg["Message-ID"] = make_msgid(idstring=str(uuid4()))
 

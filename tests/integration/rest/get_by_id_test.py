@@ -27,8 +27,8 @@ from pytest import mark
 # in pyproject.toml bei der Table [tool.pytest.ini_options] gibt es das Array "markers"
 @mark.rest
 @mark.get_request
-@mark.parametrize("patient_id", [30, 1, 20])
-def test_get_by_id_admin(patient_id: int) -> None:
+@mark.parametrize("kunde_id", [30, 1, 20])
+def test_get_by_id_admin(kunde_id: int) -> None:
     # arrange
     token: Final = login()
     assert token is not None
@@ -36,7 +36,7 @@ def test_get_by_id_admin(patient_id: int) -> None:
 
     # act
     response: Final = get(
-        f"{rest_url}/{patient_id}",
+        f"{rest_url}/{kunde_id}",
         headers=headers,
         verify=ctx,
     )
@@ -47,13 +47,13 @@ def test_get_by_id_admin(patient_id: int) -> None:
     assert isinstance(response_body, dict)
     id_actual: Final = response_body.get("id")
     assert id_actual is not None
-    assert id_actual == patient_id
+    assert id_actual == kunde_id
 
 
 @mark.rest
 @mark.get_request
-@mark.parametrize("patient_id", [0, 999999])
-def test_get_by_id_not_found(patient_id: int) -> None:
+@mark.parametrize("kunde_id", [0, 999999])
+def test_get_by_id_not_found(kunde_id: int) -> None:
     # arrange
     token: Final = login()
     assert token is not None
@@ -61,7 +61,7 @@ def test_get_by_id_not_found(patient_id: int) -> None:
 
     # act
     response: Final = get(
-        f"{rest_url}/{patient_id}",
+        f"{rest_url}/{kunde_id}",
         headers=headers,
         verify=ctx,
     )
@@ -72,16 +72,16 @@ def test_get_by_id_not_found(patient_id: int) -> None:
 
 @mark.rest
 @mark.get_request
-def test_get_by_id_patient() -> None:
+def test_get_by_id_kunde() -> None:
     # arrange
-    patient_id: Final = 20
+    kunde_id: Final = 20
     token: Final = login(username="alice")
     assert token is not None
     headers = {"Authorization": f"Bearer {token}"}
 
     # act
     response: Final = get(
-        f"{rest_url}/{patient_id}",
+        f"{rest_url}/{kunde_id}",
         headers=headers,
         verify=ctx,
     )
@@ -90,15 +90,15 @@ def test_get_by_id_patient() -> None:
     assert response.status_code == HTTPStatus.OK
     response_body: Final = response.json()
     assert isinstance(response_body, dict)
-    patient_id_response: Final = response_body.get("id")
-    assert patient_id_response is not None
-    assert patient_id_response == patient_id
+    kunde_id_response: Final = response_body.get("id")
+    assert kunde_id_response is not None
+    assert kunde_id_response == kunde_id
 
 
 @mark.rest
 @mark.get_request
-@mark.parametrize("patient_id", [1, 30])
-def test_get_by_id_not_allowed(patient_id: int) -> None:
+@mark.parametrize("kunde_id", [1, 30])
+def test_get_by_id_not_allowed(kunde_id: int) -> None:
     # arrange
     token: Final = login(username="alice")
     assert token is not None
@@ -106,7 +106,7 @@ def test_get_by_id_not_allowed(patient_id: int) -> None:
 
     # act
     response: Final = get(
-        f"{rest_url}/{patient_id}",
+        f"{rest_url}/{kunde_id}",
         headers=headers,
         verify=ctx,
     )
@@ -117,8 +117,8 @@ def test_get_by_id_not_allowed(patient_id: int) -> None:
 
 @mark.rest
 @mark.get_request
-@mark.parametrize("patient_id", [0, 999999])
-def test_get_by_id_not_allowed_not_found(patient_id: int) -> None:
+@mark.parametrize("kunde_id", [0, 999999])
+def test_get_by_id_not_allowed_not_found(kunde_id: int) -> None:
     # arrange
     token: Final = login(username="alice")
     assert token is not None
@@ -126,7 +126,7 @@ def test_get_by_id_not_allowed_not_found(patient_id: int) -> None:
 
     # act
     response: Final = get(
-        f"{rest_url}/{patient_id}",
+        f"{rest_url}/{kunde_id}",
         headers=headers,
         verify=ctx,
     )
@@ -137,8 +137,8 @@ def test_get_by_id_not_allowed_not_found(patient_id: int) -> None:
 
 @mark.rest
 @mark.get_request
-@mark.parametrize("patient_id", [30, 1, 20])
-def test_get_by_id_ungueltiger_token(patient_id: int) -> None:
+@mark.parametrize("kunde_id", [30, 1, 20])
+def test_get_by_id_ungueltiger_token(kunde_id: int) -> None:
     # arrange
     token: Final = login()
     assert token is not None
@@ -146,7 +146,7 @@ def test_get_by_id_ungueltiger_token(patient_id: int) -> None:
 
     # act
     response: Final = get(
-        f"{rest_url}/{patient_id}",
+        f"{rest_url}/{kunde_id}",
         headers=headers,
         verify=ctx,
     )
@@ -157,10 +157,10 @@ def test_get_by_id_ungueltiger_token(patient_id: int) -> None:
 
 @mark.rest
 @mark.get_request
-@mark.parametrize("patient_id", [30, 1, 20])
-def test_get_by_id_ohne_token(patient_id: int) -> None:
+@mark.parametrize("kunde_id", [30, 1, 20])
+def test_get_by_id_ohne_token(kunde_id: int) -> None:
     # act
-    response: Final = get(f"{rest_url}/{patient_id}", verify=ctx)
+    response: Final = get(f"{rest_url}/{kunde_id}", verify=ctx)
 
     # assert
     assert response.status_code == HTTPStatus.UNAUTHORIZED
@@ -168,8 +168,8 @@ def test_get_by_id_ohne_token(patient_id: int) -> None:
 
 @mark.rest
 @mark.get_request
-@mark.parametrize("patient_id,if_none_match", [(20, '"0"'), (30, '"0"')])
-def test_get_by_id_etag(patient_id: int, if_none_match: str) -> None:
+@mark.parametrize("kunde_id,if_none_match", [(20, '"0"'), (30, '"0"')])
+def test_get_by_id_etag(kunde_id: int, if_none_match: str) -> None:
     # arrange
     token: Final = login()
     assert token is not None
@@ -180,7 +180,7 @@ def test_get_by_id_etag(patient_id: int, if_none_match: str) -> None:
 
     # act
     response: Final = get(
-        f"{rest_url}/{patient_id}",
+        f"{rest_url}/{kunde_id}",
         headers=headers,
         verify=ctx,
     )
@@ -192,8 +192,8 @@ def test_get_by_id_etag(patient_id: int, if_none_match: str) -> None:
 
 @mark.rest
 @mark.get_request
-@mark.parametrize("patient_id,if_none_match", [(30, 'xxx"'), (1, "xxx"), (20, "xxx")])
-def test_get_by_id_etag_invalid(patient_id: int, if_none_match: str) -> None:
+@mark.parametrize("kunde_id,if_none_match", [(30, 'xxx"'), (1, "xxx"), (20, "xxx")])
+def test_get_by_id_etag_invalid(kunde_id: int, if_none_match: str) -> None:
     # arrange
     token: Final = login()
     assert token is not None
@@ -204,7 +204,7 @@ def test_get_by_id_etag_invalid(patient_id: int, if_none_match: str) -> None:
 
     # act
     response: Final = get(
-        f"{rest_url}/{patient_id}",
+        f"{rest_url}/{kunde_id}",
         headers=headers,
         verify=ctx,
     )
@@ -215,4 +215,4 @@ def test_get_by_id_etag_invalid(patient_id: int, if_none_match: str) -> None:
     assert isinstance(response_body, dict)
     id_actual: Final = response_body.get("id")
     assert id_actual is not None
-    assert id_actual == patient_id
+    assert id_actual == kunde_id

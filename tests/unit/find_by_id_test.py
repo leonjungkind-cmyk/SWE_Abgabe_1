@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""Unit-Tests für find_by_id() von PatientService."""
+"""Unit-Tests für find_by_id() von KundeService."""
 
 from dataclasses import asdict
 from datetime import date
@@ -22,9 +22,9 @@ from typing import TYPE_CHECKING
 
 from pytest import fixture, mark, raises
 
-from patient.entity import Adresse, Familienstand, Geschlecht, Patient
-from patient.security import Role, User
-from patient.service import ForbiddenError, NotFoundError, PatientDTO, PatientService
+from kunde.entity import Adresse, Familienstand, Geschlecht, kunde
+from kunde.security import Role, User
+from kunde.service import ForbiddenError, NotFoundError, KundeDTO, KundeService
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -33,9 +33,9 @@ if TYPE_CHECKING:
 @fixture
 def session_mock(mocker: MockerFixture):
     session = mocker.Mock()
-    # Patching von "with Session() as session:" in patient_service.py
+    # Patching von "with Session() as session:" in kunde_service.py
     mocker.patch(
-        "patient.service.patient_service.Session",
+        "kunde.service.kunde_service.Session",
         return_value=mocker.MagicMock(
             __enter__=lambda self: session,
             __exit__=lambda self, exc_type, exc, tb: None,
@@ -46,9 +46,9 @@ def session_mock(mocker: MockerFixture):
 
 @mark.unit
 @mark.unit_find_by_id
-def test_find_by_id(patient_service, session_mock) -> None:
+def test_find_by_id(kunde_service, session_mock) -> None:
     # Arrange
-    patient_id = 1
+    kunde_id = 1
     username = "mocktest"
     email = "mock@email.test"
     nachname = "Mocktest"
@@ -65,11 +65,11 @@ def test_find_by_id(patient_service, session_mock) -> None:
         id=11,
         plz="11111",
         ort="Mockort",
-        patient_id=patient_id,
-        patient=None,
+        kunde_id=kunde_id,
+        kunde=None,
     )
-    patient_mock = Patient(
-        id=patient_id,
+    kunde_mock = kunde(
+        id=kunde_id,
         email=email,
         nachname=nachname,
         kategorie=1,
@@ -83,23 +83,23 @@ def test_find_by_id(patient_service, session_mock) -> None:
         fachaerzte=[],
         rechnungen=[],
     )
-    adresse_mock.patient = patient_mock
-    patient_dto_mock = PatientDTO(patient_mock)
-    # session.scalar(select(Patient)...)
-    session_mock.scalar.return_value = patient_mock
+    adresse_mock.kunde = kunde_mock
+    kunde_dto_mock = KundeDTO(kunde_mock)
+    # session.scalar(select(kunde)...)
+    session_mock.scalar.return_value = kunde_mock
 
     # Act
-    patient_dto = patient_service.find_by_id(patient_id=patient_id, user=user_mock)
+    kunde_dto = kunde_service.find_by_id(kunde_id=kunde_id, user=user_mock)
 
     # Assert
-    assert asdict(patient_dto) == asdict(patient_dto_mock)
+    assert asdict(kunde_dto) == asdict(kunde_dto_mock)
 
 
 @mark.unit
 @mark.unit_find_by_id
-def test_find_by_id_not_found(patient_service: PatientService, session_mock) -> None:
+def test_find_by_id_not_found(kunde_service: KundeService, session_mock) -> None:
     # Arrange
-    patient_id = 999
+    kunde_id = 999
     user_mock = User(
         username="mocktest",
         email="mock@email.test",
@@ -108,26 +108,26 @@ def test_find_by_id_not_found(patient_service: PatientService, session_mock) -> 
         roles=[Role.ADMIN],
         password="mockpass",
     )
-    # session.scalar(select(Patient)...)
+    # session.scalar(select(kunde)...)
     session_mock.scalar.return_value = None
 
     # Act
     with raises(NotFoundError) as err:
-        patient_service.find_by_id(patient_id=patient_id, user=user_mock)
+        kunde_service.find_by_id(kunde_id=kunde_id, user=user_mock)
 
     # Assert
     assert err.type == NotFoundError
     assert str(err.value) == "Not Found"  # super().__init__("Not Found")
-    assert err.value.patient_id == patient_id
+    assert err.value.kunde_id == kunde_id
 
 
 @mark.unit
 @mark.unit_find_by_id
 def test_find_by_id_not_found_not_admin(
-    patient_service: PatientService, session_mock
+    kunde_service: KundeService, session_mock
 ) -> None:
     # Arrange
-    patient_id = 999
+    kunde_id = 999
     user_mock = User(
         username="mocktest",
         email="mock@email.test",
@@ -136,12 +136,12 @@ def test_find_by_id_not_found_not_admin(
         roles=[],
         password="mockpass",
     )
-    # session.scalar(select(Patient)...)
+    # session.scalar(select(kunde)...)
     session_mock.scalar.return_value = None
 
     # Act
     with raises(ForbiddenError) as err:
-        patient_service.find_by_id(patient_id=patient_id, user=user_mock)
+        kunde_service.find_by_id(kunde_id=kunde_id, user=user_mock)
 
     # Assert
     assert err.type == ForbiddenError
@@ -149,9 +149,9 @@ def test_find_by_id_not_found_not_admin(
 
 @mark.unit
 @mark.unit_find_by_id
-def test_find_by_id_not_admin(patient_service, session_mock) -> None:
+def test_find_by_id_not_admin(kunde_service, session_mock) -> None:
     # Arrange
-    patient_id = 1
+    kunde_id = 1
     username = "mocktest"
     email = "mock@email.test"
     nachname = "Mocktest"
@@ -161,18 +161,18 @@ def test_find_by_id_not_admin(patient_service, session_mock) -> None:
         email=email,
         nachname=nachname,
         vorname=nachname,
-        roles=[Role.PATIENT],
+        roles=[Role.kunde],
         password="mockpass",
     )
     adresse_mock = Adresse(
         id=11,
         plz="11111",
         ort="Mockort",
-        patient_id=patient_id,
-        patient=None,
+        kunde_id=kunde_id,
+        kunde=None,
     )
-    patient_mock = Patient(
-        id=patient_id,
+    kunde_mock = kunde(
+        id=kunde_id,
         email=email,
         nachname=nachname,
         kategorie=1,
@@ -186,23 +186,23 @@ def test_find_by_id_not_admin(patient_service, session_mock) -> None:
         fachaerzte=[],
         rechnungen=[],
     )
-    adresse_mock.patient = patient_mock
-    patient_dto_mock = PatientDTO(patient_mock)
-    # session.scalar(select(Patient)...)
-    session_mock.scalar.return_value = patient_mock
+    adresse_mock.kunde = kunde_mock
+    kunde_dto_mock = KundeDTO(kunde_mock)
+    # session.scalar(select(kunde)...)
+    session_mock.scalar.return_value = kunde_mock
 
     # Act
-    patient_dto = patient_service.find_by_id(patient_id=patient_id, user=user_mock)
+    kunde_dto = kunde_service.find_by_id(kunde_id=kunde_id, user=user_mock)
 
     # Assert
-    assert asdict(patient_dto) == asdict(patient_dto_mock)
+    assert asdict(kunde_dto) == asdict(kunde_dto_mock)
 
 
 @mark.unit
 @mark.unit_find_by_id
-def test_find_by_id_other(patient_service, session_mock) -> None:
+def test_find_by_id_other(kunde_service, session_mock) -> None:
     # Arrange
-    patient_id = 1
+    kunde_id = 1
     email = "mock@email.test"
     nachname = "Mocktest"
 
@@ -211,18 +211,18 @@ def test_find_by_id_other(patient_service, session_mock) -> None:
         email=email,
         nachname=nachname,
         vorname=nachname,
-        roles=[Role.PATIENT],
+        roles=[Role.kunde],
         password="mockpass",
     )
     adresse_mock = Adresse(
         id=11,
         plz="11111",
         ort="Mockort",
-        patient_id=patient_id,
-        patient=None,
+        kunde_id=kunde_id,
+        kunde=None,
     )
-    patient_mock = Patient(
-        id=patient_id,
+    kunde_mock = kunde(
+        id=kunde_id,
         email=email,
         nachname=nachname,
         kategorie=1,
@@ -236,13 +236,13 @@ def test_find_by_id_other(patient_service, session_mock) -> None:
         fachaerzte=[],
         rechnungen=[],
     )
-    adresse_mock.patient = patient_mock
-    # session.scalar(select(Patient)...)
-    session_mock.scalar.return_value = patient_mock
+    adresse_mock.kunde = kunde_mock
+    # session.scalar(select(kunde)...)
+    session_mock.scalar.return_value = kunde_mock
 
     # Act
     with raises(ForbiddenError) as err:
-        patient_service.find_by_id(patient_id=patient_id, user=user_mock)
+        kunde_service.find_by_id(kunde_id=kunde_id, user=user_mock)
 
     # Assert
     assert err.type == ForbiddenError

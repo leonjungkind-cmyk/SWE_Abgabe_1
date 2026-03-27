@@ -21,7 +21,7 @@ from loguru import logger
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from patient.config.db import (
+from kunde.config.db import (
     db_connect_args,
     db_log_statements,
     db_url,

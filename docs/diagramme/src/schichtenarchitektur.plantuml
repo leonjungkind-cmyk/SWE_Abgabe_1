@@ -17,60 +17,60 @@
 
 @startuml Schichtenarchitektur
 
-package patient #DDDDDD {
+package kunde #DDDDDD {
     package rest #FFFFFF {
-        [@router.get()\nget_by_id()\n\n@router.get()\nget()\n\n@router.get()\nget_nachnamen()] as PatientGetController
-        [@router.post()\npost()\n\n@router.put()\nput()\n\n@router.delete()\ndelete_by_id()] as PatientWriteController
+        [@router.get()\nget_by_id()\n\n@router.get()\nget()\n\n@router.get()\nget_nachnamen()] as kundeGetController
+        [@router.post()\npost()\n\n@router.put()\nput()\n\n@router.delete()\ndelete_by_id()] as kundeWriteController
         [@router.get()\nliveness()\n\n@router.get()\nreadiness()] as HealthController
 
-        [PatientGetController] -right[hidden]-> [PatientWriteController]
+        [kundeGetController] -right[hidden]-> [kundeWriteController]
     }
 
     package service #FFFFFF {
-        [find_by_id()\nfind()\nfind_nachnamen()] as PatientReadService
-        [create()\nupdate()\ndelete()] as PatientWriteService
+        [find_by_id()\nfind()\nfind_nachnamen()] as kundeReadService
+        [create()\nupdate()\ndelete()] as kundeWriteService
     }
 
-    [PatientGetController] --> [PatientReadService]
-    [PatientWriteController] --> [PatientWriteService]
+    [kundeGetController] --> [kundeReadService]
+    [kundeWriteController] --> [kundeWriteService]
 
     package repository #FFFFFF {
-        [find_by_id()\nfind()\nexists_email()\nfind_nachnamen()\ncreate()\nupdate()\ndelete_by_id()\ncheck_db_connection()] as PatientRepository
+        [find_by_id()\nfind()\nexists_email()\nfind_nachnamen()\ncreate()\nupdate()\ndelete_by_id()\ncheck_db_connection()] as kundeRepository
     }
 
-    [PatientReadService] --> [PatientRepository]
-    [PatientWriteService] --> [PatientRepository]
-    [HealthController] --> [PatientRepository]
+    [kundeReadService] --> [kundeRepository]
+    [kundeWriteService] --> [kundeRepository]
+    [HealthController] --> [kundeRepository]
 
     package entity #FFFFFF {
-        [Patient]
+        [kunde]
         [Adresse]
         [Rechnung]
 
-        [Patient] -right[hidden]-> [Adresse]
+        [kunde] -right[hidden]-> [Adresse]
         [Adresse] -down[hidden]-> [Rechnung]
     }
 
-    [PatientGetController] ..> [Patient]
-    [PatientWriteController] ..> [Patient]
-    [PatientReadService] .left.> [Patient]
-    [PatientWriteService] ..> [Patient]
-    [PatientRepository] ..> [Patient]
+    [kundeGetController] ..> [kunde]
+    [kundeWriteController] ..> [kunde]
+    [kundeReadService] .left.> [kunde]
+    [kundeWriteService] ..> [kunde]
+    [kundeRepository] ..> [kunde]
 }
 
-RESTClient ~~> [PatientGetController]
-RESTClient ~~> [PatientWriteController]
+RESTClient ~~> [kundeGetController]
+RESTClient ~~> [kundeWriteController]
 RESTClient ~~> [HealthController]
 
 cloud {
     [SQLAlchemy\n(OR-Mapping)] as SQLAlchemy
 }
 
-[PatientRepository] ~down~> [SQLAlchemy]
+[kundeRepository] ~down~> [SQLAlchemy]
 entity ~~> [SQLAlchemy]
 
-database "DB patient" as db {
-    [Tabelle patient]
+database "DB kunde" as db {
+    [Tabelle kunde]
     [Tabelle adresse]
     [Tabelle rechnung]
 }

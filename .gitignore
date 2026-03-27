@@ -14,8 +14,8 @@ extras/**/__pycache__
 htmlcov
 log
 site
-src/patient/**/__pycache__
-src/patient/patient.egg-info
+src/kunde/**/__pycache__
+src/kunde/kunde.egg-info
 tests/**/__pycache__
 
 .coverage
@@ -27,5 +27,5 @@ dependency-check-report.html
 .env
 sonar-project.properties
 extras/compose/db/postgres/db_password.txt
-src/patient/config/resources/tls/private-key.pem
+src/kunde/config/resources/tls/private-key.pem
 

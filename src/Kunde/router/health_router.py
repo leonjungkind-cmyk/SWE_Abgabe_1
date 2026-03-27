@@ -21,7 +21,7 @@ from fastapi import APIRouter
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 
-from patient.repository import engine
+from kunde.repository import engine
 
 __all__ = ["router"]
 

@@ -1,4 +1,4 @@
-id;betrag;waehrung;patient_id
+id;betrag;waehrung;kunde_id
 1;1;EUR;1
 20;20;EUR;20
 30;30;USD;30

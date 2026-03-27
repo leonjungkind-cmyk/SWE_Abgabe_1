@@ -19,14 +19,14 @@
 
 actor Gast
 actor Admin
-actor Patient
+actor Kunde
 
-rectangle patient {
-    Gast --> (Patient anlegen)
-    Admin --> (Patient suchen)
-    Admin --> (Patient aendern)
-    Admin --> (Patient loeschen)
-    Patient --> (Patient suchen)
+rectangle kunde {
+    Gast --> (Kunde anlegen)
+    Admin --> (Kunde suchen)
+    Admin --> (Kunde aendern)
+    Admin --> (Kunde loeschen)
+    Kunde --> (Kunde suchen)
 }
 
 footer (c) Jürgen Zimmermann

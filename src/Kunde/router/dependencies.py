@@ -19,32 +19,32 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from patient.repository.patient_repository import PatientRepository
-from patient.security.dependencies import get_user_service
-from patient.security.user_service import UserService
-from patient.service.patient_service import PatientService
-from patient.service.patient_write_service import PatientWriteService
+from kunde.repository.kunde_repository import KundeRepository
+from kunde.security.dependencies import get_user_service
+from kunde.security.user_service import UserService
+from kunde.service.kunde_service import KundeService
+from kunde.service.kunde_write_service import KundeWriteService
 
 
-def get_repository() -> PatientRepository:
-    """Factory-Funktion für PatientRepository.
+def get_repository() -> KundeRepository:
+    """Factory-Funktion für KundeRepository.
 
     :return: Das Repository
-    :rtype: PatientRepository
+    :rtype: KundeRepository
     """
-    return PatientRepository()
+    return KundeRepository()
 
 
 def get_service(
-    repo: Annotated[PatientRepository, Depends(get_repository)],
-) -> PatientService:
-    """Factory-Funktion für PatientService."""
-    return PatientService(repo=repo)
+    repo: Annotated[KundeRepository, Depends(get_repository)],
+) -> KundeService:
+    """Factory-Funktion für KundeService."""
+    return KundeService(repo=repo)
 
 
 def get_write_service(
-    repo: Annotated[PatientRepository, Depends(get_repository)],
+    repo: Annotated[KundeRepository, Depends(get_repository)],
     user_service: Annotated[UserService, Depends(get_user_service)],
-) -> PatientWriteService:
-    """Factory-Funktion für PatientWriteService."""
-    return PatientWriteService(repo=repo, user_service=user_service)
+) -> KundeWriteService:
+    """Factory-Funktion für KundeWriteService."""
+    return KundeWriteService(repo=repo, user_service=user_service)
