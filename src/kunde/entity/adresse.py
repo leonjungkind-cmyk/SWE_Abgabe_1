@@ -32,7 +32,7 @@ class Adresse(Base):
     kunde_id: Mapped[int] = mapped_column(ForeignKey("kunde.id"), unique=True)
     """ID des zugehörigen Kunden als Fremdschlüssel."""
 
-    kunde: Mapped[Kunde] = relationship(
+    kunde: Mapped[Kunde] = relationship(  # noqa: F821 # ty: ignore[unresolved-reference] # pyright: ignore[reportUndefinedVariable]
         back_populates="adresse",
     )
     """Das zugehörige transiente Kunde-Objekt."""
