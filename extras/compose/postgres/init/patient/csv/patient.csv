@@ -1,8 +1,0 @@
-id;version;nachname;email;kategorie;has_newsletter;geburtsdatum;homepage;geschlecht;familienstand;fachaerzte;username;erzeugt;aktualisiert
-1;0;Admin;admin@acme.com;1;true;2025-01-01;https://www.acme.com;WEIBLICH;VERHEIRATET;null;admin;2025-01-01 00:00:00;2025-01-01 00:00:00
-20;0;Alice;alice@acme.de;2;true;2025-01-02;https://www.acme.de;MAENNLICH;LEDIG;"[""CHIRURGIE""]";alice;2025-01-02 00:00:00;2025-01-02 00:00:00
-30;0;Alice;alice@acme.edu;3;true;2025-01-03;https://www.acme.edu;WEIBLICH;GESCHIEDEN;"[""HALS_NASEN_OHREN"",""KARDIOLOGIE""]";alice30;2025-01-03 00:00:00;2025-01-03 00:00:00
-40;0;Alice;alice@acme.ch;4;true;2025-01-04;https://www.acme.ch;MAENNLICH;VERWITWET;"[""CHIRURGIE""]";alice40;2025-01-04 00:00:00;2025-01-04 00:00:00
-50;0;Diana;diana@acme.uk;5;true;2025-01-05;https://www.acme.uk;WEIBLICH;VERHEIRATET;"[""NEUROLOGIE""]";diana;2025-01-05 00:00:00;2025-01-05 00:00:00
-60;0;Eve;eve@acme.jp;6;true;2025-01-06;https://www.acme.jp;MAENNLICH;LEDIG;null;eve;2025-01-06 00:00:00;2025-01-06 00:00:00
-70;0;Frank;frank@acme.cn;7;true;2025-01-07;https://www.acme.cn;DIVERS;LEDIG;"[""HALS_NASEN_OHREN""]";frank;2025-01-07 00:00:00;2025-01-07 00:00:00

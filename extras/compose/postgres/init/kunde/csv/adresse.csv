@@ -1,0 +1,4 @@
+id,strasse,hausnummer,plz,ort,kunde_id
+2000,Hauptstraße,12,76133,Karlsruhe,1000
+2001,Bahnhofstraße,5,76137,Karlsruhe,1001
+2002,Gartenweg,8,76227,Karlsruhe,1002

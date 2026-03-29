@@ -1,0 +1,6 @@
+id,produktname,menge,kunde_id
+3000,Laptop,1,1000
+3001,Maus,2,1000
+3002,Tastatur,1,1001
+3003,Monitor,2,1002
+3004,USB-Kabel,5,1002
