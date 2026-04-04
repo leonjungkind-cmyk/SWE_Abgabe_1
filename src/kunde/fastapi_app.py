@@ -18,7 +18,7 @@ from loguru import logger
 
 from kunde.banner import banner
 from kunde.repository import engine
-from kunde.router.kunde_router import kunde_router
+from kunde.router.kunde_read_router import kunde_read_router
 from kunde.router.kunde_write_router import kunde_write_router
 
 
@@ -80,7 +80,7 @@ async def log_response_time(
     return response
 
 
-app.include_router(kunde_router, prefix="/rest")
+app.include_router(kunde_read_router, prefix="/rest")
 app.include_router(kunde_write_router, prefix="/rest")
 
 
