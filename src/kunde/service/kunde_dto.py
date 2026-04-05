@@ -1,28 +1,34 @@
-"""DTO für Kundendaten."""
+"""DTO für die Übertragung von Kundendaten zwischen den Schichten."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
 
 from kunde.entity.kunde import Kunde
 
 __all__ = ["KundeDTO"]
 
 
+@dataclass
 class KundeDTO:
-    """DTO-Klasse für einen Kunden."""
+    """Lesbare Repräsentation eines Kunden ohne direkte Datenbankanbindung."""
 
-    def __init__(self, kunde: Kunde) -> None:
-        """Initialisierung mit einer Kunde-Entity.
+    id: int | None
+    nachname: str
+    email: str
+    version: int
 
-        :param kunde: Persistierter Kunde
+    @classmethod
+    def from_kunde(cls, kunde: Kunde) -> KundeDTO:
+        """Baut ein KundeDTO aus einer persistierten Kunde-Entity.
+
+        :param kunde: Aus der Datenbank geladene Kunde-Instanz
+        :return: Neues KundeDTO mit den Werten des Kunden
+        :rtype: KundeDTO
         """
-        self.id = kunde.id
-        self.nachname = kunde.nachname
-        self.email = kunde.email
-
-    def __repr__(self) -> str:
-        """String-Darstellung des DTO.
-
-        :return: String-Repräsentation
-        :rtype: str
-        """
-        return (
-            f"KundeDTO(id={self.id}, nachname={self.nachname}, email={self.email})"
+        return cls(
+            id=kunde.id,
+            nachname=kunde.nachname,
+            email=kunde.email,
+            version=kunde.version,
         )

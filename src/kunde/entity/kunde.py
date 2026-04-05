@@ -27,6 +27,9 @@ class Kunde(Base):
     email: Mapped[str] = mapped_column(unique=True)
     """Die eindeutige Emailadresse."""
 
+    version: Mapped[int] = mapped_column(default=0)
+    """Die Versionsnummer für optimistische Nebenläufigkeitskontrolle."""
+
     adresse: Mapped[Adresse] = relationship(
         back_populates="kunde",
         innerjoin=True,

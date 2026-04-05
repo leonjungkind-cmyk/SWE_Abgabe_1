@@ -1,6 +1,10 @@
 """Exceptions für die Service-Schicht."""
 
 
+class NotFoundError(Exception):
+    """Exception, falls ein Kunde nicht gefunden wurde."""
+
+
 class EmailExistsError(Exception):
     """Exception, falls eine Emailadresse bereits existiert."""
 
