@@ -17,12 +17,10 @@
 
 from typing import Annotated, Final
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-from loguru import logger
 
 from kunde.config.dev.db_populate import DbPopulateService, get_db_populate_service
-from kunde.security import Role, RolesRequired, User
 
 __all__ = ["router"]
 
@@ -30,25 +28,14 @@ __all__ = ["router"]
 router: Final = APIRouter()
 
 
-# "Dependency Injection" durch Depends
-@router.post(
-    "/db_populate",
-    tags=["Admin"],
-    dependencies=[Depends(RolesRequired(Role.ADMIN))],
-)
+@router.post("/db_populate", tags=["Dev"])
 def populate(
-    request: Request,
     service: Annotated[DbPopulateService, Depends(get_db_populate_service)],
 ) -> JSONResponse:
-    """Die DB mit Testdaten durch einen POST-Request neu zu laden.
+    """Die DB mit Testdaten durch einen POST-Request neu laden.
 
     :return: JSON-Datensatz mit der Erfolgsmeldung
-    :rtype: dict[str, str]
+    :rtype: JSONResponse
     """
-    current_user: Final[User] = request.state.current_user
-    logger.warning(
-        'REST-Schnittstelle zum Neuladen der DB aufgerufen von "{}"',
-        current_user.username,
-    )
     service.populate()
     return JSONResponse(content={"db_populate": "success"})

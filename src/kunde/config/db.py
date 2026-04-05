@@ -47,8 +47,8 @@ _drivername = "postgresql+psycopg"
 _dbname: Final[str] = _db_toml.get("name", "kunde")
 _host: Final[str] = _db_toml.get("host", "postgres")
 _username: Final[str] = _db_toml.get("username", "kunde")
-_password: Final[str] = _db_toml.get("password", "Change Me!")
-_password_admin: Final[str] = _db_toml.get("password-admin", "Change Me!")
+_password: Final[str] = _db_toml.get("password", "p")
+_password_admin: Final[str] = _db_toml.get("password-admin", "p")
 
 db_log_statements: Final[bool] = bool(_db_toml.get("log-statements", False))
 """True, falls die SQL-Anweisungen protokolliert werden sollen."""

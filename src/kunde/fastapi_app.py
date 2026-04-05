@@ -1,8 +1,3 @@
-# Copyright (C) 2023 - present Juergen Zimmermann, Hochschule Karlsruhe
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License.
-
 """MainApp."""
 
 from collections.abc import Awaitable, Callable
@@ -17,6 +12,8 @@ from fastapi.responses import FileResponse
 from loguru import logger
 
 from kunde.banner import banner
+from kunde.config.dev.db_populate import db_populate
+from kunde.config.dev_modus import dev_db_populate
 from kunde.repository import engine
 from kunde.router.kunde_read_router import kunde_read_router
 from kunde.router.kunde_write_router import kunde_write_router
@@ -24,10 +21,15 @@ from kunde.router.kunde_write_router import kunde_write_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):  # noqa: RUF029
-    """Banner ausgeben und beim Shutdown die DB-Verbindungen schließen.
+    """Banner ausgeben, im DEV-Modus die DB neu laden.
+
+    Und beim Shutdown die DB-Verbindungen schließen.
 
     :param app: FastAPI-Anwendung
     """
+    if dev_db_populate:
+        db_populate()
+
     banner(app.routes)
     yield
     logger.info("Der Server wird heruntergefahren.")
