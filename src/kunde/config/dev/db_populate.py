@@ -65,6 +65,8 @@ class DbPopulateService:
         logger.warning(">>> Die DB wird neu geladen: {} <<<", engine.url)
 
         with engine.connect() as connection:
+            connection.execute(text("SET search_path TO kunde;"))
+
             dialect_name: Final = connection.dialect.name
             dialect_path: Final = _db_traversable / dialect_name
 
