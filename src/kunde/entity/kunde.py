@@ -27,9 +27,6 @@ class Kunde(Base):
     email: Mapped[str] = mapped_column(unique=True)
     """Die eindeutige Emailadresse."""
 
-    version: Mapped[int] = mapped_column(default=0)
-    """Die Versionsnummer für optimistische Nebenläufigkeitskontrolle."""
-
     adresse: Mapped[Adresse] = relationship(
         back_populates="kunde",
         innerjoin=True,
@@ -42,6 +39,9 @@ class Kunde(Base):
         cascade="save-update, delete",
     )
     """Die in einer 1:N-Beziehung referenzierten Bestellungen."""
+
+    version: Mapped[int] = mapped_column(default=0)
+    """Die Versionsnummer für optimistische Nebenläufigkeitskontrolle."""
 
     def set(self, kunde: Self) -> None:
         """Primitive Attributwerte überschreiben, z.B. vor DB-Update."""

@@ -44,7 +44,7 @@ class KundeWriteService:
                 raise EmailExistsError(email=email)
 
             kunde_db: Final = self.repo.create(kunde=kunde, session=session)
-            kunde_dto: Final = KundeDTO(kunde_db)
+            kunde_dto: Final = KundeDTO.from_kunde(kunde_db)
             session.commit()
 
         logger.debug("kunde_dto={}", kunde_dto)
