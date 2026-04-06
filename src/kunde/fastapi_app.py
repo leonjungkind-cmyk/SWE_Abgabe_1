@@ -1,9 +1,10 @@
 """MainApp."""
 
+from collections.abc import AsyncGenerator, Awaitable, Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
 from time import time
-from typing import TYPE_CHECKING, Final
+from typing import Final
 
 from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.gzip import GZipMiddleware
@@ -20,9 +21,6 @@ from kunde.router.kunde_read_router import kunde_read_router
 from kunde.router.kunde_write_router import kunde_write_router
 from kunde.service.exceptions import EmailExistsError, NotFoundError
 
-if TYPE_CHECKING:
-    from collections.abc import AsyncGenerator, Awaitable, Callable
-
 __all__ = [
     "email_exists_error_handler",
     "not_found_error_handler",
@@ -33,7 +31,7 @@ __all__ = [
 # S t a r t u p   u n d   S h u t d o w n
 # --------------------------------------------------------------------------------------
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> "AsyncGenerator[None]":  # noqa: RUF029
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:  # noqa: RUF029
     """DB neu laden, falls im dev-Modus, sowie Banner in der Konsole."""
     if dev_db_populate:
         db_populate()
@@ -52,7 +50,7 @@ app.add_middleware(GZipMiddleware, minimum_size=500)
 @app.middleware("http")
 async def log_request(
     request: Request,
-    call_next: "Callable[[Request], Awaitable[Response]]",
+    call_next: Callable[[Request], Awaitable[Response]],
 ) -> Response:
     """HTTP-Request protokollieren.
 
@@ -68,7 +66,7 @@ async def log_request(
 @app.middleware("http")
 async def log_response_time(
     request: Request,
-    call_next: "Callable[[Request], Awaitable[Response]]",
+    call_next: Callable[[Request], Awaitable[Response]],
 ) -> Response:
     """Bearbeitungszeit eines Requests protokollieren.
 
@@ -81,7 +79,8 @@ async def log_response_time(
     response = await call_next(request)
     duration_ms = (time() - start) * 1000
     logger.debug(
-        f"Response time: {duration_ms:.2f} ms, statuscode: {response.status_code}"
+        f"Response time: {duration_ms:.2f} ms, "
+        f"statuscode: {response.status_code}"
     )
     return response
 
@@ -96,7 +95,7 @@ if dev_db_populate:
     app.include_router(db_populate_router, prefix="/dev")
 
 if dev_keycloak_populate:
-    pass  # keycloak_populate_router wird ergaenzt, sobald das Security-Modul vorhanden ist
+    pass  # wird ergänzt, sobald das Security-Modul vorhanden ist
 
 
 # --------------------------------------------------------------------------------------
