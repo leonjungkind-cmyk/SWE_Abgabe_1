@@ -37,7 +37,7 @@ class KundeReadService:
             ) is None:
                 message: Final = f"Kein Kunde mit der ID {kunde_id}"
                 logger.debug("NotFoundError: {}", message)
-                raise NotFoundError(message)
+                raise NotFoundError(kunde_id=kunde_id)
             kunde_dto: Final = KundeDTO.from_kunde(kunde)
             session.commit()
 
@@ -64,7 +64,7 @@ class KundeReadService:
                 suchparameter=suchparameter, pageable=pageable, session=session
             )
             if len(kunde_slice.content) == 0:
-                raise NotFoundError(f"Keine Kunden gefunden für {suchparameter}")
+                raise NotFoundError(suchparameter=suchparameter)
 
             # Generator-Ausdruck ergibt direkt ein Tupel ohne Zwischenliste
             kunden_dto: Final = tuple(
