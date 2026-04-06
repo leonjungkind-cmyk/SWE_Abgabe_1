@@ -128,4 +128,12 @@ def _kunde_to_dict(kunde: KundeDTO) -> dict[str, Any]:
         "id": kunde.id,
         "nachname": kunde.nachname,
         "email": kunde.email,
+        "adresse": {
+            "plz": kunde.adresse.plz,
+            "ort": kunde.adresse.ort,
+        },
+        "bestellungen": [
+            {"produktname": b.produktname, "menge": b.menge}
+            for b in kunde.bestellungen
+        ],
     }

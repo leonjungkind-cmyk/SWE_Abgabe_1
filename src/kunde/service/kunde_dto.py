@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from kunde.entity.kunde import Kunde
+from kunde.service.adresse_dto import AdresseDTO
+from kunde.service.bestellung_dto import BestellungDTO
 
 __all__ = ["KundeDTO"]
 
@@ -17,6 +19,8 @@ class KundeDTO:
     nachname: str
     email: str
     version: int
+    adresse: AdresseDTO
+    bestellungen: list[BestellungDTO]
 
     @classmethod
     def from_kunde(cls, kunde: Kunde) -> KundeDTO:
@@ -31,4 +35,8 @@ class KundeDTO:
             nachname=kunde.nachname,
             email=kunde.email,
             version=kunde.version,
+            adresse=AdresseDTO.from_adresse(kunde.adresse),
+            bestellungen=[
+                BestellungDTO.from_bestellung(b) for b in kunde.bestellungen
+            ],
         )
