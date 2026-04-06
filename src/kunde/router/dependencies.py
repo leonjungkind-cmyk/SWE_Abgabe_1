@@ -14,6 +14,7 @@ def get_write_service() -> KundeWriteService:
     repo = KundeRepository()
     return KundeWriteService(repo)
 
+
 def get_read_service() -> KundeReadService:
     """Erzeuge den Read-Service für Kunde.
 

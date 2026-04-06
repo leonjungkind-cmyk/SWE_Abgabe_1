@@ -1,18 +1,3 @@
-# Copyright (C) 2023 - present Juergen Zimmermann, Hochschule Karlsruhe
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <https://www.gnu.org/licenses/>.
-
 """KundeWriteRouter."""
 
 from typing import Annotated, Final
@@ -20,8 +5,11 @@ from typing import Annotated, Final
 from fastapi import APIRouter, Depends, Request, Response, status
 from loguru import logger
 
+from kunde.problem_details import create_problem_details
+from kunde.router.constants import IF_MATCH, IF_MATCH_MIN_LEN
 from kunde.router.dependencies import get_write_service
 from kunde.router.kunde_model import KundeModel
+from kunde.router.kunde_update_model import KundeUpdateModel
 from kunde.service.kunde_write_service import KundeWriteService
 
 __all__ = ["kunde_write_router"]
@@ -55,3 +43,78 @@ def post(
         status_code=status.HTTP_201_CREATED,
         headers={"Location": f"{request.url}/{kunde_dto.id}"},
     )
+
+
+@kunde_write_router.put("/{kunde_id}")
+def put(
+    kunde_id: int,
+    kunde_update_model: KundeUpdateModel,
+    request: Request,
+    service: Annotated[KundeWriteService, Depends(get_write_service)],
+) -> Response:
+    """PUT-Request, um einen Kunden zu aktualisieren.
+
+    :param kunde_id: ID des zu aktualisierenden Kunden als Pfadparameter
+    :param kunde_update_model: Neue Kundedaten
+    :param request: Request mit If-Match im Header
+    :param service: Injizierter Service für Geschäftslogik
+    :return: Response mit Statuscode 204
+    :rtype: Response
+    """
+    if_match_value: Final = request.headers.get(IF_MATCH)
+    logger.debug(
+        "kunde_id={}, if_match={}, kunde_update_model={}",
+        kunde_id,
+        if_match_value,
+        kunde_update_model,
+    )
+
+    if if_match_value is None:
+        return create_problem_details(
+            status_code=status.HTTP_428_PRECONDITION_REQUIRED,
+        )
+
+    if (
+        len(if_match_value) < IF_MATCH_MIN_LEN
+        or not if_match_value.startswith('"')
+        or not if_match_value.endswith('"')
+    ):
+        return create_problem_details(
+            status_code=status.HTTP_412_PRECONDITION_FAILED,
+        )
+
+    version: Final = if_match_value[1:-1]
+    try:
+        version_int: Final = int(version)
+    except ValueError:
+        return Response(status_code=status.HTTP_412_PRECONDITION_FAILED)
+
+    kunde: Final = kunde_update_model.to_kunde()
+    kunde_modified: Final = service.update(
+        kunde=kunde,
+        kunde_id=kunde_id,
+        version=version_int,
+    )
+    logger.debug("kunde_modified={}", kunde_modified)
+
+    return Response(
+        status_code=status.HTTP_204_NO_CONTENT,
+        headers={"ETag": f'"{kunde_modified.version}"'},
+    )
+
+
+@kunde_write_router.delete("/{kunde_id}")
+def delete_by_id(
+    kunde_id: int,
+    service: Annotated[KundeWriteService, Depends(get_write_service)],
+) -> Response:
+    """DELETE-Request, um einen Kunden anhand seiner ID zu löschen.
+
+    :param kunde_id: ID des zu löschenden Kunden
+    :param service: Injizierter Service für Geschäftslogik
+    :return: Response mit Statuscode 204
+    :rtype: Response
+    """
+    logger.debug("kunde_id={}", kunde_id)
+    service.delete_by_id(kunde_id=kunde_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

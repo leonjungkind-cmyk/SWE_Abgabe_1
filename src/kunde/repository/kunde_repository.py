@@ -240,3 +240,58 @@ class KundeRepository:
 
         logger.debug("kunde_id={}", kunde.id)
         return kunde
+
+    def exists_email_other_id(
+        self,
+        kunde_id: int,
+        email: str,
+        session: Session,
+    ) -> bool:
+        """Prüft, ob eine Emailadresse bereits bei einem anderen Kunden existiert.
+
+        :param kunde_id: ID des aktuellen Kunden
+        :param email: Zu prüfende Emailadresse
+        :param session: Aktive SQLAlchemy-Session
+        :return: True, wenn die Adresse bei einem anderen Kunden existiert
+        :rtype: bool
+        """
+        logger.debug("kunde_id={}, email={}", kunde_id, email)
+
+        statement: Final = (
+            select(func.count())
+            .select_from(Kunde)
+            .where(Kunde.email == email)
+            .where(Kunde.id != kunde_id)
+        )
+        anzahl: Final = session.scalar(statement)
+
+        logger.debug("anzahl={}", anzahl)
+        return anzahl is not None and anzahl > 0
+
+    def update(self, kunde: Kunde, session: Session) -> Kunde | None:
+        """Aktualisiert einen bestehenden Kunden.
+
+        :param kunde: Bereits geladener und veränderter Kunde
+        :param session: Aktive SQLAlchemy-Session
+        :return: Aktualisierter Kunde oder None
+        :rtype: Kunde | None
+        """
+        logger.debug("kunde={}", kunde)
+        session.add(kunde)
+        session.flush()
+        return kunde
+
+    def delete_by_id(self, kunde_id: int, session: Session) -> None:
+        """Löscht einen Kunden anhand seiner ID.
+
+        :param kunde_id: ID des zu löschenden Kunden
+        :param session: Aktive SQLAlchemy-Session
+        """
+        logger.debug("kunde_id={}", kunde_id)
+
+        kunde: Final = self.find_by_id(kunde_id=kunde_id, session=session)
+        if kunde is None:
+            return
+
+        session.delete(kunde)
+        session.flush()
