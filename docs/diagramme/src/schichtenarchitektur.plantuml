@@ -1,66 +1,48 @@
-' Copyright (C) 2023 - present Juergen Zimmermann, Hochschule Karlsruhe
-'
-' This program is free software: you can redistribute it and/or modify
-' it under the terms of the GNU General Public License as published by
-' the Free Software Foundation, either version 3 of the License, or
-' (at your option) any later version.
-'
-' This program is distributed in the hope that it will be useful,
-' but WITHOUT ANY WARRANTY; without even the implied warranty of
-' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-' GNU General Public License for more details.
-'
-' You should have received a copy of the GNU General Public License
-' along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 ' Preview durch <Alt>d
 
 @startuml Schichtenarchitektur
 
 package kunde #DDDDDD {
-    package rest #FFFFFF {
-        [@router.get()\nget_by_id()\n\n@router.get()\nget()\n\n@router.get()\nget_nachnamen()] as kundeGetController
-        [@router.post()\npost()\n\n@router.put()\nput()\n\n@router.delete()\ndelete_by_id()] as kundeWriteController
-        [@router.get()\nliveness()\n\n@router.get()\nreadiness()] as HealthController
+    package router #FFFFFF {
+        [@router.get()\nget_by_id()\n\n@router.get()\nget()\n\n@router.get()\nget_nachnamen()] as kundeReadRouter
+        [@router.post()\npost()\n\n@router.put()\nput()\n\n@router.delete()\ndelete_by_id()] as kundeWriteRouter
 
-        [kundeGetController] -right[hidden]-> [kundeWriteController]
+        [kundeReadRouter] -right[hidden]-> [kundeWriteRouter]
     }
 
     package service #FFFFFF {
         [find_by_id()\nfind()\nfind_nachnamen()] as kundeReadService
-        [create()\nupdate()\ndelete()] as kundeWriteService
+        [create()\nupdate()\ndelete_by_id()] as kundeWriteService
     }
 
-    [kundeGetController] --> [kundeReadService]
-    [kundeWriteController] --> [kundeWriteService]
+    [kundeReadRouter] --> [kundeReadService]
+    [kundeWriteRouter] --> [kundeWriteService]
 
     package repository #FFFFFF {
-        [find_by_id()\nfind()\nexists_email()\nfind_nachnamen()\ncreate()\nupdate()\ndelete_by_id()\ncheck_db_connection()] as kundeRepository
+        [find_by_id()\nfind()\nexists_email()\nfind_nachnamen()\ncreate()\nupdate()\ndelete_by_id()] as kundeRepository
     }
 
     [kundeReadService] --> [kundeRepository]
     [kundeWriteService] --> [kundeRepository]
-    [HealthController] --> [kundeRepository]
 
     package entity #FFFFFF {
-        [kunde]
+        [Kunde]
         [Adresse]
-        [Rechnung]
+        [Bestellung]
 
-        [kunde] -right[hidden]-> [Adresse]
-        [Adresse] -down[hidden]-> [Rechnung]
+        [Kunde] -right[hidden]-> [Adresse]
+        [Adresse] -down[hidden]-> [Bestellung]
     }
 
-    [kundeGetController] ..> [kunde]
-    [kundeWriteController] ..> [kunde]
-    [kundeReadService] .left.> [kunde]
-    [kundeWriteService] ..> [kunde]
-    [kundeRepository] ..> [kunde]
+    [kundeReadRouter] ..> [Kunde]
+    [kundeWriteRouter] ..> [Kunde]
+    [kundeReadService] .left.> [Kunde]
+    [kundeWriteService] ..> [Kunde]
+    [kundeRepository] ..> [Kunde]
 }
 
-RESTClient ~~> [kundeGetController]
-RESTClient ~~> [kundeWriteController]
-RESTClient ~~> [HealthController]
+RESTClient ~~> [kundeReadRouter]
+RESTClient ~~> [kundeWriteRouter]
 
 cloud {
     [SQLAlchemy\n(OR-Mapping)] as SQLAlchemy
@@ -72,11 +54,11 @@ entity ~~> [SQLAlchemy]
 database "DB kunde" as db {
     [Tabelle kunde]
     [Tabelle adresse]
-    [Tabelle rechnung]
+    [Tabelle bestellung]
 }
 
 [SQLAlchemy] ~down~> db
 
-footer (c) Juergen Zimmermann
+footer Leon Jungkind
 
 @enduml

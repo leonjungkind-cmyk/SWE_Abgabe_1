@@ -1,18 +1,3 @@
-' Copyright (C) 2023 - present Juergen Zimmermann, Hochschule Karlsruhe
-'
-' This program is free software: you can redistribute it and/or modify
-' it under the terms of the GNU General Public License as published by
-' the Free Software Foundation, either version 3 of the License, or
-' (at your option) any later version.
-'
-' This program is distributed in the hope that it will be useful,
-' but WITHOUT ANY WARRANTY; without even the implied warranty of
-' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-' GNU General Public License for more details.
-'
-' You should have received a copy of the GNU General Public License
-' along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 ' Preview durch <Alt>d
 
 @startuml ER Diagramm
@@ -20,55 +5,40 @@
 ' hide the spot
 hide circle
 
-' evtl. Prbleme mit Kraehenfuessen vermeiden
+' Kraehenfuesse vermeiden
 skinparam linetype ortho
 
 entity "kunde" {
-  * id : integer <<generated>>
+    id : integer <<generated>>
   --
-  * version: integer
   * nachname : text
   * email : text <<unique>>
-  * kategorie: integer
-  * has_newsletter: boolean
-    geburtsdatum: date
-    geschlecht: Geschlecht
-    familienstand: Familienstand
-    fachaerzte: JSON
-    homepage: text
-  * **username**: text <<FK>>
-  * erzeugt: timestamp
-  * aktualisiert: timestamp
+    version: integer <<default 0>>
+    erzeugt: timestamp
+    aktualisiert: timestamp
 }
 
-entity "Adresse" {
+entity "adresse" {
   * id : integer <<generated>>
   --
+  * strasse : text
+  * hausnummer : text
   * plz : text
   * ort : text
   * **kunde_id**: integer <<FK>>
 }
 
-entity "Rechnung" {
+entity "bestellung" {
   * id : integer <<generated>>
   --
-  * betrag : decimal
-  * waehrung : text
+  * produktname : text
+  * menge : integer
   * **kunde_id**: integer <<FK>>
 }
 
-entity "UserAccount" {
-  * id : integer <<generated>>
-  --
-  * username : text <<unique>>
-  * password : text
-    roles: JSON
-}
+kunde ||.right.|| adresse
+kunde ||..o{ bestellung
 
-kunde ||.left.|| Adresse
-kunde ||..o{ Rechnung
-kunde ||..|| UserAccount
-
-footer (c) Juergen Zimmermann
+footer Leon Jungkind
 
 @enduml

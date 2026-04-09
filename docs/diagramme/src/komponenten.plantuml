@@ -1,18 +1,3 @@
-' Copyright (C) 2019 - present Juergen Zimmermann, Hochschule Karlsruhe
-'
-' This program is free software: you can redistribute it and/or modify
-' it under the terms of the GNU General Public License as published by
-' the Free Software Foundation, either version 3 of the License, or
-' (at your option) any later version.
-'
-' This program is distributed in the hope that it will be useful,
-' but WITHOUT ANY WARRANTY; without even the implied warranty of
-' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-' GNU General Public License for more details.
-'
-' You should have received a copy of the GNU General Public License
-' along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 ' Preview durch <Alt>d
 
 @startuml Komponenten
@@ -20,60 +5,40 @@
 left to right direction
 
 actor RESTClient
-actor GraphQLClient
 
 node "kunde" {
-  [kunde_get_controller]
-  [kunde_write_controller]
-  [schema]
+  [kunde_read_router]
+  [kunde_write_router]
 
   [kunde_read_service]
   [kunde_write_service]
 
   [kunde_repository]
-
-  [mailer]
 }
-
 
 cloud {
     [SQLAlchemy]
 }
 
-cloud {
-    [smtp]
-}
-
 database "DB kunde" {
     [Tabelle kunde]
     [Tabelle adresse]
-    [Tabelle rechnung]
+    [Tabelle bestellung]
 }
 
-node {
-    [Mailserver]
-}
+RESTClient ~~> [kunde_read_router]
+RESTClient ~~> [kunde_write_router]
 
-RESTClient ~~> [kunde_get_controller]
-RESTClient ~~> [kunde_write_controller]
-GraphQLClient ~~> [schema]
-
-[kunde_get_controller] ..> [kunde_read_service]
-[kunde_write_controller] ..> [kunde_write_service]
-[schema] ..> [kunde_read_service]
-[schema] ..> [kunde_write_service]
+[kunde_read_router] ..> [kunde_read_service]
+[kunde_write_router] ..> [kunde_write_service]
 [kunde_read_service] ..> [kunde_repository]
 [kunde_write_service] ..> [kunde_repository]
 
 [kunde_repository] ~~> [SQLAlchemy]
 [SQLAlchemy] ~~> [Tabelle kunde]
 [SQLAlchemy] ~~> [Tabelle adresse]
-[SQLAlchemy] ~~> [Tabelle rechnung]
+[SQLAlchemy] ~~> [Tabelle bestellung]
 
-[kunde_write_service] ..> [mailer]
-[mailer] ~~> [smtp]
-[smtp] ~~> [Mailserver]
-
-footer (c) Jürgen Zimmermann
+footer Leon Jungkind
 
 @enduml
