@@ -1,8 +1,8 @@
 """DTO für die Übertragung von Kundendaten zwischen den Schichten."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass
+
+import strawberry
 
 from kunde.entity.kunde import Kunde
 from kunde.service.adresse_dto import AdresseDTO
@@ -11,32 +11,31 @@ from kunde.service.bestellung_dto import BestellungDTO
 __all__ = ["KundeDTO"]
 
 
-@dataclass
+@dataclass(eq=False, slots=True, kw_only=True)
+@strawberry.type
 class KundeDTO:
-    """Lesbare Repräsentation eines Kunden ohne direkte Datenbankanbindung."""
+    """DTO-Klasse für ausgelesene oder gespeicherte Kundendaten: ohne Decorators."""
 
-    id: int | None
+    id: int
+    version: int
     nachname: str
     email: str
-    version: int
     adresse: AdresseDTO
     bestellungen: list[BestellungDTO]
+    username: str | None
 
-    @classmethod
-    def from_kunde(cls, kunde: Kunde) -> KundeDTO:
-        """Baut ein KundeDTO aus einer persistierten Kunde-Entity.
+    def __init__(self, kunde: Kunde) -> None:
+        """Initialisierung von KundeDTO durch ein Entity-Objekt von Kunde.
 
-        :param kunde: Aus der Datenbank geladene Kunde-Instanz
-        :return: Neues KundeDTO mit den Werten des Kunden
-        :rtype: KundeDTO
+        :param kunde: Kunde-Objekt mit Decorators für SQLAlchemy
         """
-        return cls(
-            id=kunde.id,
-            nachname=kunde.nachname,
-            email=kunde.email,
-            version=kunde.version,
-            adresse=AdresseDTO.from_adresse(kunde.adresse),
-            bestellungen=[
-                BestellungDTO.from_bestellung(b) for b in kunde.bestellungen
-            ],
-        )
+        kunde_id = kunde.id
+        self.id = kunde_id if kunde_id is not None else -1
+        self.version = kunde.version
+        self.nachname = kunde.nachname
+        self.email = kunde.email
+        self.adresse = AdresseDTO(kunde.adresse)
+        self.bestellungen = [
+            BestellungDTO(bestellung) for bestellung in kunde.bestellungen
+        ]
+        self.username = kunde.username if kunde.username is not None else "N/A"

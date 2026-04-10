@@ -4,6 +4,7 @@ from collections.abc import Mapping
 
 __all__ = [
     "EmailExistsError",
+    "ForbiddenError",
     "NotFoundError",
     "VersionOutdatedError",
 ]
@@ -19,6 +20,10 @@ class EmailExistsError(Exception):
         """
         super().__init__(f"Existierende Email: {email}")
         self.email = email
+
+
+class ForbiddenError(Exception):
+    """Exception, falls der Zugriff auf Kundendaten nicht erlaubt ist."""
 
 
 class NotFoundError(Exception):

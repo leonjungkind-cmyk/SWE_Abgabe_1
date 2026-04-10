@@ -10,6 +10,7 @@ from kunde.router.constants import IF_MATCH, IF_MATCH_MIN_LEN
 from kunde.router.dependencies import get_write_service
 from kunde.router.kunde_model import KundeModel
 from kunde.router.kunde_update_model import KundeUpdateModel
+from kunde.security import Role, RolesRequired
 from kunde.service.kunde_write_service import KundeWriteService
 
 __all__ = ["kunde_write_router"]
@@ -18,7 +19,10 @@ __all__ = ["kunde_write_router"]
 kunde_write_router: Final = APIRouter(tags=["Schreiben"])
 
 
-@kunde_write_router.post("")
+@kunde_write_router.post(
+    "",
+    dependencies=[Depends(RolesRequired(Role.ADMIN))],
+)
 def post(
     kunde_model: KundeModel,
     request: Request,
@@ -45,7 +49,10 @@ def post(
     )
 
 
-@kunde_write_router.put("/{kunde_id}")
+@kunde_write_router.put(
+    "/{kunde_id}",
+    dependencies=[Depends(RolesRequired([Role.ADMIN, Role.kunde]))],
+)
 def put(
     kunde_id: int,
     kunde_update_model: KundeUpdateModel,
@@ -103,7 +110,10 @@ def put(
     )
 
 
-@kunde_write_router.delete("/{kunde_id}")
+@kunde_write_router.delete(
+    "/{kunde_id}",
+    dependencies=[Depends(RolesRequired([Role.ADMIN, Role.kunde]))],
+)
 def delete_by_id(
     kunde_id: int,
     service: Annotated[KundeWriteService, Depends(get_write_service)],

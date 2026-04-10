@@ -12,6 +12,7 @@ from kunde.repository.slice import Slice
 from kunde.router.constants import ETAG, IF_NONE_MATCH, IF_NONE_MATCH_MIN_LEN
 from kunde.router.dependencies import get_read_service
 from kunde.router.page import Page
+from kunde.security import Role, RolesRequired, User
 from kunde.service import KundeReadService
 from kunde.service.kunde_dto import KundeDTO
 
@@ -20,7 +21,10 @@ __all__ = ["kunde_read_router"]
 kunde_read_router: Final = APIRouter(tags=["Lesen"])
 
 
-@kunde_read_router.get("/{kunde_id}")
+@kunde_read_router.get(
+    "/{kunde_id}",
+    dependencies=[Depends(RolesRequired([Role.ADMIN, Role.kunde]))],
+)
 def get_by_id(
     kunde_id: int,
     request: Request,
@@ -35,9 +39,10 @@ def get_by_id(
     :rtype: Response
     :raises NotFoundError: Falls kein Kunde gefunden wurde
     """
-    logger.debug("kunde_id={}", kunde_id)
+    user: Final[User] = request.state.current_user
+    logger.debug("kunde_id={}, user={}", kunde_id, user)
 
-    kunde: Final = service.find_by_id(kunde_id=kunde_id)
+    kunde: Final = service.find_by_id(kunde_id=kunde_id, user=user)
     logger.debug("{}", kunde)
 
     if_none_match: Final = request.headers.get(IF_NONE_MATCH)
@@ -61,7 +66,10 @@ def get_by_id(
     )
 
 
-@kunde_read_router.get("")
+@kunde_read_router.get(
+    "",
+    dependencies=[Depends(RolesRequired(Role.ADMIN))],
+)
 def get(
     request: Request,
     service: Annotated[KundeReadService, Depends(get_read_service)],
@@ -92,7 +100,10 @@ def get(
     return JSONResponse(content=result)
 
 
-@kunde_read_router.get("/nachnamen/{teil}")
+@kunde_read_router.get(
+    "/nachnamen/{teil}",
+    dependencies=[Depends(RolesRequired(Role.ADMIN))],
+)
 def get_nachnamen(
     teil: str,
     service: Annotated[KundeReadService, Depends(get_read_service)],

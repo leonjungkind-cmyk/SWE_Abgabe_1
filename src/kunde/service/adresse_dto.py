@@ -2,24 +2,25 @@
 
 from dataclasses import dataclass
 
+import strawberry
+
 from kunde.entity.adresse import Adresse
 
 __all__ = ["AdresseDTO"]
 
 
 @dataclass(eq=False, slots=True, kw_only=True)
+@strawberry.type
 class AdresseDTO:
-    """Lesbare Repräsentation einer Adresse ohne direkte Datenbankanbindung."""
+    """DTO-Klasse für die Adresse, insbesondere ohne Decorators für SQLAlchemy."""
 
     plz: str
     ort: str
 
-    @classmethod
-    def from_adresse(cls, adresse: Adresse) -> "AdresseDTO":
-        """Baut ein AdresseDTO aus einer persistierten Adresse-Entity.
+    def __init__(self, adresse: Adresse) -> None:
+        """Initialisierung von AdresseDTO durch ein Entity-Objekt von Adresse.
 
-        :param adresse: Aus der Datenbank geladene Adresse-Instanz
-        :return: Neues AdresseDTO mit den Werten der Adresse
-        :rtype: AdresseDTO
+        :param adresse: Adresse-Objekt mit Decorators für SQLAlchemy
         """
-        return cls(plz=adresse.plz, ort=adresse.ort)
+        self.plz = adresse.plz
+        self.ort = adresse.ort

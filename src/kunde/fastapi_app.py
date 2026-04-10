@@ -14,16 +14,32 @@ from loguru import logger
 from kunde.banner import banner
 from kunde.config.dev.db_populate import db_populate
 from kunde.config.dev.db_populate_router import router as db_populate_router
+from kunde.config.dev.keycloak_populate import keycloak_populate
+from kunde.config.dev.keycloak_populate_router import (
+    router as keycloak_populate_router,
+)
 from kunde.config.dev_modus import dev_db_populate, dev_keycloak_populate
 from kunde.problem_details import create_problem_details
 from kunde.repository import engine
 from kunde.router.kunde_read_router import kunde_read_router
 from kunde.router.kunde_write_router import kunde_write_router
-from kunde.service.exceptions import EmailExistsError, NotFoundError
+from kunde.security import AuthorizationError, LoginError
+from kunde.security.auth_router import router as auth_router
+from kunde.security.response_headers import set_response_headers
+from kunde.service.exceptions import (
+    EmailExistsError,
+    ForbiddenError,
+    NotFoundError,
+    VersionOutdatedError,
+)
 
 __all__ = [
+    "authorization_error_handler",
     "email_exists_error_handler",
+    "forbidden_error_handler",
+    "login_error_handler",
     "not_found_error_handler",
+    "version_outdated_error_handler",
 ]
 
 
@@ -32,9 +48,11 @@ __all__ = [
 # --------------------------------------------------------------------------------------
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:  # noqa: RUF029
-    """DB neu laden, falls im dev-Modus, sowie Banner in der Konsole."""
+    """DB und Keycloak neu laden, falls im dev-Modus, sowie Banner in der Konsole."""
     if dev_db_populate:
         db_populate()
+    if dev_keycloak_populate:
+        keycloak_populate()
     banner(app.routes)
     yield
     logger.info("Der Server wird heruntergefahren.")
@@ -86,16 +104,37 @@ async def log_response_time(
 
 
 # --------------------------------------------------------------------------------------
+# S e c u r i t y
+# --------------------------------------------------------------------------------------
+@app.middleware("http")
+async def add_security_headers(
+    request: Request,
+    call_next: Callable[[Request], Awaitable[Response]],
+) -> Response:
+    """Header-Daten beim Response für IT-Sicherheit setzen.
+
+    :param request: Aktueller HTTP-Request
+    :param call_next: Nächste Middleware bzw. eigentlicher Handler
+    :return: HTTP-Response mit zusätzlichen Security-Headern
+    :rtype: Response
+    """
+    response: Final[Response] = await call_next(request)
+    set_response_headers(response)
+    return response
+
+
+# --------------------------------------------------------------------------------------
 # R E S T
 # --------------------------------------------------------------------------------------
 app.include_router(kunde_read_router, prefix="/rest/kunden")
 app.include_router(kunde_write_router, prefix="/rest")
+app.include_router(auth_router, prefix="/auth")
 
 if dev_db_populate:
     app.include_router(db_populate_router, prefix="/dev")
 
 if dev_keycloak_populate:
-    pass  # wird ergänzt, sobald das Security-Modul vorhanden ist
+    app.include_router(keycloak_populate_router, prefix="/dev")
 
 
 # --------------------------------------------------------------------------------------
@@ -133,6 +172,45 @@ def not_found_error_handler(_request: Request, _err: NotFoundError) -> Response:
     return create_problem_details(status_code=status.HTTP_404_NOT_FOUND)
 
 
+@app.exception_handler(ForbiddenError)
+def forbidden_error_handler(_request: Request, _err: ForbiddenError) -> Response:
+    """Exception-Handling für ForbiddenError.
+
+    :param _err: Exception, falls der Zugriff nicht erlaubt ist
+    :return: Response mit Statuscode 403
+    :rtype: Response
+    """
+    return create_problem_details(status_code=status.HTTP_403_FORBIDDEN)
+
+
+@app.exception_handler(AuthorizationError)
+def authorization_error_handler(
+    _request: Request,
+    _err: AuthorizationError,
+) -> Response:
+    """Exception-Handling für AuthorizationError.
+
+    :param _err: Exception bei fehlendem oder ungültigem Authorization-Header
+    :return: Response mit Statuscode 401
+    :rtype: Response
+    """
+    return create_problem_details(status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+@app.exception_handler(LoginError)
+def login_error_handler(_request: Request, err: LoginError) -> Response:
+    """Exception-Handling für LoginError.
+
+    :param err: Exception bei fehlerhaftem Benutzername oder Passwort
+    :return: Response mit Statuscode 401
+    :rtype: Response
+    """
+    return create_problem_details(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=str(err),
+    )
+
+
 @app.exception_handler(EmailExistsError)
 def email_exists_error_handler(_request: Request, err: EmailExistsError) -> Response:
     """Exception-Handling für EmailExistsError.
@@ -143,5 +221,22 @@ def email_exists_error_handler(_request: Request, err: EmailExistsError) -> Resp
     """
     return create_problem_details(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        detail=str(err),
+    )
+
+
+@app.exception_handler(VersionOutdatedError)
+def version_outdated_error_handler(
+    _request: Request,
+    err: VersionOutdatedError,
+) -> Response:
+    """Exception-Handling für VersionOutdatedError.
+
+    :param err: Exception, falls die Versionsnummer veraltet ist
+    :return: Response mit Statuscode 412
+    :rtype: Response
+    """
+    return create_problem_details(
+        status_code=status.HTTP_412_PRECONDITION_FAILED,
         detail=str(err),
     )

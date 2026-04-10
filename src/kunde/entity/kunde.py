@@ -18,6 +18,9 @@ class Kunde(Base):
     nachname: Mapped[str]
     """Der Nachname."""
 
+    username: Mapped[str | None]
+    """Der Benutzername für Login und Zugriffsschutz."""
+
     id: Mapped[int | None] = mapped_column(
         Identity(start=1000),
         primary_key=True,
@@ -40,13 +43,16 @@ class Kunde(Base):
     )
     """Die in einer 1:N-Beziehung referenzierten Bestellungen."""
 
-    version: Mapped[int] = mapped_column(default=0)
+    version: Mapped[int] = mapped_column(nullable=False, default=0)
     """Die Versionsnummer für optimistische Nebenläufigkeitskontrolle."""
+
+    __mapper_args__ = {"version_id_col": version}
 
     def set(self, kunde: Self) -> None:
         """Primitive Attributwerte überschreiben, z.B. vor DB-Update."""
         self.nachname = kunde.nachname
         self.email = kunde.email
+        self.username = kunde.username
 
     def __eq__(self, other: Any) -> bool:
         """Vergleich auf Gleichheit, ohne Joins zu verursachen."""
@@ -62,4 +68,8 @@ class Kunde(Base):
 
     def __repr__(self) -> str:
         """Ausgabe eines Kunden als String, ohne Joins zu verursachen."""
-        return f"Kunde(id={self.id}, nachname={self.nachname}, email={self.email})"
+        return (
+            f"Kunde(id={self.id}, version={self.version}, "
+            f"nachname={self.nachname}, email={self.email}, "
+            f"username={self.username})"
+        )
