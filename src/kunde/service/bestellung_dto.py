@@ -2,24 +2,25 @@
 
 from dataclasses import dataclass
 
+import strawberry
+
 from kunde.entity.bestellung import Bestellung
 
 __all__ = ["BestellungDTO"]
 
 
 @dataclass(eq=False, slots=True, kw_only=True)
+@strawberry.type
 class BestellungDTO:
-    """Lesbare Repräsentation einer Bestellung ohne direkte Datenbankanbindung."""
+    """DTO-Klasse für die Bestellung, insbesondere ohne Decorators für SQLAlchemy."""
 
     produktname: str
     menge: int
 
-    @classmethod
-    def from_bestellung(cls, bestellung: Bestellung) -> "BestellungDTO":
-        """Baut ein BestellungDTO aus einer persistierten Bestellung-Entity.
+    def __init__(self, bestellung: Bestellung) -> None:
+        """Initialisierung von BestellungDTO durch ein Entity-Objekt von Bestellung.
 
-        :param bestellung: Aus der Datenbank geladene Bestellung-Instanz
-        :return: Neues BestellungDTO mit den Werten der Bestellung
-        :rtype: BestellungDTO
+        :param bestellung: Bestellung-Objekt mit Decorators für SQLAlchemy
         """
-        return cls(produktname=bestellung.produktname, menge=bestellung.menge)
+        self.produktname = bestellung.produktname
+        self.menge = bestellung.menge

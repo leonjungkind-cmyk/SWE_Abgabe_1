@@ -1,21 +1,6 @@
-# Copyright (C) 2022 - present Juergen Zimmermann, Hochschule Karlsruhe
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 """Neuladen von Keycloak im Modus DEV."""
 
-from csv import reader
+from csv import DictReader
 from pathlib import Path
 from typing import Annotated, Final
 
@@ -43,7 +28,7 @@ class KeycloakPopulateService:
     """Service für das Neuladen von Keycloak im Modus DEV."""
 
     def __init__(self, user_service: UserService) -> None:
-        """Konstruktor mit abhängigem KundeRepository."""
+        """Konstruktor mit abhängigem UserService."""
         self.user_service: UserService = user_service
 
     def populate(self) -> None:
@@ -66,25 +51,44 @@ class KeycloakPopulateService:
     def _create_users(self) -> None:
         logger.debug("Aktuelles Verzeichnis: {}", Path.cwd())
         csv_config_path = Path(csv_config)
+
         if not csv_config_path.is_file():
-            logger.error(f"CSV-Datei {csv_config_path} existiert nicht")
+            logger.error("CSV-Datei {} existiert nicht", csv_config_path)
             return
+
         logger.debug("CSV-Datei: {}", csv_config_path)
 
-        with csv_config_path.open(encoding=utf8) as csv_file:
-            csv_reader = reader(csv_file, delimiter=";")
-            kopfzeile = True
-            for row in csv_reader:
-                if kopfzeile:
-                    kopfzeile = False
-                    continue
+        with csv_config_path.open(encoding=utf8, newline="") as csv_file:
+            csv_reader = DictReader(csv_file, delimiter=",")
 
-                username = row[11]
+            for row in csv_reader:
+                email = (row.get("email") or "").strip()
+                nachname = (row.get("nachname") or "").strip()
+                username = (row.get("username") or "").strip()
+
+                if not username:
+                    if email:
+                        username = email.split("@")[0]
+                    else:
+                        logger.warning(
+                            "Zeile ohne username und ohne email übersprungen: {}",
+                            row,
+                        )
+                        continue
+
                 if username == "admin":
                     continue
 
-                email = row[3]
-                nachname = row[2]
+                if not email:
+                    logger.warning(
+                        "Zeile ohne email übersprungen: {}",
+                        row,
+                    )
+                    continue
+
+                if not nachname:
+                    nachname = username
+
                 user = User(
                     username=username,
                     email=email,
@@ -94,17 +98,18 @@ class KeycloakPopulateService:
                     password="p",  # noqa: S106 # NOSONAR
                 )
                 self.user_service.create_user(user=user)
+
         logger.debug("Alle User zu 'kunde.csv' neu angelegt")
 
 
 def get_keycloak_populate_service(
     user_service: Annotated[UserService, Depends(get_user_service)],
 ) -> KeycloakPopulateService:
-    """Factory-Funktion für TokenService."""
+    """Factory-Funktion für KeycloakPopulateService."""
     return KeycloakPopulateService(user_service)
 
 
-def keycloak_populate():
+def keycloak_populate() -> None:
     """Keycloak mit Testdaten neu laden, falls im dev-Modus."""
     if dev_keycloak_populate:
         service = get_keycloak_populate_service(get_user_service())
