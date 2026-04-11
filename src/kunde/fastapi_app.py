@@ -17,6 +17,7 @@ from kunde.config.dev.db_populate_router import router as db_populate_router
 from kunde.config.dev_modus import dev_db_populate, dev_keycloak_populate
 from kunde.problem_details import create_problem_details
 from kunde.repository import engine
+from kunde.graphql_api import graphql_router as gql_router
 from kunde.router.kunde_read_router import kunde_read_router
 from kunde.router.kunde_write_router import kunde_write_router
 from kunde.service.exceptions import EmailExistsError, NotFoundError
@@ -90,6 +91,7 @@ async def log_response_time(
 # --------------------------------------------------------------------------------------
 app.include_router(kunde_read_router, prefix="/rest/kunden")
 app.include_router(kunde_write_router, prefix="/rest")
+app.include_router(gql_router, prefix="/graphql")
 
 if dev_db_populate:
     app.include_router(db_populate_router, prefix="/dev")
