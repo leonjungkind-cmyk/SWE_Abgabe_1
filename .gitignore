@@ -29,3 +29,5 @@ sonar-project.properties
 extras/compose/db/postgres/db_password.txt
 src/kunde/config/resources/tls/private-key.pem
 
+.claude/settings.local.json
+src/kunde/config/resources/app.toml

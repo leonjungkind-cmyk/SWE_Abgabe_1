@@ -51,6 +51,7 @@ class KundeModel(BaseModel):
         kunde: Final = Kunde(
             id=None,
             nachname=self.nachname,
+            username=None,
             email=str(self.email),
             adresse=adresse,
             bestellungen=[],

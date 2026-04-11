@@ -51,7 +51,7 @@ class KundeWriteService:
                 kunde=kunde,
                 session=session,
             )
-            kunde_dto: Final = KundeDTO.from_kunde(kunde_db)
+            kunde_dto: Final = KundeDTO(kunde_db)
 
             session.commit()
 
@@ -102,7 +102,7 @@ class KundeWriteService:
             ) is None:
                 raise NotFoundError(kunde_id)
 
-            kunde_dto: Final = KundeDTO.from_kunde(kunde_updated)
+            kunde_dto: Final = KundeDTO(kunde_updated)
             logger.debug("kunde_dto={}", kunde_dto)
 
             session.commit()

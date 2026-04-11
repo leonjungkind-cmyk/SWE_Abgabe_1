@@ -124,6 +124,13 @@ class DbPopulateService:
                     csv_path=csv_path,
                     connection=connection,
                 )
+                connection.execute(
+                    text(
+                        f"SELECT setval("
+                        f"pg_get_serial_sequence('kunde.{tabelle}', 'id'), "
+                        f"(SELECT MAX(id) FROM kunde.{tabelle}));"
+                    )
+                )
                 connection.commit()
 
         self.engine_admin.dispose()
@@ -137,7 +144,7 @@ class DbPopulateService:
         copy_cmd: Final = Template(
             "COPY ${TABELLE} FROM '"
             + csv_path
-            + "/${TABELLE}.csv' (FORMAT csv, QUOTE '\"', DELIMITER ',', HEADER true);"
+            + "/${TABELLE}.csv' (FORMAT csv, QUOTE '\"', DELIMITER ',', HEADER match);"
         ).substitute(TABELLE=tabelle)
 
         connection.execute(text(copy_cmd))
