@@ -5,10 +5,13 @@
 left to right direction
 
 actor RESTClient
+actor GraphQLClient
 
 node "kunde" {
   [kunde_read_router]
   [kunde_write_router]
+
+  [graphql_schema\n(Query / Mutation)]
 
   [kunde_read_service]
   [kunde_write_service]
@@ -28,9 +31,12 @@ database "DB kunde" {
 
 RESTClient ~~> [kunde_read_router]
 RESTClient ~~> [kunde_write_router]
+GraphQLClient ~~> [graphql_schema\n(Query / Mutation)]
 
 [kunde_read_router] ..> [kunde_read_service]
 [kunde_write_router] ..> [kunde_write_service]
+[graphql_schema\n(Query / Mutation)] ..> [kunde_read_service]
+[graphql_schema\n(Query / Mutation)] ..> [kunde_write_service]
 [kunde_read_service] ..> [kunde_repository]
 [kunde_write_service] ..> [kunde_repository]
 

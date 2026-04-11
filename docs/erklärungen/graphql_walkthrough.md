@@ -194,17 +194,19 @@ separat über eigene Vorgänge entstehen.
 ```python
 @strawberry.type
 class AdresseType:
-    strasse: str
-    hausnummer: str
     plz: str
     ort: str
 ```
 
 `@strawberry.type` statt `@strawberry.input` – das ist der entscheidende Unterschied.
 Output-Typen (`@strawberry.type`) werden als Antwort zurückgegeben. Der Client kann
-bei einer GraphQL-Abfrage gezielt auswählen, welche dieser vier Felder er braucht.
-Fragt er nur `plz` und `ort` ab, überträgt der Server nur diese beiden Felder.
+bei einer GraphQL-Abfrage gezielt auswählen, welches dieser zwei Felder er braucht.
 Das ist der Kern des GraphQL-Versprechens: kein Over-Fetching.
+
+Warum nur `plz` und `ort` und nicht `strasse` und `hausnummer`? Das `AdresseDTO`,
+das der Service zurückgibt, enthält nur diese beiden Felder – sie sind die einzigen,
+die auch im DTO definiert sind. Die Felder `strasse` und `hausnummer` existieren in der
+Datenbank, werden aber im DTO (und damit in der API-Antwort) bewusst nicht übertragen.
 
 ---
 

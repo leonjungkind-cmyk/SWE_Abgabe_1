@@ -10,6 +10,13 @@ package kunde #DDDDDD {
         [kundeReadRouter] -right[hidden]-> [kundeWriteRouter]
     }
 
+    package graphql_api #FFFFFF {
+        [@strawberry.field\nkunde()\n\n@strawberry.field\nkunden()] as graphqlQuery
+        [@strawberry.mutation\ncreate()] as graphqlMutation
+
+        [graphqlQuery] -right[hidden]-> [graphqlMutation]
+    }
+
     package service #FFFFFF {
         [find_by_id()\nfind()\nfind_nachnamen()] as kundeReadService
         [create()\nupdate()\ndelete_by_id()] as kundeWriteService
@@ -17,6 +24,8 @@ package kunde #DDDDDD {
 
     [kundeReadRouter] --> [kundeReadService]
     [kundeWriteRouter] --> [kundeWriteService]
+    [graphqlQuery] --> [kundeReadService]
+    [graphqlMutation] --> [kundeWriteService]
 
     package repository #FFFFFF {
         [find_by_id()\nfind()\nexists_email()\nfind_nachnamen()\ncreate()\nupdate()\ndelete_by_id()] as kundeRepository
@@ -36,6 +45,8 @@ package kunde #DDDDDD {
 
     [kundeReadRouter] ..> [Kunde]
     [kundeWriteRouter] ..> [Kunde]
+    [graphqlQuery] ..> [Kunde]
+    [graphqlMutation] ..> [Kunde]
     [kundeReadService] .left.> [Kunde]
     [kundeWriteService] ..> [Kunde]
     [kundeRepository] ..> [Kunde]
@@ -43,6 +54,8 @@ package kunde #DDDDDD {
 
 RESTClient ~~> [kundeReadRouter]
 RESTClient ~~> [kundeWriteRouter]
+GraphQLClient ~~> [graphqlQuery]
+GraphQLClient ~~> [graphqlMutation]
 
 cloud {
     [SQLAlchemy\n(OR-Mapping)] as SQLAlchemy

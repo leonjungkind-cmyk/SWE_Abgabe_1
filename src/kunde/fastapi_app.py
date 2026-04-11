@@ -129,6 +129,7 @@ async def add_security_headers(
 # --------------------------------------------------------------------------------------
 app.include_router(kunde_read_router, prefix="/rest/kunden")
 app.include_router(kunde_write_router, prefix="/rest")
+app.include_router(gql_router, prefix="/graphql")
 
 if dev_db_populate:
     app.include_router(db_populate_router, prefix="/dev")
