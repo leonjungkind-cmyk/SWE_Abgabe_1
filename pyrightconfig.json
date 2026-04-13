@@ -1,0 +1,8 @@
+{
+    "venvPath": ".",
+    "venv": ".venv",
+    "extraPaths": [
+        "C:/software-engeneering/Kunde/src",
+        "C:/software-engeneering/Kunde/tests/integration"
+    ]
+}
