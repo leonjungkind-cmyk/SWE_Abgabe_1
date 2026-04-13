@@ -19,9 +19,9 @@ from kunde.config.dev.keycloak_populate_router import (
     router as keycloak_populate_router,
 )
 from kunde.config.dev_modus import dev_db_populate, dev_keycloak_populate
+from kunde.graphql_api import graphql_router as gql_router
 from kunde.problem_details import create_problem_details
 from kunde.repository import engine
-from kunde.graphql_api import graphql_router as gql_router
 from kunde.router.kunde_read_router import kunde_read_router
 from kunde.router.kunde_write_router import kunde_write_router
 from kunde.security import AuthorizationError, LoginError
@@ -98,8 +98,7 @@ async def log_response_time(
     response = await call_next(request)
     duration_ms = (time() - start) * 1000
     logger.debug(
-        f"Response time: {duration_ms:.2f} ms, "
-        f"statuscode: {response.status_code}"
+        f"Response time: {duration_ms:.2f} ms, statuscode: {response.status_code}"
     )
     return response
 

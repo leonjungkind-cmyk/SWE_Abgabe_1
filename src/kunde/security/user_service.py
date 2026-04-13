@@ -39,16 +39,12 @@ class UserService:
             roles = self.keycloak_admin.get_client_roles(
                 client_id=self.client_uuid,
             )
-            roles_kunde = [
-                role for role in roles if role["name"] == "kunde"
-            ]
+            roles_kunde = [role for role in roles if role["name"] == "kunde"]
             self.rolle_kunde = roles_kunde[0]
             logger.debug("rolle_kunde={}", self.rolle_kunde)
 
         except KeycloakConnectionError:
-            logger.error(
-                "Keine Verbindung zu Keycloak! Ist Keycloak gestartet?"
-            )
+            logger.error("Keine Verbindung zu Keycloak! Ist Keycloak gestartet?")
             self.client_uuid = "N/A"
             self.rolle_kunde = None
 
@@ -127,9 +123,9 @@ class UserService:
             kc_user["id"],
         )
 
-        kc_client_roles = kc_roles["clientMappings"][
-            keycloak_admin_config.client_id
-        ]["mappings"]
+        kc_client_roles = kc_roles["clientMappings"][keycloak_admin_config.client_id][
+            "mappings"
+        ]
         logger.debug("kc_client_roles={}", kc_client_roles)
 
         roles: Final = []

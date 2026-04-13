@@ -144,7 +144,6 @@ def _kunde_to_dict(kunde: KundeDTO) -> dict[str, Any]:
             "ort": kunde.adresse.ort,
         },
         "bestellungen": [
-            {"produktname": b.produktname, "menge": b.menge}
-            for b in kunde.bestellungen
+            {"produktname": b.produktname, "menge": b.menge} for b in kunde.bestellungen
         ],
     }

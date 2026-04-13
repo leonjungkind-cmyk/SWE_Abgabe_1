@@ -90,9 +90,7 @@ class KundeReadService:
             if len(kunde_slice.content) == 0:
                 raise NotFoundError(suchparameter=suchparameter)
 
-            kunden_dto: Final = tuple(
-                KundeDTO(kunde) for kunde in kunde_slice.content
-            )
+            kunden_dto: Final = tuple(KundeDTO(kunde) for kunde in kunde_slice.content)
             session.commit()
 
         kunden_dto_slice = Slice(

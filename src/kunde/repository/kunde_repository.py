@@ -97,8 +97,7 @@ class KundeRepository:
             )
             if pageable.size != 0
             else (
-                select(Kunde)
-                .options(
+                select(Kunde).options(
                     joinedload(Kunde.adresse),
                     joinedload(Kunde.bestellungen),
                 )
@@ -195,9 +194,7 @@ class KundeRepository:
         logger.debug("teil={}", teil)
 
         statement: Final = (
-            select(Kunde.nachname)
-            .where(Kunde.nachname.ilike(f"%{teil}%"))
-            .distinct()
+            select(Kunde.nachname).where(Kunde.nachname.ilike(f"%{teil}%")).distinct()
         )
         nachnamen: Final = list(session.scalars(statement))
 
