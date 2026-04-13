@@ -35,6 +35,7 @@ class KundeUpdateModel(BaseModel):
         kunde_dict["id"] = None
         kunde_dict["adresse"] = None
         kunde_dict["bestellungen"] = []
+        kunde_dict["username"] = None
         return kunde_dict
 
     def to_kunde(self) -> Kunde:
