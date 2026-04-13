@@ -23,6 +23,7 @@ from kunde.graphql_api.graphql_types import (
 )
 from kunde.repository import KundeRepository, Pageable
 from kunde.router.kunde_model import KundeModel
+from kunde.security import TokenService
 from kunde.service import KundeReadService, KundeWriteService
 from kunde.service.exceptions import NotFoundError
 
@@ -32,9 +33,10 @@ __all__ = ["graphql_router"]
 _repo: Final = KundeRepository()
 _read_service: Final = KundeReadService(repo=_repo)
 _write_service: Final = KundeWriteService(repo=_repo)
+_token_service: Final = TokenService()
 
 
-def _to_kunde_type(dto) -> KundeType:  # noqa: ANN001
+def _to_kunde_type(dto) -> KundeType:
     return KundeType(
         id=dto.id,
         nachname=dto.nachname,
@@ -56,17 +58,27 @@ class Query:
     """Leseoperationen für die GraphQL-Schnittstelle der Kundenverwaltung."""
 
     @strawberry.field
-    def kunde(self, kunde_id: strawberry.ID) -> KundeType | None:
+    def kunde(self, kunde_id: strawberry.ID, info: Info) -> KundeType | None:
         """Einen einzelnen Kunden anhand seiner ID laden.
 
         :param kunde_id: Primärschlüssel des gewünschten Kunden
+        :param info: Strawberry-Kontext mit FastAPI-Request
         :return: Kundendatensatz oder None, falls kein Treffer
         :rtype: KundeType | None
         """
         logger.debug("kunde_id={}", kunde_id)
 
+        request: Final[Request] = info.context.get("request")
+        user: Final = _token_service.get_user_from_request(request=request)
+
+        if user is None:
+            return None
+
         try:
-            kunde_dto = _read_service.find_by_id(kunde_id=int(kunde_id))
+            kunde_dto = _read_service.find_by_id(
+                kunde_id=int(kunde_id),
+                user=user,
+            )
         except NotFoundError:
             return None
 
@@ -74,14 +86,25 @@ class Query:
         return _to_kunde_type(kunde_dto)
 
     @strawberry.field
-    def kunden(self, suchparameter: Suchparameter) -> Sequence[KundeType]:
+    def kunden(
+        self,
+        suchparameter: Suchparameter,
+        info: Info,
+    ) -> Sequence[KundeType]:
         """Mehrere Kunden über Filterkriterien ermitteln.
 
         :param suchparameter: Filterfelder wie nachname oder email
+        :param info: Strawberry-Kontext mit FastAPI-Request
         :return: Alle Kunden, die den Kriterien entsprechen
         :rtype: Sequence[KundeType]
         """
         logger.debug("suchparameter={}", suchparameter)
+
+        request: Final[Request] = info.context["request"]
+        user: Final = _token_service.get_user_from_request(request)
+
+        if user is None:
+            return []
 
         suchparameter_dict: Final[dict[str, str]] = dict(vars(suchparameter))
         suchparameter_filtered = {
@@ -94,7 +117,8 @@ class Query:
         pageable: Final = Pageable.create(size=str(0))
         try:
             kunden_slice = _read_service.find(
-                suchparameter=suchparameter_filtered, pageable=pageable
+                suchparameter=suchparameter_filtered,
+                pageable=pageable,
             )
         except NotFoundError:
             return []
@@ -114,7 +138,8 @@ class Mutation:
         :param kunde_input: Eingabedaten des anzulegenden Kunden
         :return: Enthält die vergebene ID des neuen Kunden
         :rtype: CreatePayload
-        :raises EmailExistsError: Wenn die Emailadresse bereits einem anderen Kunden gehört
+        :raises EmailExistsError:
+            Wenn die Emailadresse bereits einem anderen Kunden gehört
         """
         logger.debug("kunde_input={}", kunde_input)
 
@@ -140,5 +165,7 @@ def get_context(request: Request) -> Context:
 
 
 graphql_router: Final = GraphQLRouter[Context](
-    schema, context_getter=get_context, graphql_ide=graphql_ide
+    schema,
+    context_getter=get_context,
+    graphql_ide=graphql_ide,
 )
