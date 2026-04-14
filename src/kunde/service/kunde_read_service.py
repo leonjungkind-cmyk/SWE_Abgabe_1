@@ -8,8 +8,7 @@ from loguru import logger
 from kunde.repository import KundeRepository, Session
 from kunde.repository.pageable import Pageable
 from kunde.repository.slice import Slice
-from kunde.security import Role, User
-from kunde.service.exceptions import ForbiddenError, NotFoundError
+from kunde.service.exceptions import NotFoundError
 from kunde.service.kunde_dto import KundeDTO
 
 __all__ = ["KundeReadService"]
@@ -22,42 +21,24 @@ class KundeReadService:
         """Initialisierung mit dem benötigten KundeRepository."""
         self.repo: KundeRepository = repo
 
-    def find_by_id(self, kunde_id: int, user: User) -> KundeDTO:
+    def find_by_id(self, kunde_id: int) -> KundeDTO:
         """Lädt einen einzelnen Kunden über seine ID.
 
         :param kunde_id: Primärschlüssel des gesuchten Kunden
-        :param user: aktueller User aus dem Token
         :return: Gefundener Kunde als DTO
         :rtype: KundeDTO
         :raises NotFoundError: Wenn kein Kunde existiert
-        :raises ForbiddenError: Wenn Zugriff nicht erlaubt
         """
-        logger.debug("kunde_id={}, user={}", kunde_id, user)
+        logger.debug("kunde_id={}", kunde_id)
 
         with Session() as session:
-            user_is_admin: Final = Role.ADMIN in user.roles
-
             kunde = self.repo.find_by_id(
                 kunde_id=kunde_id,
                 session=session,
             )
 
             if kunde is None:
-                if user_is_admin:
-                    message: Final = f"Kein Kunde mit der ID {kunde_id}"
-                    logger.debug("NotFoundError: {}", message)
-                    raise NotFoundError(kunde_id=kunde_id)
-
-                raise ForbiddenError
-
-            if kunde.username != user.username and not user_is_admin:
-                logger.debug(
-                    "kunde.username={}, user.username={}, user.roles={}",
-                    kunde.username,
-                    user.username,
-                    user.roles,
-                )
-                raise ForbiddenError
+                raise NotFoundError(kunde_id=kunde_id)
 
             kunde_dto: Final = KundeDTO(kunde)
             session.commit()
