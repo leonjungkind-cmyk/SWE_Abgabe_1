@@ -51,7 +51,7 @@ def test_post() -> None:
 @mark.rest
 @mark.post_request
 def test_post_ungueltig() -> None:
-    # arrange – ungültige Email und PLZ mit nur 4 Ziffern
+    # arrange - ungültige Email und PLZ mit nur 4 Ziffern
     neuer_kunde_ungueltig: Final = {
         "nachname": "Ungueltigrest",
         "email": "falsche_email@",
@@ -87,7 +87,7 @@ def test_post_ungueltig() -> None:
 @mark.rest
 @mark.post_request
 def test_post_email_existiert() -> None:
-    # arrange – Emailadresse ist bereits einem anderen Kunden zugeordnet
+    # arrange - Emailadresse ist bereits einem anderen Kunden zugeordnet
     email_vorhanden: Final = "mueller@example.de"
     neuer_kunde: Final = {
         "nachname": "Neurest",
@@ -122,7 +122,7 @@ def test_post_email_existiert() -> None:
 @mark.rest
 @mark.post_request
 def test_post_ungueltige_json() -> None:
-    # arrange – Python-String statt Dictionary führt zu Pydantic-Validierungsfehler
+    # arrange - Python-String statt Dictionary führt zu Pydantic-Validierungsfehler
     json_ungueltig: Final = '{"nachname" "Neurest"}'
     token: Final = login()
     assert token is not None

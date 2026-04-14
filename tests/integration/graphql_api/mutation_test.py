@@ -49,7 +49,7 @@ def test_create() -> None:
 @mark.graphql
 @mark.mutation
 def test_create_ungueltig() -> None:
-    # arrange – ungültige Email und PLZ mit nur 4 Ziffern
+    # arrange - ungültige Email und PLZ mit nur 4 Ziffern
     query: Final = {
         "query": """
             mutation {

@@ -102,7 +102,7 @@ def test_put_nicht_vorhanden() -> None:
 @mark.rest
 @mark.put_request
 def test_put_email_existiert() -> None:
-    # arrange – nach test_put hat ID 40 Version 1; Email gehört bereits Kunde 1
+    # arrange - nach test_put hat ID 40 Version 1; Email gehört bereits Kunde 1
     kunde_id: Final = 40
     if_match: Final = '"1"'
     email_vorhanden: Final = "mueller@example.de"
@@ -133,7 +133,7 @@ def test_put_email_existiert() -> None:
 @mark.rest
 @mark.put_request
 def test_put_ohne_versionsnr() -> None:
-    # arrange – fehlender If-Match-Header ergibt 428 Precondition Required
+    # arrange - fehlender If-Match-Header ergibt 428 Precondition Required
     kunde_id: Final = 40
     geaenderter_kunde: Final = {
         "nachname": "Weberput",
@@ -160,7 +160,7 @@ def test_put_ohne_versionsnr() -> None:
 @mark.rest
 @mark.put_request
 def test_put_alte_versionsnr() -> None:
-    # arrange – veraltete Versionsnummer ergibt 412 Precondition Failed
+    # arrange - veraltete Versionsnummer ergibt 412 Precondition Failed
     kunde_id: Final = 40
     if_match: Final = '"-1"'
     geaenderter_kunde: Final = {
@@ -189,7 +189,7 @@ def test_put_alte_versionsnr() -> None:
 @mark.rest
 @mark.put_request
 def test_put_ungueltige_versionsnr() -> None:
-    # arrange – nicht-numerische Versionsnummer ergibt 412 ohne Antwortinhalt
+    # arrange - nicht-numerische Versionsnummer ergibt 412 ohne Antwortinhalt
     kunde_id: Final = 40
     if_match: Final = '"xy"'
     geaenderter_kunde: Final = {
@@ -218,8 +218,8 @@ def test_put_ungueltige_versionsnr() -> None:
 
 @mark.rest
 @mark.put_request
-def test_put_versionsnr_ohne_anführungszeichen() -> None:
-    # arrange – Versionsnummer ohne umschließende Anführungszeichen ergibt 412
+def test_put_versionsnr_ohne_anfuehrungszeichen() -> None:
+    # arrange - Versionsnummer ohne umschließende Anführungszeichen ergibt 412
     kunde_id: Final = 40
     if_match: Final = "0"
     geaenderter_kunde: Final = {

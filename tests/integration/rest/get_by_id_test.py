@@ -59,7 +59,7 @@ def test_get_by_id_nicht_gefunden(kunde_id: int) -> None:
 @mark.rest
 @mark.get_request
 def test_get_by_id_kunde() -> None:
-    # arrange – Kunde 'mueller' darf seinen eigenen Datensatz (ID 1) einsehen
+    # arrange - Kunde 'mueller' darf seinen eigenen Datensatz (ID 1) einsehen
     kunde_id: Final = 1
     token: Final = login(username="mueller")
     assert token is not None
@@ -85,7 +85,7 @@ def test_get_by_id_kunde() -> None:
 @mark.get_request
 @mark.parametrize("kunde_id", [20, 30])
 def test_get_by_id_nicht_erlaubt(kunde_id: int) -> None:
-    # arrange – Kunde 'mueller' darf fremde Datensätze nicht einsehen
+    # arrange - Kunde 'mueller' darf fremde Datensätze nicht einsehen
     token: Final = login(username="mueller")
     assert token is not None
     headers = {"Authorization": f"Bearer {token}"}
@@ -105,7 +105,7 @@ def test_get_by_id_nicht_erlaubt(kunde_id: int) -> None:
 @mark.get_request
 @mark.parametrize("kunde_id", [0, 999999])
 def test_get_by_id_nicht_erlaubt_nicht_gefunden(kunde_id: int) -> None:
-    # arrange – nicht-existente IDs liefern für Kunden ebenfalls 403 (kein Datenleck)
+    # arrange - nicht-existente IDs liefern für Kunden ebenfalls 403 (kein Datenleck)
     token: Final = login(username="mueller")
     assert token is not None
     headers = {"Authorization": f"Bearer {token}"}
@@ -156,7 +156,7 @@ def test_get_by_id_ohne_token(kunde_id: int) -> None:
 @mark.get_request
 @mark.parametrize("kunde_id,if_none_match", [(20, '"0"'), (30, '"0"')])
 def test_get_by_id_etag(kunde_id: int, if_none_match: str) -> None:
-    # arrange – gültiger ETag-Wert führt zu 304 Not Modified (keine Datenübertragung)
+    # arrange - gültiger ETag-Wert führt zu 304 Not Modified (keine Datenübertragung)
     token: Final = login()
     assert token is not None
     headers = {
@@ -180,7 +180,7 @@ def test_get_by_id_etag(kunde_id: int, if_none_match: str) -> None:
 @mark.get_request
 @mark.parametrize("kunde_id,if_none_match", [(30, 'xxx"'), (1, "xxx"), (20, "xxx")])
 def test_get_by_id_etag_ungueltig(kunde_id: int, if_none_match: str) -> None:
-    # arrange – ungültiger ETag liefert regulären 200-Response mit Körper
+    # arrange - ungültiger ETag liefert regulären 200-Response mit Körper
     token: Final = login()
     assert token is not None
     headers = {

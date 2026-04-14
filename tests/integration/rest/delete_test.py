@@ -31,7 +31,7 @@ def test_delete() -> None:
 @mark.rest
 @mark.delete_request
 def test_delete_nicht_gefunden() -> None:
-    # arrange – nicht-existente ID führt ebenfalls zu 204 (idempotentes Löschen)
+    # arrange - nicht-existente ID führt ebenfalls zu 204 (idempotentes Löschen)
     kunde_id: Final = 999999
     token: Final = login()
     assert token is not None
