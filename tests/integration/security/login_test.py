@@ -8,7 +8,6 @@ from common_test import (
     base_url,
     ctx,
     login,
-    password_admin,
     timeout,
     token_path,
     username_admin,
@@ -28,7 +27,7 @@ def test_login_admin() -> None:
 
 
 @mark.login
-def test_login_ungültiges_passwort() -> None:
+def test_login_ungueltige_passwort() -> None:
     # Vorbereitung
     login_data: Final = {"username": username_admin, "password": "UNGÜLTIGES_PASSWORT"}
 
@@ -47,7 +46,7 @@ def test_login_ungültiges_passwort() -> None:
 @mark.login
 def test_login_ohne_anmeldedaten() -> None:
     # Vorbereitung
-    login_data: dict[str, str] = {}
+    login_data: Final[dict[str, str]] = {}
 
     # Aktion
     response: Final = post(
