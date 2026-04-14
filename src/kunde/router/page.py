@@ -24,7 +24,7 @@ class Page:
         content: tuple[dict[str, Any], ...],
         pageable: Pageable,
         total_elements: int,
-    ) -> "Page":
+    ) -> Page:
         """Erzeuge eine Page aus Content und Paginierungsinformationen.
 
         :param content: Tupel der serialisierten Ergebnisobjekte

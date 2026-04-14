@@ -1,18 +1,3 @@
-# Copyright (C) 2022 - present Juergen Zimmermann, Hochschule Karlsruhe
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 """Neuladen der DB im Modus DEV."""
 
 from importlib.resources import files
@@ -123,13 +108,6 @@ class DbPopulateService:
                     tabelle=tabelle,
                     csv_path=csv_path,
                     connection=connection,
-                )
-                connection.execute(
-                    text(
-                        f"SELECT setval("
-                        f"pg_get_serial_sequence('kunde.{tabelle}', 'id'), "
-                        f"(SELECT MAX(id) FROM kunde.{tabelle}));"
-                    )
                 )
                 connection.commit()
 
