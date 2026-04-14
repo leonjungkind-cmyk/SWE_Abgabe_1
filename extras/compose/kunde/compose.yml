@@ -41,7 +41,7 @@ include:
 # https://docs.docker.com/reference/compose-file/services
 services:
   kunde:
-    image: juergenzimmermann/kunde:2026.4.1-hardened
+    image: kunde:2026.4.1-hardened
     #image: juergenzimmermann/kunde:2026.4.1-trixie
     #image: juergenzimmermann/kunde:2026.4.1-alpine
     #entrypoint: ["/bin/bash", "-c", "echo 'Container als bash gestartet.' && sleep infinity"]
