@@ -34,3 +34,4 @@ src/kunde/config/resources/app.toml
 src/kunde/config/resources/app.toml
 extras/compose/kunde/app.toml
 
+uv.lock

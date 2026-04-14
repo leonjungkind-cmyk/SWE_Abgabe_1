@@ -4,7 +4,7 @@
 from http import HTTPStatus
 from typing import Final
 
-from common_test import ctx, graphql_url, login_graphql
+from common_test import ctx, graphql_url
 from httpx import post
 from pytest import mark
 
@@ -13,10 +13,6 @@ from pytest import mark
 @mark.query
 def test_query_id() -> None:
     # arrange
-    token: Final = login_graphql()
-    assert token is not None
-    headers: Final = {"Authorization": f"Bearer {token}"}
-
     query: Final = {
         "query": """
             {
@@ -38,7 +34,7 @@ def test_query_id() -> None:
     }
 
     # act
-    response: Final = post(graphql_url, json=query, headers=headers, verify=ctx)
+    response: Final = post(graphql_url, json=query, verify=ctx)
 
     # assert
     assert response.status_code == HTTPStatus.OK
@@ -55,10 +51,6 @@ def test_query_id() -> None:
 @mark.query
 def test_query_id_nicht_gefunden() -> None:
     # arrange
-    token: Final = login_graphql()
-    assert token is not None
-    headers: Final = {"Authorization": f"Bearer {token}"}
-
     query: Final = {
         "query": """
             {
@@ -70,7 +62,7 @@ def test_query_id_nicht_gefunden() -> None:
     }
 
     # act
-    response: Final = post(graphql_url, json=query, headers=headers, verify=ctx)
+    response: Final = post(graphql_url, json=query, verify=ctx)
 
     # assert
     assert response.status_code == HTTPStatus.OK
@@ -84,10 +76,6 @@ def test_query_id_nicht_gefunden() -> None:
 @mark.query
 def test_query_email() -> None:
     # arrange
-    token: Final = login_graphql()
-    assert token is not None
-    headers: Final = {"Authorization": f"Bearer {token}"}
-
     query: Final = {
         "query": """
             {
@@ -110,7 +98,7 @@ def test_query_email() -> None:
     }
 
     # act
-    response: Final = post(graphql_url, json=query, headers=headers, verify=ctx)
+    response: Final = post(graphql_url, json=query, verify=ctx)
 
     # assert
     assert response.status_code == HTTPStatus.OK
@@ -126,10 +114,6 @@ def test_query_email() -> None:
 @mark.query
 def test_query_email_nicht_gefunden() -> None:
     # arrange
-    token: Final = login_graphql()
-    assert token is not None
-    headers: Final = {"Authorization": f"Bearer {token}"}
-
     query: Final = {
         "query": """
             {
@@ -141,7 +125,7 @@ def test_query_email_nicht_gefunden() -> None:
     }
 
     # act
-    response: Final = post(graphql_url, json=query, headers=headers, verify=ctx)
+    response: Final = post(graphql_url, json=query, verify=ctx)
 
     # assert
     assert response.status_code == HTTPStatus.OK
@@ -157,10 +141,6 @@ def test_query_email_nicht_gefunden() -> None:
 @mark.query
 def test_query_nachname() -> None:
     # arrange
-    token: Final = login_graphql()
-    assert token is not None
-    headers: Final = {"Authorization": f"Bearer {token}"}
-
     query: Final = {
         "query": """
             {
@@ -183,7 +163,7 @@ def test_query_nachname() -> None:
     }
 
     # act
-    response: Final = post(graphql_url, json=query, headers=headers, verify=ctx)
+    response: Final = post(graphql_url, json=query, verify=ctx)
 
     # assert
     assert response.status_code == HTTPStatus.OK
@@ -199,10 +179,6 @@ def test_query_nachname() -> None:
 @mark.query
 def test_query_nachname_nicht_gefunden() -> None:
     # arrange
-    token: Final = login_graphql()
-    assert token is not None
-    headers: Final = {"Authorization": f"Bearer {token}"}
-
     query: Final = {
         "query": """
             {
@@ -214,7 +190,7 @@ def test_query_nachname_nicht_gefunden() -> None:
     }
 
     # act
-    response: Final = post(graphql_url, json=query, headers=headers, verify=ctx)
+    response: Final = post(graphql_url, json=query, verify=ctx)
 
     # assert
     assert response.status_code == HTTPStatus.OK

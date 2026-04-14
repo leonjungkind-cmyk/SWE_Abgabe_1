@@ -59,16 +59,12 @@ def test_get_by_id_nicht_gefunden(kunde_id: int) -> None:
 @mark.rest
 @mark.get_request
 def test_get_by_id_kunde() -> None:
-    # arrange - Kunde 'mueller' darf seinen eigenen Datensatz (ID 1) einsehen
+    # arrange - kein Token nötig, GET ist öffentlich zugänglich
     kunde_id: Final = 1
-    token: Final = login(username="mueller")
-    assert token is not None
-    headers = {"Authorization": f"Bearer {token}"}
 
     # act
     response: Final = get(
         f"{rest_url}/{kunde_id}",
-        headers=headers,
         verify=ctx,
     )
 
@@ -85,50 +81,36 @@ def test_get_by_id_kunde() -> None:
 @mark.get_request
 @mark.parametrize("kunde_id", [20, 30])
 def test_get_by_id_nicht_erlaubt(kunde_id: int) -> None:
-    # arrange - Kunde 'mueller' darf fremde Datensätze nicht einsehen
-    token: Final = login(username="mueller")
-    assert token is not None
-    headers = {"Authorization": f"Bearer {token}"}
-
-    # act
+    # arrange - GET ist öffentlich, jeder kann jeden Kunden abrufen
     response: Final = get(
         f"{rest_url}/{kunde_id}",
-        headers=headers,
         verify=ctx,
     )
 
     # assert
-    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.status_code == HTTPStatus.OK
 
 
 @mark.rest
 @mark.get_request
 @mark.parametrize("kunde_id", [0, 999999])
 def test_get_by_id_nicht_erlaubt_nicht_gefunden(kunde_id: int) -> None:
-    # arrange - nicht-existente IDs liefern für Kunden ebenfalls 403 (kein Datenleck)
-    token: Final = login(username="mueller")
-    assert token is not None
-    headers = {"Authorization": f"Bearer {token}"}
-
-    # act
+    # arrange - nicht-existente IDs liefern 404
     response: Final = get(
         f"{rest_url}/{kunde_id}",
-        headers=headers,
         verify=ctx,
     )
 
     # assert
-    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.status_code == HTTPStatus.NOT_FOUND
 
 
 @mark.rest
 @mark.get_request
 @mark.parametrize("kunde_id", [30, 1, 20])
 def test_get_by_id_ungueltiger_token(kunde_id: int) -> None:
-    # arrange
-    token: Final = login()
-    assert token is not None
-    headers = {"Authorization": f"Bearer {token}XXX"}
+    # arrange - ungültiger Token wird bei GET ignoriert
+    headers = {"Authorization": "Bearer ungueltigertoken"}
 
     # act
     response: Final = get(
@@ -138,18 +120,18 @@ def test_get_by_id_ungueltiger_token(kunde_id: int) -> None:
     )
 
     # assert
-    assert response.status_code == HTTPStatus.UNAUTHORIZED
+    assert response.status_code == HTTPStatus.OK
 
 
 @mark.rest
 @mark.get_request
 @mark.parametrize("kunde_id", [30, 1, 20])
 def test_get_by_id_ohne_token(kunde_id: int) -> None:
-    # act
+    # act - kein Token nötig, GET ist öffentlich
     response: Final = get(f"{rest_url}/{kunde_id}", verify=ctx)
 
     # assert
-    assert response.status_code == HTTPStatus.UNAUTHORIZED
+    assert response.status_code == HTTPStatus.OK
 
 
 @mark.rest

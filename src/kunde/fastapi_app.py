@@ -22,6 +22,7 @@ from kunde.config.dev_modus import dev_db_populate, dev_keycloak_populate
 from kunde.graphql_api import graphql_router as gql_router
 from kunde.problem_details import create_problem_details
 from kunde.repository import engine
+from kunde.router.health_router import health_router
 from kunde.router.kunde_read_router import kunde_read_router
 from kunde.router.kunde_write_router import kunde_write_router
 from kunde.security import AuthorizationError, LoginError
@@ -126,8 +127,9 @@ async def add_security_headers(
 # --------------------------------------------------------------------------------------
 # R E S T
 # --------------------------------------------------------------------------------------
+app.include_router(health_router, prefix="/health")
 app.include_router(kunde_read_router, prefix="/rest/kunden")
-app.include_router(kunde_write_router, prefix="/rest")
+app.include_router(kunde_write_router, prefix="/rest/kunden")
 app.include_router(gql_router, prefix="/graphql")
 app.include_router(auth_router, prefix="/auth")
 

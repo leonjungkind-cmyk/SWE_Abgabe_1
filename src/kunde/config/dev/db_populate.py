@@ -15,11 +15,11 @@
 
 """Neuladen der DB im Modus DEV."""
 
+import csv
 from importlib.resources import files
 from importlib.resources.abc import Traversable
 from pathlib import Path
 from re import match
-from string import Template
 from typing import Final
 
 from loguru import logger
@@ -110,10 +110,10 @@ class DbPopulateService:
         return statements
 
     def _load_csv_files(self) -> None:
-        """CSV-Dateien in die Tabellen laden."""
+        """CSV-Dateien lokal lesen und in die Tabellen laden."""
         logger.debug("begin")
         tabellen: Final = ["kunde", "adresse", "bestellung"]
-        csv_path: Final = "/init/kunde/csv"
+        csv_dir: Final = Path("extras") / "compose" / "postgres" / "init" / "kunde" / "csv"
 
         with self.engine_admin.connect() as connection:
             connection.execute(text("SET search_path TO kunde;"))
@@ -121,7 +121,7 @@ class DbPopulateService:
             for tabelle in tabellen:
                 self._load_csv_file(
                     tabelle=tabelle,
-                    csv_path=csv_path,
+                    csv_dir=csv_dir,
                     connection=connection,
                 )
                 connection.execute(
@@ -136,18 +136,29 @@ class DbPopulateService:
         self.engine_admin.dispose()
 
     def _load_csv_file(
-        self, tabelle: str, csv_path: str, connection: Connection
+        self, tabelle: str, csv_dir: Path, connection: Connection
     ) -> None:
-        """Eine CSV-Datei per COPY in die jeweilige Tabelle laden."""
+        """Eine CSV-Datei lokal lesen und per INSERT in die Tabelle laden."""
         logger.debug("tabelle={}", tabelle)
+        csv_file: Final = csv_dir / f"{tabelle}.csv"
 
-        copy_cmd: Final = Template(
-            "COPY ${TABELLE} FROM '"
-            + csv_path
-            + "/${TABELLE}.csv' (FORMAT csv, QUOTE '\"', DELIMITER ',', HEADER match);"
-        ).substitute(TABELLE=tabelle)
+        with csv_file.open(encoding="utf-8", newline="") as f:
+            reader = csv.DictReader(f)
+            rows = list(reader)
 
-        connection.execute(text(copy_cmd))
+        if not rows:
+            return
+
+        columns: Final = list(rows[0].keys())
+        col_list: Final = ", ".join(columns)
+        placeholders: Final = ", ".join(f":{col}" for col in columns)
+        stmt: Final = text(
+            f"INSERT INTO kunde.{tabelle} ({col_list}) VALUES ({placeholders})"
+        )
+
+        for row in rows:
+            row_typed = {k: (int(v) if v.lstrip("-").isdigit() else v) for k, v in row.items()}
+            connection.execute(stmt, row_typed)
 
 
 def get_db_populate_service() -> DbPopulateService:
