@@ -32,3 +32,5 @@ src/kunde/config/resources/app.toml
 
 .claude/settings.local.json
 src/kunde/config/resources/app.toml
+extras/compose/kunde/app.toml
+
