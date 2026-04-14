@@ -38,4 +38,4 @@ def readiness() -> JSONResponse:
         return JSONResponse(content={"db": "up"})
     except Exception:  # noqa: BLE001
         logger.error("Datenbankverbindung nicht verfügbar")
-        return JSONResponse(content={"db": "down"}, status_code=503)  # noqa: PLR2004
+        return JSONResponse(content={"db": "down"}, status_code=503)
