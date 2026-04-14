@@ -4,7 +4,7 @@ Dieses Dokument erklärt die GraphQL-Schnittstelle des Projekts – Block für B
 GraphQL ist ein alternatives API-Protokoll zu REST. Statt mehrerer Endpunkte gibt es einen
 einzigen Endpunkt, über den der Client selbst bestimmt, welche Felder er in der Antwort braucht.
 
-Disclaimer: Diese Erklärung ist von Claude Code generiert worden.
+**Disclaimer: Diese Erklärung ist von Claude Code Generiert worden!**
 
 ---
 
