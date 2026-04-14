@@ -271,6 +271,13 @@ lint = [
 # https://coverage.readthedocs.io/en/latest/source.html
 [tool.coverage.run]
 include = ["src/kunde/service/*"]
+# Integrationstests rufen einen externen Server auf – der Service-Code läuft
+# im Server-Prozess, nicht im pytest-Prozess. Daher wird nie Coverage-Daten
+# gesammelt, wenn nur Integrationstests laufen.
+disable_warnings = ["no-data-collected"]
+
+[tool.coverage.report]
+skip_empty = true
 
 # https://docs.pytest.org/en/stable/reference/customize.html
 [tool.pytest.ini_options]
@@ -283,6 +290,11 @@ testpaths = ["tests/integration", "tests/unit"]
 # --html erfordert pytest-html
 # --cov erfordert pytest-cov
 addopts = "--html=report.html --cov --cov-report=html"
+filterwarnings = [
+    # Integrationstests treffen einen externen Server → kein Coverage-Daten im
+    # pytest-Prozess vorhanden, Report-Generierung schlägt erwartungsgemäß fehl.
+    "ignore::pytest_cov.plugin.CovReportWarning",
+]
 markers = [
     "rest: REST-Schnittstelle",
     "get_request: GET-Requests",

@@ -98,7 +98,9 @@ class DbPopulateService:
         """CSV-Dateien lokal lesen und in die Tabellen laden."""
         logger.debug("begin")
         tabellen: Final = ["kunde", "adresse", "bestellung"]
-        csv_dir: Final = Path("extras") / "compose" / "postgres" / "init" / "kunde" / "csv"
+        csv_dir: Final = (
+            Path("extras") / "compose" / "postgres" / "init" / "kunde" / "csv"
+        )
 
         with self.engine_admin.connect() as connection:
             connection.execute(text("SET search_path TO kunde;"))
@@ -131,11 +133,14 @@ class DbPopulateService:
         col_list: Final = ", ".join(columns)
         placeholders: Final = ", ".join(f":{col}" for col in columns)
         stmt: Final = text(
-            f"INSERT INTO kunde.{tabelle} ({col_list}) VALUES ({placeholders})"
+            f"INSERT INTO kunde.{tabelle} ({col_list}) VALUES ({placeholders})"  # noqa: S608
         )
 
         for row in rows:
-            row_typed = {k: (int(v) if v.lstrip("-").isdigit() else v) for k, v in row.items()}
+            row_typed = {
+                k: (int(v) if v.lstrip("-").isdigit() else v)
+                for k, v in row.items()
+            }
             connection.execute(stmt, row_typed)
 
 

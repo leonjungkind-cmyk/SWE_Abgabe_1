@@ -24,6 +24,7 @@ from kunde.repository import KundeRepository, Pageable
 from kunde.router.kunde_model import KundeModel
 from kunde.service import KundeReadService, KundeWriteService
 from kunde.service.exceptions import NotFoundError
+from kunde.service.kunde_dto import KundeDTO
 
 __all__ = ["graphql_router"]
 
@@ -33,7 +34,7 @@ _read_service: Final = KundeReadService(repo=_repo)
 _write_service: Final = KundeWriteService(repo=_repo)
 
 
-def _to_kunde_type(dto) -> KundeType:
+def _to_kunde_type(dto: KundeDTO) -> KundeType:
     return KundeType(
         id=dto.id,
         nachname=dto.nachname,
