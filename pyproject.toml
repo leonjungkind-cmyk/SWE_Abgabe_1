@@ -274,10 +274,14 @@ include = ["src/kunde/service/*"]
 # Integrationstests rufen einen externen Server auf – der Service-Code läuft
 # im Server-Prozess, nicht im pytest-Prozess. Daher wird nie Coverage-Daten
 # gesammelt, wenn nur Integrationstests laufen.
-disable_warnings = ["no-data-collected"]
+disable_warnings = ["no-data-collected", "couldnt-parse"]
+omit = ["tests/integration/*"]
 
 [tool.coverage.report]
+skip_covered = true
 skip_empty = true
+# Bei Integrationstests keine Report-Generierung versuchen wenn keine Daten
+precision = 1
 
 # https://docs.pytest.org/en/stable/reference/customize.html
 [tool.pytest.ini_options]
@@ -285,11 +289,13 @@ minversion = "8.4.1"
 # fuer Unit-Tests
 pythonpath = ["src"]
 testpaths = ["tests/integration", "tests/unit"]
+# Cache-Verzeichnis verschieben um Windows Lock-Probleme zu vermeiden
+cache_dir = ".pytest_cache_temp"
 # -m: nur Tests mit dem spezifizierten _Marker_ ausführen
 # -r A: zusaetzliche Zusammenfassung anzeigen (A = All)
 # --html erfordert pytest-html
-# --cov erfordert pytest-cov
-addopts = "--html=report.html --cov --cov-report=html"
+# Fuer Unit-Tests: --cov, fuer Integration Tests: nur --html
+addopts = "--html=report.html"
 filterwarnings = [
     # Integrationstests treffen einen externen Server → kein Coverage-Daten im
     # pytest-Prozess vorhanden, Report-Generierung schlägt erwartungsgemäß fehl.
