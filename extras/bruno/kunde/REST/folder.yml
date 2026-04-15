@@ -7,4 +7,4 @@ request:
   auth: inherit
   variables:
     - name: restUrl
-      value: "{{baseUrl}}/rest"
+      value: "{{baseUrl}}/rest/kunden"
